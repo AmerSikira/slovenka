@@ -18,7 +18,7 @@ The own-facility/white-label offer was not explicit. A new section describes bot
 
 The homepage lacked an understandable cooperation plan. A new ordered three-step section names project review, scope agreement, and production/handover. The manufacturing page now uses exactly the same three steps, incorporating samples and approvals into the scope step instead of creating a fourth step.
 
-A closing project invitation clarifies what to prepare: garment description, approximate quantity and preferred timeline. It connects the customer's idea with a clear plan and gives another direct inquiry link. Existing shopping sections and the garment-focused closing link remain accessible.
+A closing project invitation clarifies what to prepare: garment description, approximate quantity and preferred timeline. It connects the customer's idea with a clear plan and gives another direct inquiry link. Existing shopping sections remain accessible.
 
 No customer testimonials, certifications, delivery guarantees, minimum quantities or unverified service promises were added. Supporting services, including labels, are subject to the agreed project scope. Existing inquiry forms still explain that the preview saves locally rather than sending submissions. Lead capture or automated follow-up was not added because the static preview has no backend.
 
