@@ -6,7 +6,7 @@
 
   const selectors = [
     '.hero-copy > .eyebrow', '.hero-copy > h1', '.hero-copy > p:not(.eyebrow)',
-    '.hero-copy > .hero-index', '.section-heading > div', '.intro-grid > div',
+    '.hero-copy > .hero-index', '.section-heading > div',
     '.quality-copy > .eyebrow', '.quality-copy > h2', '.quality-copy > p:not(.eyebrow)',
     '.manufacturing-heading > div',
     '.company-numbers h2', '.numbers-grid > div', '.offer-intro > div',
