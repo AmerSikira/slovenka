@@ -11,16 +11,36 @@
     '.manufacturing-heading > div',
     '.company-numbers h2', '.numbers-grid > div', '.offer-intro > div',
     '.offer-intro > p', '.offer-options article > div > h3', '.offer-options article > div > p',
+    '.cooperation-intro',
     '.project-next-step h2',
     '.project-next-step p'
   ];
-  // The cooperation sequence owns its heading and steps as one choreography.
+  // The cooperation cards own their entrances to avoid competing motion.
   const targets = [...main.querySelectorAll(selectors.join(','))]
-    .filter((target) => !target.closest('.cooperation-section'));
+    .filter((target) => !target.closest('.cooperation-steps'));
   const cooperation = main.querySelector('.cooperation-section');
   if (!targets.length && !cooperation) return;
 
   const seen = new WeakSet();
+  const counters = [...main.querySelectorAll('[data-count-to]')];
+  const finalNumbers = new Map(counters.map((element) => [element, element.textContent]));
+  const formatter = new Intl.NumberFormat(document.documentElement.lang === 'en' ? 'en-GB' : 'bs-BA');
+  const addCount = (timeline, element, position = 0) => {
+    const finalText = finalNumbers.get(element);
+    const value = { number: 0 };
+    const suffix = finalText.replace(/[\d.,]/g, '');
+    const format = (number) => element.dataset.countPad
+      ? String(number).padStart(Number(element.dataset.countPad), '0')
+      : formatter.format(number);
+    timeline.to(value, {
+      number: Number(element.dataset.countTo),
+      duration: element.dataset.countPad ? 0.9 : 1.6,
+      ease: 'power1.out',
+      onStart: () => { element.textContent = format(0) + suffix; },
+      onUpdate: () => { element.textContent = format(Math.floor(value.number)) + suffix; },
+      onComplete: () => { element.textContent = finalText; }
+    }, position);
+  };
   const media = gsap.matchMedia();
   media.add('(prefers-reduced-motion: no-preference)', (context) => {
     let active = true;
@@ -39,6 +59,12 @@
         overwrite: 'auto',
         clearProps: 'transform,opacity,visibility'
       });
+      for (const element of elements) {
+        const numbers = element.querySelectorAll('[data-count-to]');
+        if (!numbers.length) continue;
+        const count = gsap.timeline();
+        for (const number of numbers) addCount(count, number);
+      }
     });
 
     const observer = new IntersectionObserver((entries) => {
@@ -75,67 +101,67 @@
       active = false;
       observer.disconnect();
       main.removeEventListener('focusin', finishFocused);
+      for (const number of counters.filter((element) => !element.closest('.cooperation-section'))) {
+        number.textContent = finalNumbers.get(number);
+      }
     };
   });
 
   if (cooperation) {
-    media.add({
-      desktop: '(min-width: 768px)',
-      mobile: '(max-width: 767px)',
-      reduceMotion: '(prefers-reduced-motion: reduce)'
-    }, (context) => {
-      if (context.conditions.reduceMotion || seen.has(cooperation)) return;
+    media.add('(prefers-reduced-motion: no-preference)', (context) => {
       let active = true;
-      let sequence;
       const steps = [...cooperation.querySelectorAll('.cooperation-steps li')];
-      const axis = context.conditions.desktop ? 'scaleX' : 'scaleY';
+      const pending = new Set(steps.filter((step) => !seen.has(step)));
+      const sequences = new Map();
+      gsap.set([...pending], { y: 28, autoAlpha: 0 });
 
-      context.add('revealCooperation', () => {
-        if (!active || seen.has(cooperation)) return;
-        seen.add(cooperation);
-        observer.disconnect();
-        if (cooperation.contains(document.activeElement)) return;
-
-        // Create only on entry: the section stays readable while off screen.
-        sequence = gsap.timeline({
+      context.add('revealCards', (entering) => {
+        if (!active || !entering.length) return;
+        const sequence = gsap.timeline({
           defaults: { duration: 0.5, ease: 'power2.out', overwrite: 'auto' }
         });
-        sequence.fromTo(cooperation.querySelectorAll('.section-heading > div, .cooperation-intro'),
-          { y: 12, autoAlpha: 0.45 },
-          { y: 0, autoAlpha: 1, stagger: 0.08, clearProps: 'transform,opacity,visibility' }, 0);
-
-        steps.forEach((step, index) => {
-          const start = 0.12 + index * 0.36;
+        entering.forEach((step, index) => {
+          sequences.set(step, sequence);
+          const start = index * 0.14;
+          sequence.to(step,
+            { y: 0, autoAlpha: 1, duration: 0.7, clearProps: 'transform,opacity,visibility' }, start);
           sequence.fromTo(step.querySelector('.step-number'),
-            { scale: 0.78, autoAlpha: 0.4 },
-            { scale: 1, autoAlpha: 1, clearProps: 'transform,opacity,visibility' }, start);
-          sequence.fromTo(step.querySelectorAll('h3, p'),
-            { y: 18, autoAlpha: 0.35 },
-            { y: 0, autoAlpha: 1, stagger: 0.07, clearProps: 'transform,opacity,visibility' }, start + 0.08);
-          const progress = step.querySelector('.step-progress');
-          if (progress) {
-            sequence.fromTo(progress, { [axis]: 0 },
-              { [axis]: 1, duration: 0.55, ease: 'power1.inOut', clearProps: 'transform' }, start + 0.18);
-          }
+            { scale: 0.88 },
+            { scale: 1, clearProps: 'transform' }, start);
+          addCount(sequence, step.querySelector('[data-count-to]'), start);
         });
       });
 
       const observer = new IntersectionObserver((entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) context.revealCooperation();
-      }, { rootMargin: '0px 0px 32px 0px', threshold: 0.08 });
-      observer.observe(cooperation.querySelector('.cooperation-steps'));
+        if (!active) return;
+        const entering = [];
+        for (const entry of entries) {
+          if (!entry.isIntersecting || !pending.has(entry.target)) continue;
+          pending.delete(entry.target);
+          seen.add(entry.target);
+          observer.unobserve(entry.target);
+          entering.push(entry.target);
+        }
+        context.revealCards(entering);
+        if (!pending.size) observer.disconnect();
+      }, { rootMargin: '0px 0px -48px 0px', threshold: 0.08 });
+      for (const step of pending) observer.observe(step);
 
       const finishFocused = () => {
-        seen.add(cooperation);
         observer.disconnect();
-        // A focus jump presents all steps immediately, including the CTA.
-        if (sequence) sequence.progress(1);
+        for (const sequence of new Set(sequences.values())) sequence.progress(1);
+        pending.clear();
+        for (const step of steps) seen.add(step);
+        gsap.set(steps, { clearProps: 'transform,opacity,visibility' });
       };
       cooperation.addEventListener('focusin', finishFocused);
       return () => {
         active = false;
         observer.disconnect();
         cooperation.removeEventListener('focusin', finishFocused);
+        for (const number of cooperation.querySelectorAll('[data-count-to]')) {
+          number.textContent = finalNumbers.get(number);
+        }
       };
     });
   }
