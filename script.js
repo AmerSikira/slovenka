@@ -645,7 +645,7 @@ function productCard(p, colorId = p.colors[0].id) {
   const c = p.colors.find((c) => c.id === colorId) || p.colors[0];
   const href = pageUrl(`/product/${p.id}?color=${c.id}`);
   const second = c.images[1];
-  return `<article class="product-card" data-product="${p.id}"><a class="product-image" href="${href}">${image(c.cover, `${p.name} — ${p.label[lang]} — ${c.name[lang]}`)}${second ? image(galleryPath(p, second), "", "hover-image") : ""}<span class="product-tag">MK / ${p.name}</span></a><div class="product-card-top"><a href="${href}"><h3>${p.name}</h3></a><span>${money(p.price)}</span></div><a class="product-description" href="${href}">${p.label[lang]}</a><div class="swatches">${colorButtons(p, c.id)}<span>${t("Primjer cijene", "Sample price")}</span></div></article>`;
+  return `<article class="product-card" data-product="${p.id}"><a class="product-image" href="${href}">${image(c.cover, `${p.name} — ${p.label[lang]} — ${c.name[lang]}`)}${second ? image(galleryPath(p, second), "", "hover-image") : ""}<span class="product-tag">${p.name}</span></a><div class="product-card-top"><a href="${href}"><h3>${p.name}</h3></a><span>${money(p.price)}</span></div><a class="product-description" href="${href}">${p.label[lang]}</a><div class="swatches">${colorButtons(p, c.id)}<span>${t("Primjer cijene", "Sample price")}</span></div></article>`;
 }
 function galleryPath(p, n) {
   return `${p.name}/${p.id === "aria" ? "Sređeno" : "Sređene"}/${p.name} ${n}.png`;
