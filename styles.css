@@ -1221,6 +1221,33 @@ button:disabled {
   margin-top: 12px;
   line-height: 1.5;
 }
+.product-benefits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.product-benefit {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--accent-light);
+  border-radius: 6px;
+  background: #f3f7f4;
+  color: var(--accent);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+.product-benefit svg {
+  flex: 0 0 16px;
+}
+.product-benefit span {
+  min-width: 0;
+}
 .product-accordions {
   margin-top: 30px;
 }
