@@ -948,7 +948,42 @@ function updateSearch(query) {
     pageUrl(`/shop?q=${encodeURIComponent(query)}`);
 }
 
-// Preview submissions are stored only on this device, without a server.
+// Contact messages are composed in the visitor's email app; delivery is up to them.
+function prepareContactEmail(form) {
+  for (const field of form.querySelectorAll("[required]")) {
+    field.value = field.value.trim();
+  }
+  const message = form.elements.message;
+  message.setCustomValidity(message.value.length < 10 ? t(
+    "Napišite poruku od najmanje 10 znakova.",
+    "Please write a message of at least 10 characters.",
+  ) : "");
+  if (!form.reportValidity()) return;
+  const data = new FormData(form);
+  const topic = form.elements.topic.selectedOptions[0].textContent;
+  const body = [
+    `${t("Ime i prezime", "Name")}: ${data.get("name")}`,
+    `Email: ${data.get("email")}`,
+    ...(data.get("phone")?.trim()
+      ? [`${t("Telefon", "Phone")}: ${data.get("phone").trim()}`]
+      : []),
+    `${t("Tema", "Topic")}: ${topic}`,
+    "",
+    data.get("message"),
+  ].join("\r\n");
+  const mailto = `mailto:slovenka.dd@gmail.com?subject=${encodeURIComponent(`MK Slovenka — ${topic}`)}&body=${encodeURIComponent(body)}`;
+  const link = $("[data-contact-email]", form);
+  link.href = mailto;
+  link.hidden = false;
+  $("[data-contact-status]", form).textContent = t(
+    "Poruka je pripremljena. Pošaljite je iz svoje aplikacije za email. Ako se aplikacija nije otvorila, koristite link ispod ili nam pišite na slovenka.dd@gmail.com.",
+    "Your message is prepared. Send it from your email app. If the app did not open, use the link below or email slovenka.dd@gmail.com directly.",
+  );
+  // Keep the form intact if no email app is configured or the visitor cancels.
+  location.href = mailto;
+}
+
+// Production inquiry previews are stored only on this device, without a server.
 function saveSubmission(record) {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open("mk-slovenka-preview", 1);
@@ -1176,9 +1211,22 @@ document.addEventListener("change", (event) => {
 });
 document.addEventListener("input", (event) => {
   if (event.target.id === "search-input") updateSearch(event.target.value);
+  const contactForm = event.target.closest("[data-contact-form]");
+  if (contactForm) {
+    event.target.setCustomValidity?.("");
+    const link = $("[data-contact-email]", contactForm);
+    link.hidden = true;
+    link.removeAttribute("href");
+    $("[data-contact-status]", contactForm).textContent = "";
+  }
 });
 document.addEventListener("submit", (event) => {
   if (event.target.matches("[data-commerce-form]")) return;
+  if (event.target.matches("[data-contact-form]")) {
+    event.preventDefault();
+    prepareContactEmail(event.target);
+    return;
+  }
   if (!event.target.closest(".search-panel") && !["/inquiry", "/contact"].includes(route().path)) return;
   event.preventDefault();
   if (event.target.closest(".search-panel"))

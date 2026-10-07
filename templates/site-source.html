@@ -2050,71 +2050,53 @@
 </section>
 </template>
 <template id="contact-bs">
-<section class="container section form-page">
-<nav aria-label="Putanja" class="breadcrumbs">
-<a href="#/"> Početna </a>
-<svg class="lucide lucide-chevron-right" fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="12" xmlns="http://www.w3.org/2000/svg">
-<path d="m9 18 6-6-6-6"></path>
-</svg>
-<span aria-current="page"> Kontakt i podrška </span>
+<section class="contact-section warm" id="contact" aria-labelledby="contact-title">
+<div class="container section">
+<nav class="breadcrumbs contact-breadcrumbs" aria-label="Putanja">
+<a href="#/">Početna</a><span aria-hidden="true">/</span><span aria-current="page">Kontakt</span>
 </nav>
-<div class="form-page-grid">
-<aside>
-<p class="eyebrow">MK SLOVENKA / KONTAKT</p>
-<h1>
-              Tu počinje
-              <br/>
-              razgovor.
-            </h1>
-<p>
-              Pitanje o odjeći, kroju ili saradnji? Pošaljite nam poruku. Za
-              proizvodne projekte koristite namjenski obrazac kako biste mogli
-              dodati detalje i dokumentaciju.
-            </p>
-<a class="text-link" href="#/inquiry">
-              Upit za proizvodnju
-              <svg class="lucide lucide-arrow-up-right" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg">
-<path d="M7 7h10v10"></path>
-<path d="M7 17 17 7"></path>
-</svg>
-</a>
-<p class="form-aside-note">
-              Službeni telefon, e-mail i adresa bit će dodani prije objave.
-              Poruke u ovom pregledu čuvaju se lokalno.
-            </p>
-</aside>
-<form class="project-form">
-<label class="form-field">
-              Ime i prezime
-              <span aria-hidden="true" class="required-mark"> * </span>
-<input autocomplete="name" maxlength="120" name="name" required="" type="text"/>
-</label>
-<label class="form-field">
-              Email
-              <span aria-hidden="true" class="required-mark"> * </span>
-<input autocomplete="email" maxlength="200" name="email" required="" type="email"/>
-</label>
-<label class="form-field">
-              Tema
-              <select name="topic">
-<option value="product">Odjeća i veličine</option>
-<option value="business">Poslovna saradnja</option>
-<option value="other">Ostalo</option>
-</select>
-</label>
-<label class="form-field">
-              Vaša poruka
-              <span aria-hidden="true" class="required-mark"> * </span>
-<textarea maxlength="5000" minlength="10" name="message" required="" rows="6"></textarea>
-</label>
-<button class="button">
-              Pošaljite poruku
-              <svg class="lucide lucide-arrow-up-right" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg">
-<path d="M7 7h10v10"></path>
-<path d="M7 17 17 7"></path>
-</svg>
-</button>
+<div class="contact-heading">
+<div><p class="eyebrow">MK SLOVENKA / KONTAKT</p><h1 id="contact-title">Tu počinje razgovor.</h1></div>
+<p class="lead">Pitanje o odjeći, kroju ili poslovnoj saradnji? Javite nam se. Naš tim je u Donjem Vakufu, a prvi razgovor može početi ovdje.</p>
+</div>
+<div class="contact-grid">
+<div class="contact-details">
+<p class="eyebrow">DIREKTNO DO NAS</p>
+<dl class="contact-list">
+<div><dt>Adresa</dt><dd><address>770 Slavne brdske brigade<br>70220 Donji Vakuf<br>Bosna i Hercegovina</address><a class="text-link contact-directions" href="https://www.google.com/maps/search/?api=1&amp;query=770%20Slavne%20brdske%20brigade%2C%2070220%20Donji%20Vakuf%2C%20Bosna%20i%20Hercegovina" target="_blank" rel="noopener noreferrer">Upute za dolazak<svg aria-hidden="true" fill="none" height="18" width="18" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M7 7h10v10M7 17 17 7"/></svg></a></dd></div>
+<div><dt>Email</dt><dd><a href="mailto:slovenka.dd@gmail.com">slovenka.dd@gmail.com</a></dd></div>
+<div><dt>Telefon</dt><dd><a href="tel:+38730205323">+387 30 205 323</a><a href="tel:+38730201159">+387 30 201 159</a></dd></div>
+<div><dt>Mobitel</dt><dd><a href="tel:+38762650500">+387 62 650 500</a></dd></div>
+<div><dt>Fax</dt><dd><span>+387 30 205 323</span><span>+387 30 201 159</span></dd></div>
+</dl>
+<details class="contact-company"><summary>Podaci o kompaniji</summary>
+<p>Dioničko društvo Modna konfekcija &quot;SLOVENKA&quot; Donji Vakuf</p>
+<dl><div><dt>JIB</dt><dd>4236158860005</dd></div><div><dt>MBS</dt><dd>51-02-0008-08</dd></div><div><dt>Direktor</dt><dd>Samir Šutković</dd></div></dl>
+</details>
+<a class="text-link contact-inquiry" href="#/inquiry">Imate proizvodni projekat?<svg aria-hidden="true" fill="none" height="18" width="18" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M7 7h10v10M7 17 17 7"/></svg></a>
+</div>
+<form class="project-form contact-form" data-contact-form action="mailto:slovenka.dd@gmail.com" method="post" enctype="text/plain" aria-labelledby="contact-form-title">
+<h2 id="contact-form-title">Napišite nam.</h2>
+<p class="form-required-note">Polja označena sa * su obavezna.</p>
+<div class="form-grid">
+<label class="form-field">Ime i prezime <span class="required-mark" aria-hidden="true">*</span><input name="name" type="text" autocomplete="name" required maxlength="120"></label>
+<label class="form-field">Email <span class="required-mark" aria-hidden="true">*</span><input name="email" type="email" autocomplete="email" required maxlength="200"></label>
+</div>
+<div class="form-grid">
+<label class="form-field">Telefon (opcionalno)<input name="phone" type="tel" autocomplete="tel" maxlength="40"></label>
+<label class="form-field">Tema<select name="topic"><option value="product">Odjeća i veličine</option><option value="business">Poslovna saradnja</option><option value="other">Ostalo</option></select></label>
+</div>
+<label class="form-field">Vaša poruka <span class="required-mark" aria-hidden="true">*</span><textarea name="message" rows="5" required minlength="10" maxlength="5000" placeholder="Kako vam možemo pomoći?"></textarea></label>
+<p class="form-helper" id="contact-form-help">Obrazac otvara vašu aplikaciju za email s pripremljenom porukom. Pregledajte je i pošaljite iz aplikacije. <a href="#/support/privacy">Privatnost</a></p>
+<button class="button" type="submit" aria-describedby="contact-form-help">Pripremite email<svg aria-hidden="true" fill="none" height="18" width="18" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M7 7h10v10M7 17 17 7"/></svg></button>
+<p class="form-helper contact-status" role="status" data-contact-status></p>
+<a class="text-link" data-contact-email hidden>Otvorite pripremljenu poruku<svg aria-hidden="true" fill="none" height="18" width="18" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M7 7h10v10M7 17 17 7"/></svg></a>
 </form>
+</div>
+<div class="contact-location">
+<div class="contact-map-heading"><div><p class="eyebrow">NAŠA LOKACIJA</p><h2>Donji Vakuf, BiH.</h2></div><a class="text-link" href="https://www.google.com/maps/search/?api=1&amp;query=770%20Slavne%20brdske%20brigade%2C%2070220%20Donji%20Vakuf%2C%20Bosna%20i%20Hercegovina" target="_blank" rel="noopener noreferrer">Otvorite u Google Maps<svg aria-hidden="true" fill="none" height="18" width="18" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M7 7h10v10M7 17 17 7"/></svg></a></div>
+<iframe class="contact-map" title="Mapa adrese MK Slovenka u Donjem Vakufu" src="https://www.google.com/maps?q=770%20Slavne%20brdske%20brigade%2C%2070220%20Donji%20Vakuf%2C%20Bosna%20i%20Hercegovina&amp;z=15&amp;output=embed&amp;hl=bs" width="1200" height="400" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+</div>
 </div>
 </section>
 </template>
@@ -2346,12 +2328,13 @@
 <h1>Privatnost u pregledu</h1>
 <p>
           Korpa i izbor jezika čuvaju se u vašem pregledniku. Probne narudžbe,
-          kontakt poruke i proizvodni upiti čuvaju se samo u ovom pregledniku.
+          proizvodni upiti čuvaju se samo u ovom pregledniku.
           Priloženi dokumenti nisu javno dostupni. Ovaj pregled ne šalje poruke
           e-mailom, ne obrađuje plaćanja i ne koristi analitičko praćenje. Puna
           politika privatnosti s podacima upravitelja i rokovima čuvanja
           potrebna je prije objave.
         </p>
+<p>Kontakt obrazac priprema poruku u vašoj aplikaciji za email; poruku šaljete iz te aplikacije. Kontakt stranica i početna stranica sadrže ugrađenu Google Maps mapu koja povezuje preglednik s Google servisima pri učitavanju.</p>
 <a class="text-link" href="#/contact">
           Kontakt i podrška
           <svg class="lucide lucide-arrow-up-right" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg">
@@ -4234,71 +4217,53 @@
 </div>
 </section>
 </template><template id="contact-en">
-<section class="container section form-page">
-<nav aria-label="Breadcrumb" class="breadcrumbs">
-<a href="#/"> Home </a>
-<svg class="lucide lucide-chevron-right" fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="12" xmlns="http://www.w3.org/2000/svg">
-<path d="m9 18 6-6-6-6"></path>
-</svg>
-<span aria-current="page"> Contact &amp; support </span>
+<section class="contact-section warm" id="contact" aria-labelledby="contact-title">
+<div class="container section">
+<nav class="breadcrumbs contact-breadcrumbs" aria-label="Breadcrumb">
+<a href="#/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Contact</span>
 </nav>
-<div class="form-page-grid">
-<aside>
-<p class="eyebrow">MK SLOVENKA / CONTACT</p>
-<h1>
-              It starts with
-              <br/>
-              a conversation.
-            </h1>
-<p>
-              Have a question about a piece, fit or collaboration? Leave a
-              message. For manufacturing projects, use the dedicated form to
-              include project details and documents.
-            </p>
-<a class="text-link" href="#/inquiry">
-              Production inquiry
-              <svg class="lucide lucide-arrow-up-right" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg">
-<path d="M7 7h10v10"></path>
-<path d="M7 17 17 7"></path>
-</svg>
-</a>
-<p class="form-aside-note">
-              Official phone, email and address will be added before launch.
-              Messages in this preview are stored locally.
-            </p>
-</aside>
-<form class="project-form">
-<label class="form-field">
-              Your name
-              <span aria-hidden="true" class="required-mark"> * </span>
-<input autocomplete="name" maxlength="120" name="name" required="" type="text"/>
-</label>
-<label class="form-field">
-              Email
-              <span aria-hidden="true" class="required-mark"> * </span>
-<input autocomplete="email" maxlength="200" name="email" required="" type="email"/>
-</label>
-<label class="form-field">
-              Topic
-              <select name="topic">
-<option value="product">Clothing &amp; sizing</option>
-<option value="business">Business collaboration</option>
-<option value="other">Other</option>
-</select>
-</label>
-<label class="form-field">
-              Your message
-              <span aria-hidden="true" class="required-mark"> * </span>
-<textarea maxlength="5000" minlength="10" name="message" required="" rows="6"></textarea>
-</label>
-<button class="button">
-              Send message
-              <svg class="lucide lucide-arrow-up-right" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg">
-<path d="M7 7h10v10"></path>
-<path d="M7 17 17 7"></path>
-</svg>
-</button>
+<div class="contact-heading">
+<div><p class="eyebrow">MK SLOVENKA / CONTACT</p><h1 id="contact-title">It starts with a conversation.</h1></div>
+<p class="lead">Have a question about clothing, fit or working together? Get in touch. Our team is based in Donji Vakuf, and our first conversation can start here.</p>
+</div>
+<div class="contact-grid">
+<div class="contact-details">
+<p class="eyebrow">REACH US DIRECTLY</p>
+<dl class="contact-list">
+<div><dt>Address</dt><dd><address>770 Slavne brdske brigade<br>70220 Donji Vakuf<br>Bosnia and Herzegovina</address><a class="text-link contact-directions" href="https://www.google.com/maps/search/?api=1&amp;query=770%20Slavne%20brdske%20brigade%2C%2070220%20Donji%20Vakuf%2C%20Bosna%20i%20Hercegovina" target="_blank" rel="noopener noreferrer">Get directions<svg aria-hidden="true" fill="none" height="18" width="18" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M7 7h10v10M7 17 17 7"/></svg></a></dd></div>
+<div><dt>Email</dt><dd><a href="mailto:slovenka.dd@gmail.com">slovenka.dd@gmail.com</a></dd></div>
+<div><dt>Phone</dt><dd><a href="tel:+38730205323">+387 30 205 323</a><a href="tel:+38730201159">+387 30 201 159</a></dd></div>
+<div><dt>Mobile</dt><dd><a href="tel:+38762650500">+387 62 650 500</a></dd></div>
+<div><dt>Fax</dt><dd><span>+387 30 205 323</span><span>+387 30 201 159</span></dd></div>
+</dl>
+<details class="contact-company"><summary>Company details</summary>
+<p>Dioničko društvo Modna konfekcija &quot;SLOVENKA&quot; Donji Vakuf</p>
+<dl><div><dt>JIB</dt><dd>4236158860005</dd></div><div><dt>MBS</dt><dd>51-02-0008-08</dd></div><div><dt>Director</dt><dd>Samir Šutković</dd></div></dl>
+</details>
+<a class="text-link contact-inquiry" href="#/inquiry">Have a manufacturing project?<svg aria-hidden="true" fill="none" height="18" width="18" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M7 7h10v10M7 17 17 7"/></svg></a>
+</div>
+<form class="project-form contact-form" data-contact-form action="mailto:slovenka.dd@gmail.com" method="post" enctype="text/plain" aria-labelledby="contact-form-title">
+<h2 id="contact-form-title">Write to us.</h2>
+<p class="form-required-note">Fields marked with * are required.</p>
+<div class="form-grid">
+<label class="form-field">Your name <span class="required-mark" aria-hidden="true">*</span><input name="name" type="text" autocomplete="name" required maxlength="120"></label>
+<label class="form-field">Email <span class="required-mark" aria-hidden="true">*</span><input name="email" type="email" autocomplete="email" required maxlength="200"></label>
+</div>
+<div class="form-grid">
+<label class="form-field">Phone (optional)<input name="phone" type="tel" autocomplete="tel" maxlength="40"></label>
+<label class="form-field">Topic<select name="topic"><option value="product">Clothing &amp; sizing</option><option value="business">Business collaboration</option><option value="other">Other</option></select></label>
+</div>
+<label class="form-field">Your message <span class="required-mark" aria-hidden="true">*</span><textarea name="message" rows="5" required minlength="10" maxlength="5000" placeholder="How can we help?"></textarea></label>
+<p class="form-helper" id="contact-form-help">This form opens your email app with a prepared message. Review it and send it from the app. <a href="#/support/privacy">Privacy</a></p>
+<button class="button" type="submit" aria-describedby="contact-form-help">Prepare email<svg aria-hidden="true" fill="none" height="18" width="18" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M7 7h10v10M7 17 17 7"/></svg></button>
+<p class="form-helper contact-status" role="status" data-contact-status></p>
+<a class="text-link" data-contact-email hidden>Open prepared message<svg aria-hidden="true" fill="none" height="18" width="18" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M7 7h10v10M7 17 17 7"/></svg></a>
 </form>
+</div>
+<div class="contact-location">
+<div class="contact-map-heading"><div><p class="eyebrow">OUR LOCATION</p><h2>Donji Vakuf, BiH.</h2></div><a class="text-link" href="https://www.google.com/maps/search/?api=1&amp;query=770%20Slavne%20brdske%20brigade%2C%2070220%20Donji%20Vakuf%2C%20Bosna%20i%20Hercegovina" target="_blank" rel="noopener noreferrer">Open in Google Maps<svg aria-hidden="true" fill="none" height="18" width="18" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M7 7h10v10M7 17 17 7"/></svg></a></div>
+<iframe class="contact-map" title="Map of the MK Slovenka address in Donji Vakuf" src="https://www.google.com/maps?q=770%20Slavne%20brdske%20brigade%2C%2070220%20Donji%20Vakuf%2C%20Bosna%20i%20Hercegovina&amp;z=15&amp;output=embed&amp;hl=en" width="1200" height="400" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+</div>
 </div>
 </section>
 </template><template id="checkout-en">
@@ -4526,12 +4491,13 @@
 <h1>Preview privacy</h1>
 <p>
           Your bag and language choice are stored in your browser. Preview
-          orders, contact messages and production inquiries are stored only in
+          orders and production inquiries are stored only in
           this browser. Attached files are not publicly accessible. This preview
           does not email messages, process payments or use analytics tracking. A
           full privacy policy with controller details and retention periods is
           required before launch.
         </p>
+<p>The contact form prepares a message in your email app; you send it from that app. The contact page and homepage include an embedded Google Maps map that connects your browser to Google services when loaded.</p>
 <a class="text-link" href="#/contact">
           Contact &amp; support
           <svg class="lucide lucide-arrow-up-right" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg">
@@ -4607,4 +4573,3 @@
 </div>
 </template></body>
 </html>
-

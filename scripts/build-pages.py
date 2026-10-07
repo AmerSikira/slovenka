@@ -65,6 +65,12 @@ def materialize(key, lang, p=None):
     else:
         for child in list(content.contents): main.append(child)
     doc.body.append(main)
+    if key == 'home':
+        contact = body_content('contact', lang).select_one('.contact-section')
+        contact.select_one('.contact-breadcrumbs').decompose()
+        contact.select_one('h1').name = 'h2'
+        contact.select_one('#contact-form-title').name = 'h3'
+        main.append(contact)
     doc.body.append(fragment(source.find('template', id='footer-' + lang).decode_contents()))
     doc.body.append(deepcopy(source.select_one('#site-dialog')))
     for template_id in ['shopMenu-' + lang, 'search-' + lang, 'filters-' + lang, 'size-guide']:

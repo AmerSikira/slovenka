@@ -48,7 +48,9 @@ Prices, sizes, body measurements, stock and delivery charges are examples. The c
 
 Product pages open the Bosnian body-measurement table from “Tabela mjera” beside the size selector. `BODY_MEASUREMENTS` in `script.js` contains shared sample circumferences for sizes 36–44. Replace them with approved sizing data before live sales; they are not garment dimensions.
 
-Inquiries, contact messages and optional technical attachments are saved only in this browser using IndexedDB. They are not emailed or shared with a team. Clearing site data removes saved records. Form fields remain available if saving fails.
+Production inquiries and optional technical attachments are saved only in this browser using IndexedDB. They are not emailed or shared with a team. Clearing site data removes saved records. Form fields remain available if saving fails.
+
+The homepage and contact page include company contact details, an address-based Google Maps embed and a contact form in both languages. Contact details come from [CompanyWall](https://www.companywall.ba/firma/mk-slovenka-dd-donji-vakuf/MM1q64jq), checked on 7 October 2026. The map queries the listed address; it does not claim surveyed coordinates. Contact forms validate required fields and open the visitor's email app with an encoded subject and message addressed to `slovenka.dd@gmail.com`. The visitor sends the message from that app. There is no server email delivery or sent confirmation; entered fields remain intact and a prepared-message link is available if the app does not open. Without JavaScript, the native `mailto:` form and direct phone/email links remain available. The homepage reuses the contact template through `scripts/build-pages.py`.
 
 Before live sales, supply approved catalogue data, measurements, materials/care, company contacts, manufacturing scope and retail/privacy policies. Payments, stock management, email delivery and shared inquiry storage require backend integration.
 
