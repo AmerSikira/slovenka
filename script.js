@@ -857,7 +857,7 @@ function openDialog(kind) {
     updateSearch("");
   }
   if (kind === "menu")
-    content.innerHTML = `<nav><a href="${pageUrl(`/shop`)}">${t("Sva odjeća", "Shop all")}</a><details><summary>${t("Kategorije", "Categories")}</summary>${CATEGORIES.map((c) => `<a href="${pageUrl(`/shop?category=${c.id}`)}">${c[lang]}</a>`).join("")}</details><a href="${pageUrl(`/collections`)}">${t("Kolekcije", "Collections")}</a><a href="${pageUrl(`/company`)}">${t("O nama", "Our company")}</a><a href="${pageUrl(`/manufacturing`)}">${t("Proizvodnja", "Manufacturing")}</a><a href="${pageUrl(`/contact`)}">${t("Kontakt", "Contact")}</a><button class="language" type="button">${lang === "bs" ? "English" : "Bosanski"}</button></nav>`;
+    content.innerHTML = `<nav><a href="${pageUrl(`/shop`)}">${t("Sva odjeća", "Shop all")}</a><details><summary>${t("Kategorije", "Categories")}</summary>${CATEGORIES.map((c) => `<a href="${pageUrl(`/shop?category=${c.id}`)}">${c[lang]}</a>`).join("")}</details><a href="${pageUrl(`/company`)}">${t("O nama", "Our company")}</a><a href="${pageUrl(`/manufacturing`)}">${t("Proizvodnja", "Manufacturing")}</a><a href="${pageUrl(`/contact`)}">${t("Kontakt", "Contact")}</a><button class="language" type="button">${lang === "bs" ? "English" : "Bosanski"}</button></nav>`;
   if (kind === "filters") {
     content.innerHTML = template("filters");
     $$(".filter-fields select", content).forEach((s, i) => {
