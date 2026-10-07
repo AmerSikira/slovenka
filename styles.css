@@ -3052,10 +3052,6 @@ input[type="radio"] {
   letter-spacing: -0.06em;
   font-variant-numeric: tabular-nums;
 }
-.numbers-note {
-  color: var(--muted);
-  font-size: 0.75rem;
-}
 .offer-intro {
   display: grid;
   grid-template-columns: 1fr 1fr;
