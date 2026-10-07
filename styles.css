@@ -542,27 +542,6 @@ button:disabled {
     letter-spacing: 0.08em;
   }
 }
-.company-intro {
-  padding-block: 56px;
-}
-.intro-grid {
-  display: grid;
-  grid-template-columns: 5fr 7fr;
-  gap: 64px;
-  align-items: start;
-}
-.intro-grid h2 {
-  font-size: 2rem;
-}
-.intro-grid > div:last-child p {
-  font-size: 0.9375rem;
-  color: #53504c;
-  max-width: 670px;
-  line-height: 1.8;
-}
-.intro-grid .text-link {
-  margin-top: 15px;
-}
 .section-heading {
   display: flex;
   justify-content: space-between;
@@ -2101,12 +2080,6 @@ input[type="radio"] {
   .mobile-shortcuts a:first-child {
     border-right: 1px solid #eee9e4;
   }
-  .intro-grid {
-    gap: 40px;
-  }
-  .intro-grid h2 {
-    font-size: 1.85rem;
-  }
   .product-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -2243,25 +2216,6 @@ input[type="radio"] {
   .bag-count {
     width: 16px;
     height: 16px;
-  }
-  .company-intro {
-    padding: 40px 0;
-  }
-  .intro-grid {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-  .intro-grid h2 {
-    font-size: 1.85rem;
-  }
-  .intro-grid > div > .eyebrow {
-    margin-bottom: 12px;
-  }
-  .intro-grid > div:last-child p {
-    font-size: 0.875rem;
-  }
-  .intro-grid .text-link {
-    margin-top: 8px;
   }
   .section-heading {
     margin-bottom: 24px;
