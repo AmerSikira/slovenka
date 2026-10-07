@@ -27,8 +27,8 @@ No customer testimonials, certifications, delivery guarantees, minimum quantitie
 For the requested October 2026 homepage snapshot:
 
 - Years of experience: `2026 - 1979 = 47`.
-- Projects: user-specified estimate `47 × 24 = 1,128`.
-- Clients: user-specified estimate `round(1,128 / 1.3) = 868`.
+- Projects: user-specified formula `47 × 24 = 1,128`.
+- Clients: user-specified formula `round(1,128 / 1.3) = 868`.
 - Countries: `30`, supplied by the user.
 
-Project and client totals carry an approximation mark and estimate label, plus a concise note. They are calculated editorial estimates, not independently verified historic totals. Years are a calendar-year difference, not a claim about the incorporation anniversary. These values are rendered as static content and should be refreshed with the next annual content update.
+The homepage displays projects as `1.128+` (Bosnian) / `1,128+` (English) and clients as `868+`, as requested. The figures come from the formulas above and have not been independently verified against historic records. Years are a calendar-year difference, not a claim about the incorporation anniversary. These values are rendered as static content and should be refreshed with the next annual content update.
