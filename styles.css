@@ -3102,16 +3102,43 @@ input[type="radio"] {
   color: var(--muted);
 }
 .cooperation-steps {
+  --step-gap: 48px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 48px;
+  gap: var(--step-gap);
   margin: 40px 0 32px;
   padding: 0;
   list-style: none;
 }
 .cooperation-steps li {
-  border-top: 1px solid var(--divider);
-  padding-top: 24px;
+  position: relative;
+}
+.cooperation-steps .step-number {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  background: var(--canvas);
+  font-variant-numeric: tabular-nums;
+}
+.step-connector {
+  position: absolute;
+  top: 21px;
+  left: 44px;
+  width: calc(100% + var(--step-gap) - 44px);
+  height: 1px;
+  background: var(--divider);
+  pointer-events: none;
+}
+.step-progress {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left top;
 }
 .cooperation-steps h3 {
   margin-top: 20px;
@@ -3155,6 +3182,9 @@ input[type="radio"] {
   .cooperation-steps {
     gap: 32px;
   }
+  .cooperation-steps {
+    --step-gap: 32px;
+  }
   .project-next-step .container {
     gap: 40px;
   }
@@ -3191,10 +3221,26 @@ input[type="radio"] {
     gap: 16px;
   }
   .cooperation-steps {
+    --step-gap: 28px;
     margin-top: 32px;
   }
+  .cooperation-steps li {
+    padding-left: 64px;
+    min-height: 44px;
+  }
+  .cooperation-steps .step-number {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  .step-connector {
+    top: 44px;
+    left: 21px;
+    width: 1px;
+    height: calc(100% + var(--step-gap) - 44px);
+  }
   .cooperation-steps h3 {
-    margin-top: 12px;
+    margin-top: 8px;
   }
   .next-step-actions {
     justify-self: start;
