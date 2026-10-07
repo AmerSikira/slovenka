@@ -14,7 +14,7 @@ Then visit http://127.0.0.1:5187.
 
 ## Pages and navigation
 
-Every destination is a physical document: `index.html`, `shop.html`, `collections.html`, `company.html`, `manufacturing.html`, `inquiry.html`, `contact.html`, five `product-*.html` pages and five `support-*.html` pages. Commerce has separate `cart.html`, `checkout.html` and `order.html` pages. English documents use an `-en` suffix, including `index-en.html` and `product-coco-en.html`.
+Every destination is a physical document: `index.html`, `shop.html`, `company.html`, `manufacturing.html`, `inquiry.html`, `contact.html`, five `product-*.html` pages and five `support-*.html` pages. Commerce has separate `cart.html`, `checkout.html` and `order.html` pages. English documents use an `-en` suffix, including `index-en.html` and `product-coco-en.html`.
 
 Navigation follows ordinary links and loads the next document. There is no hash router or client-side page replacement. Search and catalogue selections use native query strings such as `shop.html?category=trousers&size=38`; JavaScript enhances the catalogue results, product gallery, variant selections and drawers. Base product content and navigation remain available with JavaScript disabled. Each document declares its language, page title and description. Language links lead to the matching physical page and preserve query parameters and anchors when JavaScript is available.
 

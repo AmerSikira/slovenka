@@ -53,7 +53,7 @@ def materialize(key, lang, p=None):
         chevron = deepcopy(toggle.select_one('svg'));toggle.clear();toggle.append(chevron)
         toggle['aria-label']='Kategorije trgovine' if lang=='bs' else 'Shop categories'
     fallback = doc.new_tag('noscript')
-    fallback.append(fragment('<nav class="container" aria-label="'+('Navigacija' if lang=='bs' else 'Navigation')+'">'+ ' · '.join(f'<a href="{url(route,lang)}">{label}</a>' for route,label in [('/shop','Trgovina' if lang=='bs' else 'Shop'),('/collections','Kolekcije' if lang=='bs' else 'Collections'),('/company','O nama' if lang=='bs' else 'Our company'),('/manufacturing','Proizvodnja' if lang=='bs' else 'Manufacturing'),('/contact','Kontakt' if lang=='bs' else 'Contact'),('/cart','Korpa' if lang=='bs' else 'Cart')]) + '</nav>'))
+    fallback.append(fragment('<nav class="container" aria-label="'+('Navigacija' if lang=='bs' else 'Navigation')+'">'+ ' · '.join(f'<a href="{url(route,lang)}">{label}</a>' for route,label in [('/shop','Trgovina' if lang=='bs' else 'Shop'),('/company','O nama' if lang=='bs' else 'Our company'),('/manufacturing','Proizvodnja' if lang=='bs' else 'Manufacturing'),('/contact','Kontakt' if lang=='bs' else 'Contact'),('/cart','Korpa' if lang=='bs' else 'Cart')]) + '</nav>'))
     doc.body.append(fallback)
     main = doc.new_tag('main', id='main')
     commerce_path = ROOT / 'templates/commerce' / f'{key}-{lang}.html'
@@ -132,7 +132,7 @@ def materialize(key, lang, p=None):
     (ROOT / filename).write_text(str(doc) + '\n')
     print(filename)
 
-pages=['home','shop','company','manufacturing','collections','inquiry','contact','support-delivery','support-returns','support-sizing','support-privacy','support-terms','cart','checkout','order']
+pages=['home','shop','company','manufacturing','inquiry','contact','support-delivery','support-returns','support-sizing','support-privacy','support-terms','cart','checkout','order']
 for lang in ['bs','en']:
     for key in pages: materialize(key,lang)
     for p in products: materialize('product-'+p['id'],lang,p)
