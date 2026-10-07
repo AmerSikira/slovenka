@@ -284,11 +284,8 @@ button:disabled {
   line-height: 1;
 }
 .wordmark-mk {
-  font-size: 0.625rem;
-  letter-spacing: -0.04em;
-  align-self: flex-start;
-  padding-top: 3px;
-  font-weight: 500;
+  font: inherit;
+  letter-spacing: inherit;
 }
 .wordmark-dot {
   color: var(--accent);
@@ -2046,7 +2043,7 @@ input[type="radio"] {
   .header-inner {
     gap: 16px;
   }
-  .wordmark {
+  .header .wordmark {
     font-size: 1.8rem;
   }
   .bag-label {
@@ -2097,7 +2094,7 @@ input[type="radio"] {
     display: flex;
     margin-left: -10px;
   }
-  .wordmark {
+  .header .wordmark {
     margin-right: auto;
     font-size: 1.8rem;
   }
@@ -2254,8 +2251,8 @@ input[type="radio"] {
   .header-inner {
     gap: 8px;
   }
-  .wordmark {
-    font-size: 1.65rem;
+  .header .wordmark {
+    font-size: 1.5rem;
     gap: 5px;
   }
   .utilities {
@@ -2267,9 +2264,6 @@ input[type="radio"] {
   .bag-count {
     width: 16px;
     height: 16px;
-  }
-  .wordmark-mk {
-    font-size: 0.5625rem;
   }
   .company-intro {
     padding: 40px 0;
@@ -2860,8 +2854,8 @@ input[type="radio"] {
   }
 }
 @media (max-width: 359px) {
-  .wordmark {
-    font-size: 1.5rem;
+  .header .wordmark {
+    font-size: 1.25rem;
   }
   .header-inner {
     gap: 3px;
