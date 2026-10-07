@@ -243,18 +243,6 @@ button:disabled {
 .skip-link:focus {
   transform: translateY(0);
 }
-.preview-notice {
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: var(--warm);
-  font-size: 0.6875rem;
-  letter-spacing: 0.025em;
-  color: var(--muted);
-  text-align: center;
-  padding-inline: 16px;
-}
 .header {
   height: var(--header);
   position: sticky;
@@ -2238,12 +2226,6 @@ input[type="radio"] {
     --gutter: 16px;
     --gap: 12px;
     --space: 56px;
-  }
-  .preview-notice {
-    height: auto;
-    min-height: 30px;
-    font-size: 0.5625rem;
-    padding: 6px 16px;
   }
   .header-inner {
     gap: 8px;
