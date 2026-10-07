@@ -44,9 +44,6 @@ def materialize(key, lang, p=None):
     doc.head.replace_with(deepcopy(source.head))
     doc.body['data-page'] = '/' if key == 'home' else '/' + key.replace('support-', 'support/').replace('product-', 'product/')
     skip = deepcopy(source.select_one('.skip-link')); skip.string = 'Preskoči na sadržaj' if lang == 'bs' else 'Skip to content'; doc.body.append(skip)
-    notice = deepcopy(source.select_one('.preview-notice'))
-    if lang == 'en': notice.string = 'Shop preview · sample prices and sizes · no payment taken'
-    doc.body.append(notice)
     header = source.find('template', id='header-' + lang)
     doc.body.append(fragment(header.decode_contents()))
     toggle = doc.select_one('header .nav-button')
