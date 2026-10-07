@@ -23,6 +23,7 @@ Navigation follows ordinary links and loads the next document. There is no hash 
 - Root `*.html` files — complete pages ready for static hosting and later WordPress template adaptation.
 - `styles.css` — shared responsive design and company green accents.
 - `script.js` — catalogue data and interactive enhancements; no routing.
+- `motion.js` — optional one-shot GSAP entrances for editorial copy and section headings.
 - `commerce.css` and `commerce.js` — cart, checkout and received-order presentation and preview behavior.
 - `templates/site-source.html` — shared header/footer, page content and dialog authoring source in Bosnian and English.
 - `templates/commerce/` — commerce page content fragments in both languages.
@@ -52,3 +53,7 @@ Inquiries, contact messages and optional technical attachments are saved only in
 Before live sales, supply approved catalogue data, measurements, materials/care, company contacts, manufacturing scope and retail/privacy policies. Payments, stock management, email delivery and shared inquiry storage require backend integration.
 
 Space Grotesk is licensed under SIL OFL (`assets/fonts/OFL.txt`). Inline icons retain the Lucide license in `assets/icons-LICENSE.txt`.
+
+GSAP core 3.15.0 is pinned and served locally from `assets/vendor/gsap/`, with its Standard No Charge license in `LICENSE.txt`. No CDN request or plugins are needed. [Official installation guidance](https://gsap.com/docs/v3/Installation/) and [matchMedia documentation](https://gsap.com/docs/v3/GSAP/gsap.matchMedia()/) describe the loading and preference handling used here.
+
+Motion uses transforms and `autoAlpha` for short, one-time entrances within 48px of the viewport, driven by IntersectionObserver. Hero and product images, controls and layout dimensions are not animated. Content stays visible before an entrance and when JavaScript, GSAP or IntersectionObserver is unavailable. Reduced-motion preferences skip motion; changing the preference reverts active tweens. Keyboard focus finishes its containing entrance immediately, and observers/listeners are cleaned up on preference changes and navigation.
