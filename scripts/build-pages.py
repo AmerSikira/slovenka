@@ -33,7 +33,7 @@ def card(p, lang):
     c = p['colors'][0]; href = url('/product/' + p['id'] + '?color=' + c['id'], lang)
     secondary = picture(gallery_path(p,c['images'][1])) if len(c['images']) > 1 else ''
     secondary = secondary.replace('<img ', '<img class="hover-image" ')
-    return f'<article class="product-card" data-product="{p["id"]}"><a class="product-image" href="{href}">{picture(c["cover"], p["name"] + " — " + p["label"][lang])}{secondary}<span class="product-tag">MK / {p["name"]}</span></a><div class="product-card-top"><a href="{href}"><h3>{p["name"]}</h3></a><span>{money(p["price"],lang)}</span></div><a class="product-description" href="{href}">{p["label"][lang]}</a><div class="swatches">{swatches(p,lang)}<span>{"Primjer cijene" if lang == "bs" else "Sample price"}</span></div></article>'
+    return f'<article class="product-card" data-product="{p["id"]}"><a class="product-image" href="{href}">{picture(c["cover"], p["name"] + " — " + p["label"][lang])}{secondary}<span class="product-tag">{p["name"]}</span></a><div class="product-card-top"><a href="{href}"><h3>{p["name"]}</h3></a><span>{money(p["price"],lang)}</span></div><a class="product-description" href="{href}">{p["label"][lang]}</a><div class="swatches">{swatches(p,lang)}<span>{"Primjer cijene" if lang == "bs" else "Sample price"}</span></div></article>'
 def body_content(key, lang):
     if key == 'home' and lang == 'bs': return fragment(str(source.select_one('#main'))).select_one('main')
     return fragment(source.find('template', id=key + '-' + lang).decode_contents())
