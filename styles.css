@@ -3018,3 +3018,185 @@ input[type="radio"] {
   width: 44px;
   height: 44px;
 }
+
+/* Homepage: measured typography, open columns and a clear production plan. */
+.company-numbers {
+  padding-block: 72px;
+  border-bottom: 1px solid var(--divider);
+}
+.company-numbers h2 {
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+}
+.numbers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 32px;
+  margin: 40px 0 20px;
+}
+.numbers-grid > div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 12px;
+  border-top: 1px solid var(--divider);
+  padding-top: 24px;
+}
+.numbers-grid dt {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.numbers-grid dd {
+  margin: 0;
+  color: var(--accent);
+  font-size: clamp(2rem, 4.3vw, 4.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.06em;
+  font-variant-numeric: tabular-nums;
+}
+.numbers-note {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.offer-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 96px;
+  align-items: end;
+}
+.offer-intro > p {
+  color: var(--muted);
+  max-width: 590px;
+}
+.offer-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 64px;
+  margin-top: 56px;
+}
+.offer-options article {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 24px;
+  border-top: 1px solid var(--divider);
+  padding-top: 28px;
+}
+.offer-number,
+.step-number {
+  color: var(--accent);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+.offer-options h3 {
+  font-size: 1.5rem;
+}
+.offer-options p,
+.cooperation-steps p {
+  color: var(--muted);
+  font-size: 0.9375rem;
+  margin-top: 16px;
+}
+.offer-options .text-link {
+  margin-top: 24px;
+}
+.cooperation-intro {
+  max-width: 640px;
+  color: var(--muted);
+}
+.cooperation-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 48px;
+  margin: 40px 0 32px;
+  padding: 0;
+  list-style: none;
+}
+.cooperation-steps li {
+  border-top: 1px solid var(--divider);
+  padding-top: 24px;
+}
+.cooperation-steps h3 {
+  margin-top: 20px;
+}
+.project-next-step {
+  background: var(--accent);
+  color: #fff;
+}
+.project-next-step .container {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: center;
+  gap: 64px;
+}
+.project-next-step h2 {
+  font-size: clamp(2rem, 3.6vw, 3.5rem);
+}
+.project-next-step p:not(.eyebrow) {
+  margin-top: 24px;
+  max-width: 620px;
+  color: #e0ebe4;
+}
+.next-step-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-self: end;
+  gap: 24px;
+}
+.project-next-step :focus-visible {
+  outline-color: #fff;
+}
+.project-next-step .text-link:hover {
+  color: #fff;
+}
+@media (max-width: 1024px) {
+  .offer-intro {
+    gap: 40px;
+  }
+  .offer-options,
+  .cooperation-steps {
+    gap: 32px;
+  }
+  .project-next-step .container {
+    gap: 40px;
+  }
+  .numbers-grid {
+    gap: 24px;
+  }
+}
+@media (max-width: 767px) {
+  .company-numbers {
+    padding-block: 48px;
+  }
+  .numbers-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 20px;
+    margin-top: 32px;
+  }
+  .numbers-grid > div {
+    padding-top: 20px;
+  }
+  .numbers-grid dd {
+    font-size: clamp(2rem, 6vw, 3rem);
+  }
+  .offer-intro,
+  .offer-options,
+  .cooperation-steps,
+  .project-next-step .container {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .offer-options {
+    margin-top: 36px;
+  }
+  .offer-options article {
+    gap: 16px;
+  }
+  .cooperation-steps {
+    margin-top: 32px;
+  }
+  .cooperation-steps h3 {
+    margin-top: 12px;
+  }
+  .next-step-actions {
+    justify-self: start;
+  }
+}
