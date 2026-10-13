@@ -73,10 +73,10 @@ def materialize(key, lang, p=None):
         for heading in contact.select('.contact-location h2'): heading.name = 'h3'
         main.append(contact)
     if main.select_one('[data-contact-map]'):
-        stylesheet = doc.new_tag('link', rel='stylesheet', href='assets/vendor/leaflet/leaflet.css')
+        stylesheet = doc.new_tag('link', rel='stylesheet', href='assets/vendor/maplibre/maplibre-gl.css')
         doc.select_one('link[rel="stylesheet"]').insert_before(stylesheet)
-        doc.head.append(doc.new_tag('script', src='assets/vendor/leaflet/leaflet.js', defer=''))
-        doc.head.append(doc.new_tag('script', src='contact-map.js', defer=''))
+        doc.head.append(doc.new_tag('script', src='assets/vendor/maplibre/maplibre-gl.js', defer=''))
+        doc.head.append(doc.new_tag('script', src='contact-map.js?v=20261013-openfreemap-2', defer=''))
     doc.body.append(fragment(source.find('template', id='footer-' + lang).decode_contents()))
     doc.body.append(deepcopy(source.select_one('#site-dialog')))
     for template_id in ['shopMenu-' + lang, 'search-' + lang, 'filters-' + lang, 'size-guide']:
