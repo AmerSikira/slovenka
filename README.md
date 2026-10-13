@@ -54,6 +54,8 @@ The homepage and contact page include company contact details, an address-based 
 
 Before live sales, supply approved catalogue data, measurements, materials/care, company contacts, manufacturing scope and retail/privacy policies. Payments, stock management, email delivery and shared inquiry storage require backend integration.
 
+The homepage and contact page also list the physical retail shop, Prodavnica br. 2 Bugojno, at Ul. Zlatnih ljiljana bb, 70230 Bugojno, with phone 030 201 159. These shop details were supplied by the user on 13 October 2026. Both languages include direct phone links and a Google Maps address search for the shop.
+
 Space Grotesk is licensed under SIL OFL (`assets/fonts/OFL.txt`). Inline icons retain the Lucide license in `assets/icons-LICENSE.txt`.
 
 GSAP core 3.15.0 is pinned and served locally from `assets/vendor/gsap/`, with its Standard No Charge license in `LICENSE.txt`. No CDN request or plugins are needed. [Official installation guidance](https://gsap.com/docs/v3/Installation/) and [matchMedia documentation](https://gsap.com/docs/v3/GSAP/gsap.matchMedia()/) describe the loading and preference handling used here.

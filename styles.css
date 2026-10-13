@@ -1532,6 +1532,11 @@ details[open] summary svg {
 .contact-location {
   margin-top: 64px;
 }
+.contact-shop-details {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+}
 .contact-map-heading {
   display: flex;
   justify-content: space-between;
@@ -1575,6 +1580,10 @@ details[open] summary svg {
   }
   .contact-location {
     margin-top: 48px;
+  }
+  .contact-shop-details {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
   }
   .contact-map {
     height: 320px;
