@@ -3,14 +3,14 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="#f7f4ef" name="theme-color"/>
-<meta content="Odjeća za vaš stil. Proizvodnja za vaš brend. Pitanje o odjeći, kroju ili poslovnoj saradnji? Javite nam se. Naš tim je u Donjem Vakufu, a prodavnica br. 2 vas čeka u Bugojnu." name="description"/>
+<meta content="Odjeća za vaš stil. Proizvodnja za vaš brend. Posjetite prodavnicu u Bugojnu ili se javite našem timu u Donjem Vakufu. Tu smo za pitanja o odjeći i poslovnoj saradnji." name="description"/>
 <link href="assets/favicon.svg" rel="icon"/>
-<link href="styles.css" rel="stylesheet"/>
+<link href="assets/vendor/leaflet/leaflet.css" rel="stylesheet"/><link href="styles.css?v=20261013-contact-2" rel="stylesheet"/>
 <title>Odjeća za vaš stil. Proizvodnja za vaš brend. — MK Slovenka</title>
 <script defer="" src="script.js"></script>
 <script defer="" src="assets/vendor/gsap/gsap-3.15.0.min.js"></script>
 <script defer="" src="motion.js"></script>
-<link href="index-en.html" hreflang="en" rel="alternate"/></head><body data-page="/"><a class="skip-link" href="#main">Preskoči na sadržaj</a>
+<script defer="" src="assets/vendor/leaflet/leaflet.js"></script><script defer="" src="contact-map.js"></script><link href="index-en.html" hreflang="en" rel="alternate"/></head><body data-page="/"><a class="skip-link" href="#main">Preskoči na sadržaj</a>
 <header class="header">
 <div class="header-inner">
 <button aria-label="Otvori meni" class="icon-button mobile-menu" type="button">
@@ -316,36 +316,28 @@
 <section aria-labelledby="contact-title" class="contact-section warm" id="contact">
 <div class="container section">
 
-<div class="contact-heading">
-<div><p class="eyebrow">MK SLOVENKA / KONTAKT</p><h2 id="contact-title">Tu počinje razgovor.</h2></div>
-<p class="lead">Pitanje o odjeći, kroju ili poslovnoj saradnji? Javite nam se. Naš tim je u Donjem Vakufu, a prodavnica br. 2 vas čeka u Bugojnu.</p>
-</div>
+<div class="contact-heading"><div><p class="eyebrow">MK SLOVENKA / KONTAKT</p><h2 id="contact-title">Tu počinje razgovor.</h2></div><p class="lead">Posjetite prodavnicu u Bugojnu ili se javite našem timu u Donjem Vakufu. Tu smo za pitanja o odjeći i poslovnoj saradnji.</p></div>
 <div class="contact-grid">
 <div class="contact-details">
-<section aria-labelledby="contact-shop-title" class="contact-location contact-shop">
-<div class="contact-map-heading"><div><p class="eyebrow">MALOPRODAJA</p><h2 id="contact-shop-title">Prodavnica br. 2 Bugojno</h2></div></div>
-<dl class="contact-list">
-<div><dt>Adresa</dt><dd><address>Ul. Zlatnih ljiljana bb<br/>70230 Bugojno<br/>Bosna i Hercegovina</address><a class="text-link contact-directions" href="https://www.google.com/maps/search/?api=1&amp;query=Zlatnih%20ljiljana%20bb%2C%2070230%20Bugojno%2C%20Bosna%20i%20Hercegovina" rel="noopener noreferrer" target="_blank">Upute do prodavnice<svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="18"><path d="M7 7h10v10M7 17 17 7"></path></svg></a></dd></div>
-<div><dt>Telefon</dt><dd><a href="tel:+38730201159">030 201 159</a></dd></div>
-</dl>
-<iframe allowfullscreen="" class="contact-map" height="320" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Zlatnih%20ljiljana%2C%20Bugojno%2C%20Bosna%20i%20Hercegovina&amp;z=15&amp;output=embed&amp;hl=bs" title="Mapa ulice Zlatnih ljiljana u Bugojnu" width="600"></iframe>
+<div class="contact-locations">
+<section aria-labelledby="contact-shop-title" class="contact-location contact-shop" data-lat="44.0551921" data-lng="17.4487924" data-location="shop">
+<p class="eyebrow"><span aria-hidden="true" class="contact-number">01</span>MALOPRODAJA</p>
+<h3 id="contact-shop-title">Bugojno</h3><p class="contact-location-name">Prodavnica br. 2</p>
+<address>Ul. Zlatnih ljiljana bb<br/>70230 Bugojno</address>
+<a class="contact-phone" href="tel:+38730201159">030 201 159</a>
+<a class="text-link contact-directions" href="https://www.google.com/maps/search/?api=1&amp;query=Zlatnih%20ljiljana%20bb%2C%2070230%20Bugojno%2C%20Bosna%20i%20Hercegovina" rel="noopener noreferrer" target="_blank">Upute za dolazak<svg aria-hidden="true" fill="none" height="16" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="16"><path d="M7 7h10v10M7 17 17 7"></path></svg></a>
 </section>
-<section aria-labelledby="contact-office-title" class="contact-location contact-office">
-<div class="contact-map-heading"><div><p class="eyebrow">DIREKTNO DO NAS</p><h2 id="contact-office-title">Donji Vakuf, BiH.</h2></div></div>
-<dl class="contact-list">
-<div><dt>Adresa</dt><dd><address>770 Slavne brdske brigade<br/>70220 Donji Vakuf<br/>Bosna i Hercegovina</address><a class="text-link contact-directions" href="https://www.google.com/maps/search/?api=1&amp;query=770%20Slavne%20brdske%20brigade%2C%2070220%20Donji%20Vakuf%2C%20Bosna%20i%20Hercegovina" rel="noopener noreferrer" target="_blank">Upute za dolazak<svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="18"><path d="M7 7h10v10M7 17 17 7"></path></svg></a></dd></div>
-<div><dt>Email</dt><dd><a href="mailto:slovenka.dd@gmail.com">slovenka.dd@gmail.com</a></dd></div>
-<div><dt>Telefon</dt><dd><a href="tel:+38730205323">+387 30 205 323</a><a href="tel:+38730201159">+387 30 201 159</a></dd></div>
-<div><dt>Mobitel</dt><dd><a href="tel:+38762650500">+387 62 650 500</a></dd></div>
-<div><dt>Fax</dt><dd><span>+387 30 205 323</span><span>+387 30 201 159</span></dd></div>
-</dl>
-<details class="contact-company"><summary>Podaci o kompaniji</summary>
-<p>Dioničko društvo Modna konfekcija "SLOVENKA" Donji Vakuf</p>
-<dl><div><dt>JIB</dt><dd>4236158860005</dd></div><div><dt>MBS</dt><dd>51-02-0008-08</dd></div><div><dt>Direktor</dt><dd>Samir Šutković</dd></div></dl>
-</details>
-<a class="text-link contact-inquiry" href="inquiry.html">Imate proizvodni projekat?<svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="18"><path d="M7 7h10v10M7 17 17 7"></path></svg></a>
-<iframe allowfullscreen="" class="contact-map" height="400" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=770%20Slavne%20brdske%20brigade%2C%2070220%20Donji%20Vakuf%2C%20Bosna%20i%20Hercegovina&amp;z=15&amp;output=embed&amp;hl=bs" title="Mapa adrese MK Slovenka u Donjem Vakufu" width="1200"></iframe>
+<section aria-labelledby="contact-office-title" class="contact-location contact-office" data-lat="44.138233" data-lng="17.3932706" data-location="office">
+<p class="eyebrow"><span aria-hidden="true" class="contact-number">02</span>KOMPANIJA I PROIZVODNJA</p>
+<h3 id="contact-office-title">Donji Vakuf</h3><p class="contact-location-name">MK Slovenka</p>
+<address>770 Slavne brdske brigade<br/>70220 Donji Vakuf</address>
+<a class="contact-phone" href="tel:+38730205323">030 205 323</a>
+<a class="text-link contact-directions" href="https://www.google.com/maps/search/?api=1&amp;query=770%20Slavne%20brdske%20brigade%2C%2070220%20Donji%20Vakuf%2C%20Bosna%20i%20Hercegovina" rel="noopener noreferrer" target="_blank">Upute za dolazak<svg aria-hidden="true" fill="none" height="16" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="16"><path d="M7 7h10v10M7 17 17 7"></path></svg></a>
 </section>
+</div>
+<div class="contact-map-wrap"><div aria-describedby="contact-map-note" aria-label="Naše lokacije u Bugojnu i Donjem Vakufu" class="contact-map" data-contact-map="" id="contact-locations-map" role="region"><div class="contact-map-fallback"><p>Naše lokacije u Bugojnu i Donjem Vakufu</p><p>Otvorite upute iznad za svaku lokaciju.</p></div></div><button class="contact-map-reset" data-map-reset="" hidden="" type="button">Prikaži obje lokacije</button></div>
+<p class="contact-map-note" id="contact-map-note">Označene su približne lokacije. Za dolazak otvorite upute.</p><p class="contact-map-status" data-map-status="" hidden="" role="status"></p>
+<div class="contact-direct"><a href="mailto:slovenka.dd@gmail.com">slovenka.dd@gmail.com<svg aria-hidden="true" fill="none" height="16" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="16"><path d="M7 7h10v10M7 17 17 7"></path></svg></a><a href="tel:+38762650500">+387 62 650 500<svg aria-hidden="true" fill="none" height="16" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="16"><path d="M7 7h10v10M7 17 17 7"></path></svg></a></div>
 </div>
 <form action="mailto:slovenka.dd@gmail.com" aria-labelledby="contact-form-title" class="project-form contact-form" data-contact-form="" enctype="text/plain" method="post">
 <h3 id="contact-form-title">Napišite nam.</h3>
@@ -358,13 +350,17 @@
 <label class="form-field">Telefon (opcionalno)<input autocomplete="tel" maxlength="40" name="phone" type="tel"/></label>
 <label class="form-field">Tema<select name="topic"><option value="product">Odjeća i veličine</option><option value="business">Poslovna saradnja</option><option value="other">Ostalo</option></select></label>
 </div>
-<label class="form-field">Vaša poruka <span aria-hidden="true" class="required-mark">*</span><textarea maxlength="5000" minlength="10" name="message" placeholder="Kako vam možemo pomoći?" required="" rows="5"></textarea></label>
+<label class="form-field">Vaša poruka <span aria-hidden="true" class="required-mark">*</span><textarea maxlength="5000" minlength="10" name="message" placeholder="Kako vam možemo pomoći?" required="" rows="4"></textarea></label>
 <p class="form-helper" id="contact-form-help">Obrazac otvara vašu aplikaciju za email s pripremljenom porukom. Pregledajte je i pošaljite iz aplikacije. <a href="support-privacy.html">Privatnost</a></p>
 <button aria-describedby="contact-form-help" class="button" type="submit">Pripremite email<svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="18"><path d="M7 7h10v10M7 17 17 7"></path></svg></button>
 <p class="form-helper contact-status" data-contact-status="" role="status"></p>
 <a class="text-link" data-contact-email="" hidden="">Otvorite pripremljenu poruku<svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="18"><path d="M7 7h10v10M7 17 17 7"></path></svg></a>
 </form>
 </div>
+<div class="contact-meta"><details class="contact-company"><summary>Podaci o kompaniji</summary>
+<p>Dioničko društvo Modna konfekcija "SLOVENKA" Donji Vakuf</p>
+<dl><div><dt>JIB</dt><dd>4236158860005</dd></div><div><dt>MBS</dt><dd>51-02-0008-08</dd></div><div><dt>Direktor</dt><dd>Samir Šutković</dd></div><div><dt>Fax</dt><dd><span>+387 30 205 323</span><span>+387 30 201 159</span></dd></div></dl>
+</details><a class="text-link contact-inquiry" href="inquiry.html">Imate proizvodni projekat?<svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="18"><path d="M7 7h10v10M7 17 17 7"></path></svg></a></div>
 </div>
 </section></main>
 <footer class="footer dark">

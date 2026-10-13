@@ -70,7 +70,13 @@ def materialize(key, lang, p=None):
         contact.select_one('.contact-breadcrumbs').decompose()
         contact.select_one('h1').name = 'h2'
         contact.select_one('#contact-form-title').name = 'h3'
+        for heading in contact.select('.contact-location h2'): heading.name = 'h3'
         main.append(contact)
+    if main.select_one('[data-contact-map]'):
+        stylesheet = doc.new_tag('link', rel='stylesheet', href='assets/vendor/leaflet/leaflet.css')
+        doc.select_one('link[rel="stylesheet"]').insert_before(stylesheet)
+        doc.head.append(doc.new_tag('script', src='assets/vendor/leaflet/leaflet.js', defer=''))
+        doc.head.append(doc.new_tag('script', src='contact-map.js', defer=''))
     doc.body.append(fragment(source.find('template', id='footer-' + lang).decode_contents()))
     doc.body.append(deepcopy(source.select_one('#site-dialog')))
     for template_id in ['shopMenu-' + lang, 'search-' + lang, 'filters-' + lang, 'size-guide']:

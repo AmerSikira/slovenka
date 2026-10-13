@@ -3,14 +3,14 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="#f7f4ef" name="theme-color"/>
-<meta content="It starts with a conversation. Have a question about clothing, fit or working together? Get in touch. Our team is based in Donji Vakuf, and you can visit Shop No. 2 in Bugojno." name="description"/>
+<meta content="It starts with a conversation. Visit our shop in Bugojno, or get in touch with our team in Donji Vakuf. We’re here for questions about clothing and working together." name="description"/>
 <link href="assets/favicon.svg" rel="icon"/>
-<link href="styles.css" rel="stylesheet"/>
+<link href="assets/vendor/leaflet/leaflet.css" rel="stylesheet"/><link href="styles.css?v=20261013-contact-2" rel="stylesheet"/>
 <title>It starts with a conversation. — MK Slovenka</title>
 <script defer="" src="script.js"></script>
 <script defer="" src="assets/vendor/gsap/gsap-3.15.0.min.js"></script>
 <script defer="" src="motion.js"></script>
-<link href="contact.html" hreflang="bs" rel="alternate"/></head><body data-page="/contact"><a class="skip-link" href="#main">Skip to content</a>
+<script defer="" src="assets/vendor/leaflet/leaflet.js"></script><script defer="" src="contact-map.js"></script><link href="contact.html" hreflang="bs" rel="alternate"/></head><body data-page="/contact"><a class="skip-link" href="#main">Skip to content</a>
 <header class="header">
 <div class="header-inner">
 <button aria-label="Open menu" class="icon-button mobile-menu" type="button">
@@ -75,39 +75,29 @@
 <noscript><nav aria-label="Navigation" class="container"><a href="shop-en.html">Shop</a> · <a href="company-en.html">Our company</a> · <a href="manufacturing-en.html">Manufacturing</a> · <a href="contact-en.html">Contact</a> · <a href="cart-en.html">Cart</a></nav></noscript><main id="main">
 <section aria-labelledby="contact-title" class="contact-section warm" id="contact">
 <div class="container section">
-<nav aria-label="Breadcrumb" class="breadcrumbs contact-breadcrumbs">
-<a href="index-en.html">Home</a><span aria-hidden="true">/</span><span aria-current="page">Contact</span>
-</nav>
-<div class="contact-heading">
-<div><p class="eyebrow">MK SLOVENKA / CONTACT</p><h1 id="contact-title">It starts with a conversation.</h1></div>
-<p class="lead">Have a question about clothing, fit or working together? Get in touch. Our team is based in Donji Vakuf, and you can visit Shop No. 2 in Bugojno.</p>
-</div>
+<nav aria-label="Breadcrumb" class="breadcrumbs contact-breadcrumbs"><a href="index-en.html">Home</a><span aria-hidden="true">/</span><span aria-current="page">Contact</span></nav>
+<div class="contact-heading"><div><p class="eyebrow">MK SLOVENKA / CONTACT</p><h1 id="contact-title">It starts with a conversation.</h1></div><p class="lead">Visit our shop in Bugojno, or get in touch with our team in Donji Vakuf. We’re here for questions about clothing and working together.</p></div>
 <div class="contact-grid">
 <div class="contact-details">
-<section aria-labelledby="contact-shop-title" class="contact-location contact-shop">
-<div class="contact-map-heading"><div><p class="eyebrow">RETAIL SHOP</p><h2 id="contact-shop-title">Shop No. 2 Bugojno</h2></div></div>
-<dl class="contact-list">
-<div><dt>Address</dt><dd><address>Ul. Zlatnih ljiljana bb<br/>70230 Bugojno<br/>Bosnia and Herzegovina</address><a class="text-link contact-directions" href="https://www.google.com/maps/search/?api=1&amp;query=Zlatnih%20ljiljana%20bb%2C%2070230%20Bugojno%2C%20Bosna%20i%20Hercegovina" rel="noopener noreferrer" target="_blank">Directions to the shop<svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="18"><path d="M7 7h10v10M7 17 17 7"></path></svg></a></dd></div>
-<div><dt>Phone</dt><dd><a href="tel:+38730201159">+387 30 201 159</a></dd></div>
-</dl>
-<iframe allowfullscreen="" class="contact-map" height="320" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Zlatnih%20ljiljana%2C%20Bugojno%2C%20Bosna%20i%20Hercegovina&amp;z=15&amp;output=embed&amp;hl=en" title="Map of Zlatnih ljiljana street in Bugojno" width="600"></iframe>
+<div class="contact-locations">
+<section aria-labelledby="contact-shop-title" class="contact-location contact-shop" data-lat="44.0551921" data-lng="17.4487924" data-location="shop">
+<p class="eyebrow"><span aria-hidden="true" class="contact-number">01</span>RETAIL SHOP</p>
+<h2 id="contact-shop-title">Bugojno</h2><p class="contact-location-name">Shop No. 2</p>
+<address>Ul. Zlatnih ljiljana bb<br/>70230 Bugojno</address>
+<a class="contact-phone" href="tel:+38730201159">+387 30 201 159</a>
+<a class="text-link contact-directions" href="https://www.google.com/maps/search/?api=1&amp;query=Zlatnih%20ljiljana%20bb%2C%2070230%20Bugojno%2C%20Bosna%20i%20Hercegovina" rel="noopener noreferrer" target="_blank">Directions<svg aria-hidden="true" fill="none" height="16" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="16"><path d="M7 7h10v10M7 17 17 7"></path></svg></a>
 </section>
-<section aria-labelledby="contact-office-title" class="contact-location contact-office">
-<div class="contact-map-heading"><div><p class="eyebrow">REACH US DIRECTLY</p><h2 id="contact-office-title">Donji Vakuf, BiH.</h2></div></div>
-<dl class="contact-list">
-<div><dt>Address</dt><dd><address>770 Slavne brdske brigade<br/>70220 Donji Vakuf<br/>Bosnia and Herzegovina</address><a class="text-link contact-directions" href="https://www.google.com/maps/search/?api=1&amp;query=770%20Slavne%20brdske%20brigade%2C%2070220%20Donji%20Vakuf%2C%20Bosna%20i%20Hercegovina" rel="noopener noreferrer" target="_blank">Get directions<svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="18"><path d="M7 7h10v10M7 17 17 7"></path></svg></a></dd></div>
-<div><dt>Email</dt><dd><a href="mailto:slovenka.dd@gmail.com">slovenka.dd@gmail.com</a></dd></div>
-<div><dt>Phone</dt><dd><a href="tel:+38730205323">+387 30 205 323</a><a href="tel:+38730201159">+387 30 201 159</a></dd></div>
-<div><dt>Mobile</dt><dd><a href="tel:+38762650500">+387 62 650 500</a></dd></div>
-<div><dt>Fax</dt><dd><span>+387 30 205 323</span><span>+387 30 201 159</span></dd></div>
-</dl>
-<details class="contact-company"><summary>Company details</summary>
-<p>Dioničko društvo Modna konfekcija "SLOVENKA" Donji Vakuf</p>
-<dl><div><dt>JIB</dt><dd>4236158860005</dd></div><div><dt>MBS</dt><dd>51-02-0008-08</dd></div><div><dt>Director</dt><dd>Samir Šutković</dd></div></dl>
-</details>
-<a class="text-link contact-inquiry" href="inquiry-en.html">Have a manufacturing project?<svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="18"><path d="M7 7h10v10M7 17 17 7"></path></svg></a>
-<iframe allowfullscreen="" class="contact-map" height="400" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=770%20Slavne%20brdske%20brigade%2C%2070220%20Donji%20Vakuf%2C%20Bosna%20i%20Hercegovina&amp;z=15&amp;output=embed&amp;hl=en" title="Map of the MK Slovenka address in Donji Vakuf" width="1200"></iframe>
+<section aria-labelledby="contact-office-title" class="contact-location contact-office" data-lat="44.138233" data-lng="17.3932706" data-location="office">
+<p class="eyebrow"><span aria-hidden="true" class="contact-number">02</span>COMPANY &amp; MANUFACTURING</p>
+<h2 id="contact-office-title">Donji Vakuf</h2><p class="contact-location-name">MK Slovenka</p>
+<address>770 Slavne brdske brigade<br/>70220 Donji Vakuf</address>
+<a class="contact-phone" href="tel:+38730205323">+387 30 205 323</a>
+<a class="text-link contact-directions" href="https://www.google.com/maps/search/?api=1&amp;query=770%20Slavne%20brdske%20brigade%2C%2070220%20Donji%20Vakuf%2C%20Bosna%20i%20Hercegovina" rel="noopener noreferrer" target="_blank">Directions<svg aria-hidden="true" fill="none" height="16" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="16"><path d="M7 7h10v10M7 17 17 7"></path></svg></a>
 </section>
+</div>
+<div class="contact-map-wrap"><div aria-describedby="contact-map-note" aria-label="Our locations in Bugojno and Donji Vakuf" class="contact-map" data-contact-map="" id="contact-locations-map" role="region"><div class="contact-map-fallback"><p>Our locations in Bugojno and Donji Vakuf</p><p>View directions above for each location.</p></div></div><button class="contact-map-reset" data-map-reset="" hidden="" type="button">Show both locations</button></div>
+<p class="contact-map-note" id="contact-map-note">Markers show the address areas. Use directions for your visit.</p><p class="contact-map-status" data-map-status="" hidden="" role="status"></p>
+<div class="contact-direct"><a href="mailto:slovenka.dd@gmail.com">slovenka.dd@gmail.com<svg aria-hidden="true" fill="none" height="16" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="16"><path d="M7 7h10v10M7 17 17 7"></path></svg></a><a href="tel:+38762650500">+387 62 650 500<svg aria-hidden="true" fill="none" height="16" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="16"><path d="M7 7h10v10M7 17 17 7"></path></svg></a></div>
 </div>
 <form action="mailto:slovenka.dd@gmail.com" aria-labelledby="contact-form-title" class="project-form contact-form" data-contact-form="" enctype="text/plain" method="post">
 <h2 id="contact-form-title">Write to us.</h2>
@@ -120,13 +110,17 @@
 <label class="form-field">Phone (optional)<input autocomplete="tel" maxlength="40" name="phone" type="tel"/></label>
 <label class="form-field">Topic<select name="topic"><option value="product">Clothing &amp; sizing</option><option value="business">Business collaboration</option><option value="other">Other</option></select></label>
 </div>
-<label class="form-field">Your message <span aria-hidden="true" class="required-mark">*</span><textarea maxlength="5000" minlength="10" name="message" placeholder="How can we help?" required="" rows="5"></textarea></label>
+<label class="form-field">Your message <span aria-hidden="true" class="required-mark">*</span><textarea maxlength="5000" minlength="10" name="message" placeholder="How can we help?" required="" rows="4"></textarea></label>
 <p class="form-helper" id="contact-form-help">This form opens your email app with a prepared message. Review it and send it from the app. <a href="support-privacy-en.html">Privacy</a></p>
 <button aria-describedby="contact-form-help" class="button" type="submit">Prepare email<svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="18"><path d="M7 7h10v10M7 17 17 7"></path></svg></button>
 <p class="form-helper contact-status" data-contact-status="" role="status"></p>
 <a class="text-link" data-contact-email="" hidden="">Open prepared message<svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="18"><path d="M7 7h10v10M7 17 17 7"></path></svg></a>
 </form>
 </div>
+<div class="contact-meta"><details class="contact-company"><summary>Company details</summary>
+<p>Dioničko društvo Modna konfekcija "SLOVENKA" Donji Vakuf</p>
+<dl><div><dt>JIB</dt><dd>4236158860005</dd></div><div><dt>MBS</dt><dd>51-02-0008-08</dd></div><div><dt>Director</dt><dd>Samir Šutković</dd></div><div><dt>Fax</dt><dd><span>+387 30 205 323</span><span>+387 30 201 159</span></dd></div></dl>
+</details><a class="text-link contact-inquiry" href="inquiry-en.html">Have a manufacturing project?<svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" width="18"><path d="M7 7h10v10M7 17 17 7"></path></svg></a></div>
 </div>
 </section>
 </main>
