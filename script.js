@@ -856,8 +856,11 @@ function openDialog(kind) {
     content.innerHTML = template("search");
     updateSearch("");
   }
-  if (kind === "menu")
-    content.innerHTML = `<nav><a href="${pageUrl(`/shop`)}">${t("Sva odjeća", "Shop all")}</a><details><summary>${t("Kategorije", "Categories")}</summary>${CATEGORIES.map((c) => `<a href="${pageUrl(`/shop?category=${c.id}`)}">${c[lang]}</a>`).join("")}</details><a href="${pageUrl(`/company`)}">${t("O nama", "Our company")}</a><a href="${pageUrl(`/manufacturing`)}">${t("Proizvodnja", "Manufacturing")}</a><a href="${pageUrl(`/contact`)}">${t("Kontakt", "Contact")}</a><button class="language" type="button">${lang === "bs" ? "English" : "Bosanski"}</button></nav>`;
+  if (kind === "menu") {
+    const nextLanguage = lang === "bs" ? "en" : "bs";
+    const languageName = lang === "bs" ? "English" : "Bosanski";
+    content.innerHTML = `<nav><a href="${pageUrl(`/shop`)}">${t("Sva odjeća", "Shop all")}</a><details><summary>${t("Kategorije", "Categories")}</summary>${CATEGORIES.map((c) => `<a href="${pageUrl(`/shop?category=${c.id}`)}">${c[lang]}</a>`).join("")}</details><a href="${pageUrl(`/company`)}">${t("O nama", "Our company")}</a><a href="${pageUrl(`/manufacturing`)}">${t("Proizvodnja", "Manufacturing")}</a><a href="${pageUrl(`/contact`)}">${t("Kontakt", "Contact")}</a><a class="language language-flag" href="${pageUrl(`${route().path}${location.search}${location.hash}`, nextLanguage)}" hreflang="${nextLanguage}" aria-label="${t("Prebaci na engleski", "Switch to Bosnian")}" title="${languageName}"><img src="assets/flags/${nextLanguage === "en" ? "gb" : "ba"}.svg" class="language-flag-image" width="28" height="14" alt=""/></a></nav>`;
+  }
   if (kind === "filters") {
     content.innerHTML = template("filters");
     $$(".filter-fields select", content).forEach((s, i) => {

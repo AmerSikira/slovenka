@@ -113,8 +113,13 @@ def materialize(key, lang, p=None):
         for a in template.select('a[href]'):
             if a['href'].startswith('#/'): a['href']=url(a['href'][1:],lang)
     for button in list(doc.select('button.language')):
-        a=doc.new_tag('a', href=url(path,'en' if lang=='bs' else 'bs')); a['class']=['language']; a['hreflang']='en' if lang=='bs' else 'bs'
-        a.string='English' if lang=='bs' else 'Bosanski';button.replace_with(a)
+        next_lang='en' if lang=='bs' else 'bs'
+        a=doc.new_tag('a', href=url(path,next_lang)); a['class']=button.get('class',['language']); a['hreflang']=next_lang
+        if 'language-flag' in a['class']:
+            a['aria-label']=button['aria-label']; a['title']=button['title']
+            for child in list(button.contents): a.append(child.extract())
+        else: a.string='English' if lang=='bs' else 'Bosanski'
+        button.replace_with(a)
     for a in doc.select('.desktop-nav a'):
         if a['href'].split('?')[0] == url(path,lang): a['aria-current']='page';a['class']=a.get('class',[])+['active']
     for form in doc.select('.search-panel form'):

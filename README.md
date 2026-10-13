@@ -54,7 +54,9 @@ The homepage and contact page include company contact details, an address-based 
 
 Before live sales, supply approved catalogue data, measurements, materials/care, company contacts, manufacturing scope and retail/privacy policies. Payments, stock management, email delivery and shared inquiry storage require backend integration.
 
-The homepage and contact page also list the physical retail shop, Prodavnica br. 2 Bugojno, at Ul. Zlatnih ljiljana bb, 70230 Bugojno, with phone 030 201 159. These shop details were supplied by the user on 13 October 2026. Both languages include direct phone links and a Google Maps address search for the shop.
+The homepage and contact page also list the physical retail shop, Prodavnica br. 2 Bugojno, at Ul. Zlatnih ljiljana bb, 70230 Bugojno, with phone 030 201 159. These shop details were supplied by the user on 13 October 2026. Both languages include direct phone links and a Google Maps address search for the shop. Company and shop details are paired with their maps in the left contact column, beside the email form on desktop. The shop embed shows Zlatnih ljiljana street rather than claiming a verified exact storefront pin.
+
+Header and mobile-menu language links use local UK and Bosnia and Herzegovina SVG flags with accessible language labels. Footer links keep their text. Maps use a subtle warm filter and the site’s green borders; the native map colors return on interaction and remain native on touch devices and in forced-colors mode. This keyless iframe treatment keeps Google controls and attribution visible; it does not change Google’s road or label styles.
 
 Space Grotesk is licensed under SIL OFL (`assets/fonts/OFL.txt`). Inline icons retain the Lucide license in `assets/icons-LICENSE.txt`.
 
