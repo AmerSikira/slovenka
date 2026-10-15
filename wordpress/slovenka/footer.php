@@ -1,6 +1,6 @@
 <?php if (!defined('ABSPATH')) { exit; } ?>
 <footer class="footer dark"><div class="container">
-<div class="footer-top"><a class="wordmark footer-wordmark" href="<?php echo esc_url(home_url('/')); ?>"><?php bloginfo('name'); ?></a>
+<div class="footer-top"><a class="wordmark footer-wordmark" href="<?php echo esc_url(slovenka_home_url()); ?>"><?php bloginfo('name'); ?></a>
 <p><?php echo esc_html(slovenka_text('Više od odjeće.','Considered clothing.')); ?><br><?php echo esc_html(slovenka_text('Dizajn koji inspiriše. Kvalitet koji traje.','A closer look at every cut.')); ?></p>
 <?php $contact = slovenka_page_url('contact' . (slovenka_language() === 'en' ? '-en' : '') . '.html'); if ($contact) { ?><a class="text-link" href="<?php echo esc_url($contact); ?>"><?php echo esc_html(slovenka_text('Stupimo u kontakt','Get in touch')); ?> ↗</a><?php } ?>
 </div>

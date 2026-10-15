@@ -24,6 +24,7 @@ add_action('template_redirect', function () {
             }
             $query = map_deep(wp_unslash($_GET), 'sanitize_text_field');
             unset($query['page_id'], $query['pagename']);
+            if (str_ends_with($source, '-en.html')) { $query['lang'] = 'en'; }
             wp_safe_redirect(add_query_arg($query, $url), 302); exit;
         }
         return;
@@ -32,6 +33,7 @@ add_action('template_redirect', function () {
     $product = slovenka_legacy_product($source);
     if ($product) {
         $url = $product->get_permalink();
+        if (str_ends_with($source, '-en.html')) { $url = slovenka_language_url($url, 'en'); }
         // Old bookmarked colour selectors map to the native WooCommerce attribute.
         $color = isset($_GET['color']) && is_string($_GET['color']) ? sanitize_text_field(wp_unslash($_GET['color'])) : '';
         foreach (['colour','color','pa_colour','pa_color','boja','pa_boja'] as $key) {
@@ -46,7 +48,7 @@ add_action('template_redirect', function () {
 add_filter('woocommerce_product_tabs', function ($tabs) {
     global $product;
     if ($product && mk_product_size_tables($product->get_id())) {
-        $tabs['slovenka_measurements'] = ['title'=>'Tabela mjera / Size guide', 'priority'=>25, 'callback'=>'slovenka_measurements_tab'];
+        $tabs['slovenka_measurements'] = ['title'=>slovenka_text('Tabela mjera', 'Size guide'), 'priority'=>25, 'callback'=>'slovenka_measurements_tab'];
     }
     return $tabs;
 });

@@ -112,7 +112,7 @@ for name in ['commerce.css', 'commerce.js', 'script.js', 'production.js']:
 (THEME / 'data/site.json').write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')))
 
 # Explicit package manifest also excludes accidental backups, editor files and stale outputs.
-package_files = set(runtime_files) | {'readme.txt', 'data/site.json', 'style.css', 'notices.css', 'products.css', 'native.css', 'theme.js', 'functions.php', 'header.php', 'footer.php', 'index.php', 'page.php', 'searchform.php', 'comments.php', '404.php', 'sidebar.php', 'inc/import.php', 'inc/render.php', 'inc/woocommerce.php', 'inc/size-tables.php', 'inc/forms.php'} | assets
+package_files = set(runtime_files) | {'readme.txt', 'data/site.json', 'style.css', 'notices.css', 'products.css', 'native.css', 'theme.js', 'functions.php', 'header.php', 'footer.php', 'index.php', 'page.php', 'searchform.php', 'comments.php', '404.php', 'sidebar.php', 'inc/import.php', 'inc/render.php', 'inc/woocommerce.php', 'inc/size-tables.php', 'inc/forms.php', 'inc/language.php', 'languages/woocommerce-bs_BA.mo', 'languages/woocommerce-bs_BA.po', 'languages/README.md'} | assets
 output = ROOT / 'dist/slovenka.zip'
 output.parent.mkdir(exist_ok=True)
 with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:

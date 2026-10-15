@@ -2,6 +2,7 @@
 if (!defined('ABSPATH')) { exit; }
 require_once __DIR__ . '/inc/import.php';
 require_once __DIR__ . '/inc/render.php';
+require_once __DIR__ . '/inc/language.php';
 require_once __DIR__ . '/inc/woocommerce.php';
 require_once __DIR__ . '/inc/size-tables.php';
 require_once __DIR__ . '/inc/forms.php';
