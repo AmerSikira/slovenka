@@ -7,7 +7,15 @@ function slovenka_page() {
 }
 function slovenka_urls() {
     $urls = [];
-    foreach (get_option('slovenka_pages', []) as $file => $id) { $urls[$file] = get_permalink($id); }
+    foreach (get_option('slovenka_pages', []) as $file => $id) {
+        if (str_starts_with($file, 'product-')) {
+            $product = slovenka_legacy_product($file);
+            if ($product) { $urls[$file] = $product->get_permalink(); }
+        } else { $urls[$file] = get_permalink($id); }
+    }
+    foreach (slovenka_catalogue()['products'] as $item) {
+        foreach (['', '-en'] as $suffix) { $urls['product-' . $item['id'] . $suffix . '.html'] = $item['permalink']; }
+    }
     if (function_exists('wc_get_cart_url')) {
         // With plain permalinks the shop page_id redirects to the product
         // archive and drops filters. Link directly to the canonical archive.
@@ -57,39 +65,21 @@ function slovenka_html($html) {
     }, $html);
     return $html;
 }
-function slovenka_catalogue() {
-    static $cached;
-    if ($cached !== null) { return $cached; }
-    $products = []; $variations = [];
-    foreach (slovenka_data()['products'] as $item) {
-        if (($item['status'] ?? '') === 'draft') { continue; }
-        $id = slovenka_find('product', '_slovenka_product', $item['id']);
-        $product = $id && function_exists('wc_get_product') ? wc_get_product($id) : null;
-        if (function_exists('wc_get_product') && (!$product || $product->get_status() !== 'publish')) { continue; }
-        if ($product) {
-            $item['sizeTables'] = mk_product_size_tables($id);
-            $price = $product->get_price();
-            if ($price !== '') { $item['price'] = (float) wc_get_price_to_display($product); }
-            $item['sizes'] = array_map('strval', $product->get_attribute('size') ? array_map('trim', explode('|', $product->get_attribute('size'))) : $item['sizes']);
-            $item['unavailable'] = [];
-            foreach ($product->get_children() as $variation_id) {
-                $variation = wc_get_product($variation_id);
-                if (!$variation || !$variation->is_purchasable() || !$variation->is_in_stock()) { continue; }
-                $variations[$item['id']][] = ['id' => $variation_id, 'product' => $id, 'color' => $variation->get_attribute('colour'), 'size' => $variation->get_attribute('size'), 'price' => (float) wc_get_price_to_display($variation)];
-            }
-            foreach ($item['sizes'] as $size) {
-                if (!array_filter($variations[$item['id']] ?? [], fn($v) => $v['size'] === $size)) { $item['unavailable'][] = $size; }
-            }
-        }
-        $products[] = $item;
-    }
-    return $cached = ['products' => $products, 'variations' => $variations];
-}
 function slovenka_config() {
     $catalogue = slovenka_catalogue();
     return array_merge($catalogue, ['urls' => slovenka_urls(), 'assetBase' => get_template_directory_uri() . '/', 'production' => true, 'ajaxUrl' => admin_url('admin-ajax.php'), 'inquiryNonce' => wp_create_nonce('mk-commerce'), 'cart' => function_exists('wc_get_cart_url') ? wc_get_cart_url() : '', 'cartCount' => function_exists('WC') && WC()->cart ? WC()->cart->get_cart_contents_count() : 0]);
 }
 function slovenka_content() {
+    if (is_404()) {
+        echo '<section class="container section-space"><h1>Stranica nije dostupna / Page unavailable</h1><a href="' . esc_url(home_url('/')) . '">Početna / Home</a></section>';
+        return;
+    }
+    if (function_exists('is_product') && is_product()) {
+        echo '<section class="container section-space native-product">';
+        woocommerce_content();
+        echo '</section>';
+        return;
+    }
     $page = slovenka_page();
     if (!$page) {
         if (function_exists('is_woocommerce') && is_woocommerce()) { woocommerce_content(); return; }
@@ -117,22 +107,36 @@ function slovenka_content() {
 }
 
 function slovenka_render_page_content($content, $page) {
-    if ($page['route'] === '/shop' || str_starts_with($page['route'], '/product/')) {
-        $content = preg_replace('~<p class="(?:catalog-note|preview-helper)">[\s\S]*?</p>~', '', $content);
+    $content = preg_replace('~<p class="(?:catalog-note|preview-helper)">[\s\S]*?</p>~', '', $content);
+    // Replace saved grids as well as new placeholders, without overwriting page edits.
+    $content = slovenka_live_product_grids($content, $page['route'] === '/shop' ? 0 : 4);
+    echo slovenka_html($content);
+}
+
+function slovenka_live_product_grids($html, $limit) {
+    $offset = 0;
+    while (preg_match('~<div\b[^>]*class=["\'][^"\']*\bproduct-grid\b[^"\']*["\'][^>]*>~', $html, $match, PREG_OFFSET_CAPTURE, $offset)) {
+        $start = $match[0][1]; $end = $start + strlen($match[0][0]); $depth = 1;
+        while ($depth && preg_match('~</?div\b[^>]*>~', $html, $tag, PREG_OFFSET_CAPTURE, $end)) {
+            $depth += str_starts_with($tag[0][0], '</') ? -1 : 1;
+            $end = $tag[0][1] + strlen($tag[0][0]);
+        }
+        if ($depth) { break; }
+        $replacement = slovenka_product_grid($limit);
+        $html = substr_replace($html, $replacement, $start, $end - $start);
+        $offset = $start + strlen($replacement);
     }
-    $catalogue = slovenka_catalogue();
-    $prices = array_column($catalogue['products'], 'price', 'id');
-    $format = fn($price) => number_format($price, 2, $page['lang'] === 'en' ? '.' : ',', '') . ' KM';
-    $content = preg_replace_callback('~(<article[^>]*data-product="([^"]+)"[\s\S]*?<div class="product-card-top">[\s\S]*?<span>)[^<]*(</span>)~', fn($m) => $m[1] . (isset($prices[$m[2]]) ? esc_html($format($prices[$m[2]])) : '') . $m[3], $content);
-    if (str_starts_with($page['route'], '/product/')) {
-        $key = substr($page['route'], 9);
-        $tables = array_values(array_filter($catalogue['products'], fn($item) => $item['id'] === $key));
-        $has_tables = !empty($tables[0]['sizeTables']);
-        $note = $has_tables
-            ? ($page['lang'] === 'en' ? 'See the size guide for this model’s garment measurements.' : 'Mjere ovog modela pogledajte u tabeli mjera.')
-            : ($page['lang'] === 'en' ? 'Contact us for help choosing your size.' : 'Kontaktirajte nas za pomoć pri odabiru veličine.');
-        $content = preg_replace('/(?:Veličine u pregledu su primjeri\.\s*Tačne mjere modela još nisu\s*objavljene\.|Preview sizes are examples\.\s*Exact garment measurements have\s*not been published yet\.)/u', $note, $content);
-        if (isset($prices[$key])) { $content = preg_replace_callback('~(<p class="product-price">)[^<]*~', fn($m) => $m[1] . esc_html($format($prices[$key])), $content); }
+    return $html;
+}
+
+function slovenka_product_grid($limit) {
+    $items = slovenka_catalogue()['products'];
+    if ($limit) { $items = array_slice($items, 0, $limit); }
+    $html = '<div class="product-grid' . ($limit ? '' : ' listing-grid') . '" data-live-products="' . (int)$limit . '">';
+    foreach ($items as $item) {
+        $product = wc_get_product((int)$item['id']);
+        $url = esc_url($product->get_permalink());
+        $html .= '<article class="product-card" data-product="' . esc_attr($item['id']) . '"><a class="product-image" href="' . $url . '">' . $product->get_image('woocommerce_single') . '</a><div class="product-card-top"><a href="' . $url . '"><h3>' . esc_html($item['name']) . '</h3></a><span>' . $item['priceHtml'] . '</span></div><a class="product-description" href="' . $url . '">' . esc_html($item['label']['bs']) . '</a></article>';
     }
-    echo slovenka_html($content); // Trusted imported HTML; normal WP editor permissions apply.
+    return $html . '</div>';
 }

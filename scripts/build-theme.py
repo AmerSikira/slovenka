@@ -19,6 +19,17 @@ for file in sorted(ROOT.glob('*.html')):
     if not main:
         continue
     route = doc.body['data-page']
+    if route.startswith('/product/'):
+        continue
+    for grid in main.select('.product-grid'):
+        grid.clear()
+        grid['data-live-products'] = '0' if route == '/shop' else '4'
+    # Filter values are filled from the current WooCommerce catalogue.
+    for select in main.select('.desktop-filters select, .sort-label select'):
+        if select.find_parent(class_='sort-label'):
+            continue
+        for option in select.select('option')[1:]:
+            option.decompose()
     for note in main.select('.catalog-note, .preview-helper'):
         if route == '/shop' or route.startswith('/product/'):
             note.decompose()
@@ -45,15 +56,12 @@ for file in sorted(ROOT.glob('*.html')):
         'after': ''.join(after), 'content': main.decode_contents(),
     }
 data['pages'] = pages
-data['size_tables'] = json.loads((ROOT / 'templates/size-tables.json').read_text())
+# Product seeds and manufacturer measurements belong only in the separate import package.
+data.pop('products', None)
+data.pop('categories', None)
 
 # Retain photographs reached by markup, every colour/gallery, categories, or runtime helpers.
 used_images = set()
-for product in data['products']:
-    for colour in product['colors']:
-        used_images.add(colour['cover'])
-        used_images.update(colour['images'])
-used_images.update(category['image'] for category in data['categories'])
 page_source = json.dumps(pages, ensure_ascii=False)
 runtime = script.split('// Small helpers.')[1]
 for key, image in data['images'].items():
@@ -83,8 +91,10 @@ end = script.index('// Production configuration', start)
 script = script[:start] + 'const IMAGES = ' + json.dumps(data['images'], ensure_ascii=False) + ';\n\n' + script[end:]
 script = replace_images(script)
 
-# No invented photography, sizes or copy for MIJA; it stays unpublished.
-data['products'].append({'id':'mija','name':'MIJA','label':{'bs':'Kaput Mija','en':'Mija coat'},'type':'coats','price':220,'description':{'bs':'','en':''},'colors':[],'sizes':[],'unavailable':[],'status':'draft'})
+# Production ships an empty catalogue; WordPress supplies every product at runtime.
+a = script.index('const PRODUCTS = ')
+b = script.index('const IMAGES = ', a)
+script = script[:a] + 'const PRODUCTS = [];\nconst CATEGORIES = [];\n' + script[b:]
 
 runtime_files = {'script.js': script}
 for name in ['styles.css', 'motion.js', 'contact-map.js']:
@@ -129,7 +139,7 @@ for name in ['commerce.css', 'commerce.js']:
 (THEME / 'data/site.json').write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')))
 
 # Explicit package manifest also excludes accidental backups, editor files and stale outputs.
-package_files = set(runtime_files) | {'data/site.json', 'style.css', 'notices.css', 'production.js', 'functions.php', 'header.php', 'footer.php', 'index.php', 'woocommerce.php', 'sidebar.php', 'inc/import.php', 'inc/render.php', 'inc/size-tables.php', 'inc/forms.php'} | assets
+package_files = set(runtime_files) | {'data/site.json', 'style.css', 'notices.css', 'products.css', 'production.js', 'functions.php', 'header.php', 'footer.php', 'index.php', 'woocommerce.php', 'sidebar.php', 'inc/import.php', 'inc/render.php', 'inc/catalogue.php', 'inc/size-tables.php', 'inc/forms.php'} | assets
 output = ROOT / 'dist/slovenka.zip'
 output.parent.mkdir(exist_ok=True)
 with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
