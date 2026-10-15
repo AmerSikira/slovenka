@@ -13,8 +13,19 @@ function slovenka_checkpoint() {
     if (microtime(true) > ($GLOBALS['slovenka_import_deadline'] ?? PHP_FLOAT_MAX)) { throw new RuntimeException('__continue__'); }
 }
 function slovenka_media($path) {
+    $aliases = slovenka_data()['image_aliases'] ?? [];
+    $path = $aliases[$path] ?? $path;
     $id = slovenka_find('attachment', '_slovenka_asset', $path);
     if ($id) { return $id; }
+    // Reuse the attachment imported by an older theme instead of uploading a second copy.
+    foreach ($aliases as $legacy => $current) {
+        if ($current !== $path) { continue; }
+        $id = slovenka_find('attachment', '_slovenka_asset', $legacy);
+        if ($id) {
+            update_post_meta($id, '_slovenka_asset', $path);
+            return $id;
+        }
+    }
     slovenka_checkpoint();
     $file = get_template_directory() . '/' . $path;
     if (!is_file($file)) { throw new RuntimeException('Missing bundled image: ' . $path); }
@@ -57,7 +68,7 @@ function slovenka_import_site() {
                 update_option('slovenka_pages', $pages, false);
             }
             // Import every displayed photograph to the Media Library, not only product covers.
-            $media = get_option('slovenka_media', []);
+            $media = [];
             $paths = [];
             foreach ($data['images'] as $image) { $paths[] = $image['fallback']; }
             foreach ($data['pages'] as $page) {
