@@ -58,3 +58,23 @@ body.woocommerce .native-commerce nav.woocommerce-pagination ul li { border:0; m
   .native-commerce .woocommerce-result-count, .native-commerce .woocommerce-ordering { float:none; }
   .native-commerce .woocommerce-ordering select { width:100%; }
 }
+
+/* Keep WooCommerce's slider, variation images and PhotoSwipe lifecycle native. */
+body.woocommerce .native-product div.product .woocommerce-product-gallery { background: transparent; }
+.native-product .woocommerce-product-gallery__wrapper { margin: 0; }
+.native-product .woocommerce-product-gallery__image { background: var(--warm); }
+.native-product .woocommerce-product-gallery__image a { display: block; cursor: zoom-in; }
+.native-product .woocommerce-product-gallery__image img { width: 100%; aspect-ratio: 3 / 4; object-fit: contain; }
+body.woocommerce .native-product div.product div.images .flex-control-thumbs { display: flex; gap: 12px; overflow-x: auto; padding: 4px; margin-top: 12px; scrollbar-width: thin; }
+body.woocommerce .native-product div.product div.images .flex-control-thumbs li { float: none; width: 76px; flex: 0 0 76px; }
+body.woocommerce .native-product div.product div.images .flex-control-thumbs img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; background: var(--warm); opacity: .65; }
+body.woocommerce .native-product div.product div.images .flex-control-thumbs img.flex-active { outline: 1px solid var(--accent); outline-offset: 2px; opacity: 1; }
+.native-product .woocommerce-product-gallery a:focus-visible,
+.native-product .woocommerce-product-gallery img:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+body.woocommerce .native-product div.product div.images .woocommerce-product-gallery__trigger { top: 16px; right: 16px; width: 44px; height: 44px; background: #fffe; }
+body.woocommerce .native-product div.product div.images .woocommerce-product-gallery__trigger::before { top: 13px; left: 13px; }
+body.woocommerce .native-product div.product div.images .woocommerce-product-gallery__trigger::after { top: 25px; left: 25px; }
+.pswp .pswp__bg { background: #171a17; }
+@media (max-width: 767px) {
+  body.woocommerce .native-product div.product div.images .flex-control-thumbs li { width: 60px; flex-basis: 60px; }
+}

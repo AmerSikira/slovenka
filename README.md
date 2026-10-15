@@ -48,6 +48,8 @@ For later WordPress conversion, shared header/footer markup can become `header.p
 
 Prices were supplied on 14 October 2026. Body measurements, unspecified sizes, stock and delivery charges remain preview data. The cart persists in browser storage. Checkout previews do not take payments, send emails, reserve inventory or create an order on a server.
 
+Product galleries include selectable thumbnails and a full-screen lightbox. Click the main photograph to open it, use the previous/next buttons or arrow keys to browse, and close with Escape or the close button. Closing preserves the selected photo and returns keyboard focus to the gallery. The viewer follows the selected colour and supports Bosnian and English. The WordPress theme styles WooCommerce’s native gallery and PhotoSwipe viewer.
+
 Product pages open the Bosnian body-measurement table from “Tabela mjera” beside the size selector. `BODY_MEASUREMENTS` in `script.js` contains shared sample circumferences for sizes 36–44. Replace them with approved sizing data before live sales; they are not garment dimensions.
 
 Production inquiries and optional technical attachments are saved only in this browser using IndexedDB. They are not emailed or shared with a team. Clearing site data removes saved records. Form fields remain available if saving fails.
