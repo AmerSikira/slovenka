@@ -624,15 +624,6 @@ button:disabled {
   opacity: 0;
   transition: opacity 0.3s;
 }
-.product-tag {
-  position: absolute;
-  left: 12px;
-  top: 12px;
-  font-size: 0.5625rem;
-  letter-spacing: 0.1em;
-  padding: 6px 8px;
-  background: #ffffffb3;
-}
 .product-card-top {
   display: flex;
   justify-content: space-between;
@@ -2598,12 +2589,6 @@ input[type="radio"] {
     line-height: 1.5;
     margin-top: 5px;
   }
-  .product-tag {
-    font-size: 0.5rem;
-    left: 8px;
-    top: 8px;
-    padding: 5px;
-  }
   .swatches > span {
     font-size: 0.5625rem;
   }
@@ -3145,9 +3130,6 @@ input[type="radio"] {
 .footer-bottom .language {
   font-size: 0.8125rem;
 }
-.product-tag {
-  font-size: 0.6875rem;
-}
 .product-price > span {
   font-size: 0.8125rem;
 }
@@ -3178,9 +3160,6 @@ input[type="radio"] {
   .page-intro > .eyebrow,
   .form-page-grid aside .eyebrow {
     font-size: 0.8125rem;
-  }
-  .product-tag {
-    font-size: 0.625rem;
   }
   .product-card h3,
   .product-card-top > span {
