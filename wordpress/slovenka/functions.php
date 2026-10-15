@@ -40,3 +40,8 @@ add_action('wp', function () {
         remove_filter('the_content', 'wptexturize');
     }
 });
+
+// This theme uses full-width layouts on every route, including native WC pages.
+add_action('wp', function () {
+    remove_action('woocommerce_sidebar', 'woocommerce_get_sidebar', 10);
+});

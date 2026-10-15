@@ -69,3 +69,17 @@ The existing `mk_size_table` and `mk_inquiry` modules from the separately develo
 - An email notification is attempted using the existing `mk_inquiry_email` option (default `slovenka.dd@gmail.com`). Failed email does not discard the inquiry; the inbox shows whether the message was handed to the mailer. Confirm working WordPress mail delivery on the host.
 
 The XLSX module was ported from the existing implementation; `templates/size-tables.json` contains the normalized manufacturer data. `scripts/check-size-tables.php` verifies the original XLSX layouts/values and assignment security. `scripts/check-admin-features.py` checks actual admin screens and public inquiry/contact requests against a disposable localhost WordPress store, with outbound mail explicitly disabled.
+
+## Production shop fix (1.0.4)
+
+Replace the installed theme with the rebuilt `dist/slovenka.zip` using WordPress's **Replace current with uploaded** action, then clear page/CDN caches. No re-import or theme reactivation is required; existing page edits, products and orders remain in the database.
+
+The theme now owns WooCommerce's template shell. The assigned shop page renders once as complete imported HTML, rather than passing through WooCommerce's archive-description sanitizer and then displaying a second product grid. This preserves filter selects, lets the catalogue script initialize, and produces working WordPress product links and bundled image URLs. Shop links use the canonical product archive, preserving filters with plain permalinks too. All templates are full width; WooCommerce's sidebar hook is removed and an empty `sidebar.php` prevents WordPress's legacy widget fallback.
+
+Storefront regression check against the disposable local store (requires Playwright):
+
+```sh
+node scripts/check-theme-storefront.cjs 'http://127.0.0.1:5191/?post_type=product'
+```
+
+This checks sidebar absence across all imported page URLs, one intro/grid in both shop languages, loaded product images, WordPress detail links, colour/sort filtering, a selected COCO variation reaching the native cart, checkout, native product rendering and mobile layout. It creates only an anonymous test cart and does not place an order.
