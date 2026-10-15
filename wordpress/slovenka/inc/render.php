@@ -1,13 +1,17 @@
 <?php
 if (!defined('ABSPATH')) { exit; }
 function slovenka_page() {
-    $file = get_post_meta(get_queried_object_id(), '_slovenka_source', true);
+    $id = function_exists('is_shop') && is_shop() ? wc_get_page_id('shop') : get_queried_object_id();
+    $file = get_post_meta($id, '_slovenka_source', true);
     return slovenka_data()['pages'][$file] ?? null;
 }
 function slovenka_urls() {
     $urls = [];
     foreach (get_option('slovenka_pages', []) as $file => $id) { $urls[$file] = get_permalink($id); }
     if (function_exists('wc_get_cart_url')) {
+        // With plain permalinks the shop page_id redirects to the product
+        // archive and drops filters. Link directly to the canonical archive.
+        $urls['shop.html'] = get_post_type_archive_link('product');
         foreach (['cart.html', 'cart-en.html'] as $file) { $urls[$file] = wc_get_cart_url(); }
         foreach (['checkout.html', 'checkout-en.html'] as $file) { $urls[$file] = wc_get_checkout_url(); }
     }
@@ -92,6 +96,13 @@ function slovenka_content() {
         while (have_posts()) { the_post(); the_title('<h1>', '</h1>'); the_content(); }
         return;
     }
+    // The shop is a product archive: its main query contains products, not the
+    // imported shop page. Render that page once without WooCommerce's sanitized
+    // archive-description pipeline (which removes selects and breaks the JS).
+    if (function_exists('is_shop') && is_shop()) {
+        slovenka_render_page_content(get_post_field('post_content', wc_get_page_id('shop')), $page);
+        return;
+    }
     while (have_posts()) { the_post();
         // WooCommerce owns checkout endpoints, customer data, validation, totals and orders.
         if (in_array($page['route'], ['/cart', '/checkout'], true)) {
@@ -100,25 +111,28 @@ function slovenka_content() {
             else { echo '<p>Prodavnica se priprema. Molimo kontaktirajte nas za narudžbu. / The shop is being prepared. Please contact us to order.</p>'; }
             echo '</section>';
         } else {
-            $content = get_the_content();
-            if ($page['route'] === '/shop' || str_starts_with($page['route'], '/product/')) {
-                $content = preg_replace('~<p class="(?:catalog-note|preview-helper)">[\s\S]*?</p>~', '', $content);
-            }
-            $catalogue = slovenka_catalogue();
-            $prices = array_column($catalogue['products'], 'price', 'id');
-            $format = fn($price) => number_format($price, 2, $page['lang'] === 'en' ? '.' : ',', '') . ' KM';
-            $content = preg_replace_callback('~(<article[^>]*data-product="([^"]+)"[\s\S]*?<div class="product-card-top">[\s\S]*?<span>)[^<]*(</span>)~', fn($m) => $m[1] . (isset($prices[$m[2]]) ? esc_html($format($prices[$m[2]])) : '') . $m[3], $content);
-            if (str_starts_with($page['route'], '/product/')) {
-                $key = substr($page['route'], 9);
-                $tables = array_values(array_filter($catalogue['products'], fn($item) => $item['id'] === $key));
-                $has_tables = !empty($tables[0]['sizeTables']);
-                $note = $has_tables
-                    ? ($page['lang'] === 'en' ? 'See the size guide for this model’s garment measurements.' : 'Mjere ovog modela pogledajte u tabeli mjera.')
-                    : ($page['lang'] === 'en' ? 'Contact us for help choosing your size.' : 'Kontaktirajte nas za pomoć pri odabiru veličine.');
-                $content = preg_replace('/(?:Veličine u pregledu su primjeri\.\s*Tačne mjere modela još nisu\s*objavljene\.|Preview sizes are examples\.\s*Exact garment measurements have\s*not been published yet\.)/u', $note, $content);
-                if (isset($prices[$key])) { $content = preg_replace_callback('~(<p class="product-price">)[^<]*~', fn($m) => $m[1] . esc_html($format($prices[$key])), $content); }
-            }
-            echo slovenka_html($content); // Trusted imported HTML; normal WP editor permissions apply.
+            slovenka_render_page_content(get_the_content(), $page);
         }
     }
+}
+
+function slovenka_render_page_content($content, $page) {
+    if ($page['route'] === '/shop' || str_starts_with($page['route'], '/product/')) {
+        $content = preg_replace('~<p class="(?:catalog-note|preview-helper)">[\s\S]*?</p>~', '', $content);
+    }
+    $catalogue = slovenka_catalogue();
+    $prices = array_column($catalogue['products'], 'price', 'id');
+    $format = fn($price) => number_format($price, 2, $page['lang'] === 'en' ? '.' : ',', '') . ' KM';
+    $content = preg_replace_callback('~(<article[^>]*data-product="([^"]+)"[\s\S]*?<div class="product-card-top">[\s\S]*?<span>)[^<]*(</span>)~', fn($m) => $m[1] . (isset($prices[$m[2]]) ? esc_html($format($prices[$m[2]])) : '') . $m[3], $content);
+    if (str_starts_with($page['route'], '/product/')) {
+        $key = substr($page['route'], 9);
+        $tables = array_values(array_filter($catalogue['products'], fn($item) => $item['id'] === $key));
+        $has_tables = !empty($tables[0]['sizeTables']);
+        $note = $has_tables
+            ? ($page['lang'] === 'en' ? 'See the size guide for this model’s garment measurements.' : 'Mjere ovog modela pogledajte u tabeli mjera.')
+            : ($page['lang'] === 'en' ? 'Contact us for help choosing your size.' : 'Kontaktirajte nas za pomoć pri odabiru veličine.');
+        $content = preg_replace('/(?:Veličine u pregledu su primjeri\.\s*Tačne mjere modela još nisu\s*objavljene\.|Preview sizes are examples\.\s*Exact garment measurements have\s*not been published yet\.)/u', $note, $content);
+        if (isset($prices[$key])) { $content = preg_replace_callback('~(<p class="product-price">)[^<]*~', fn($m) => $m[1] . esc_html($format($prices[$key])), $content); }
+    }
+    echo slovenka_html($content); // Trusted imported HTML; normal WP editor permissions apply.
 }
