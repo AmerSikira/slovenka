@@ -32,11 +32,11 @@ for item in data['products']:
     sku = 'slovenka-' + item['id']
     category = next((c['bs'] for c in data['categories'] if c['id'] == item['type']), item['type'])
     gallery = list(dict.fromkeys(filename(key) for color in item['colors'] for key in [color['cover'], *color['images']]))
-    rows.append({'Type':'simple' if draft else 'variable','SKU':sku,'Name':item['name']+' — '+item['label']['bs'],'Published':'-1' if draft else '1','Visibility in catalog':'visible','Short description':item['label']['bs'],'Description':item['description']['bs'],'Regular price':str(item['price']) if draft else '', 'In stock?':'1','Categories':category,'Images':', '.join(gallery),'Attribute 1 name':'colour' if not draft else '', 'Attribute 1 value(s)':', '.join(c['id'] for c in item['colors']),'Attribute 1 visible':'1' if not draft else '', 'Attribute 1 global':'0' if not draft else '', 'Attribute 2 name':'size' if not draft else '', 'Attribute 2 value(s)':', '.join(item['sizes']),'Attribute 2 visible':'1' if not draft else '', 'Attribute 2 global':'0' if not draft else '', 'Meta: _slovenka_product':item['id']})
+    rows.append({'Type':'simple' if draft else 'variable','SKU':sku,'Name':item['name']+' — '+item['label']['bs'],'Published':'-1' if draft else '1','Visibility in catalog':'visible','Short description':item['label']['bs'],'Description':item['description']['bs'],'Regular price':format(item['price'], '.2f') if draft else '', 'In stock?':'1','Categories':category,'Images':', '.join(gallery),'Attribute 1 name':'colour' if not draft else '', 'Attribute 1 value(s)':', '.join(c['id'] for c in item['colors']),'Attribute 1 visible':'1' if not draft else '', 'Attribute 1 global':'0' if not draft else '', 'Attribute 2 name':'size' if not draft else '', 'Attribute 2 value(s)':', '.join(item['sizes']),'Attribute 2 visible':'1' if not draft else '', 'Attribute 2 global':'0' if not draft else '', 'Meta: _slovenka_product':item['id']})
     for color in item['colors']:
         for size in item['sizes']:
             key = item['id']+':'+color['id']+':'+size
-            rows.append({'Type':'variation','Visibility in catalog':'visible','SKU':'slovenka-'+key.replace(':','-'),'Name':item['name']+' — '+color['id']+' / '+size,'Published':'1','Regular price':str(item['price']),'In stock?':'0' if size in item['unavailable'] else '1','Images':filename(color['cover']),'Parent':sku,'Attribute 1 name':'colour','Attribute 1 value(s)':color['id'],'Attribute 1 visible':'1','Attribute 1 global':'0','Attribute 2 name':'size','Attribute 2 value(s)':size,'Attribute 2 visible':'1','Attribute 2 global':'0','Meta: _slovenka_variant':key})
+            rows.append({'Type':'variation','Visibility in catalog':'visible','SKU':'slovenka-'+key.replace(':','-'),'Name':item['name']+' — '+color['id']+' / '+size,'Published':'1','Regular price':format(item['price'], '.2f'),'In stock?':'0' if size in item['unavailable'] else '1','Images':filename(color['cover']),'Parent':sku,'Attribute 1 name':'colour','Attribute 1 value(s)':color['id'],'Attribute 1 visible':'1','Attribute 1 global':'0','Attribute 2 name':'size','Attribute 2 value(s)':size,'Attribute 2 visible':'1','Attribute 2 global':'0','Meta: _slovenka_variant':key})
 assert len({row['SKU'] for row in rows}) == len(rows)
 buffer = io.StringIO(newline='')
 writer = csv.DictWriter(buffer, fieldnames=fields)
@@ -44,12 +44,21 @@ writer.writeheader(); writer.writerows(rows)
 csv_data = buffer.getvalue().encode('utf-8-sig')
 output = ROOT / 'dist'; output.mkdir(exist_ok=True)
 (output / 'slovenka-products.csv').write_bytes(csv_data)
+# Existing stores can update only prices without overwriting names/media/stock.
+price_buffer = io.StringIO(newline='')
+price_writer = csv.DictWriter(price_buffer, fieldnames=['SKU', 'Regular price'])
+price_writer.writeheader()
+price_rows = [{'SKU':row['SKU'], 'Regular price':row['Regular price']} for row in rows if row['Type'] in ['variation', 'simple']]
+price_writer.writerows(price_rows)
+price_data = price_buffer.getvalue().encode('utf-8-sig')
+(output / 'slovenka-price-updates.csv').write_bytes(price_data)
 with zipfile.ZipFile(output / 'slovenka-product-import.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
     for path in sorted([PLUGIN / 'slovenka-catalogue-import.php', PLUGIN / 'data/catalogue.json', *[PLUGIN / asset for asset in assets]]):
         archive.write(path, 'slovenka-catalogue-import/' + str(path.relative_to(PLUGIN)))
 with zipfile.ZipFile(output / 'slovenka-products-csv-and-images.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
     archive.writestr('products.csv', csv_data)
+    archive.writestr('price-updates.csv', price_data)
     archive.write(ROOT / 'wordpress/PRODUCT-IMPORT.md', 'README.md')
     archive.write(ROOT / 'templates/size-tables.json', 'size-tables.json')
     for asset in sorted(assets): archive.write(ROOT / asset, 'images/' + Path(asset).name)
-print(f'PASS: 12 products, {len(rows)-12} variations, {len(assets)} photos; independent importer ZIP and portable CSV/image package built.')
+print(f'PASS: 12 products, {len(rows)-12} variations, {len(assets)} photos; independent importer ZIP, portable CSV/image package and price-only update CSV built.')

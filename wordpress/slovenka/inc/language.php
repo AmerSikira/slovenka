@@ -41,6 +41,10 @@ function slovenka_language_url($url, $lang = null) {
 foreach (['woocommerce_get_shop_page_permalink', 'woocommerce_get_cart_url', 'woocommerce_get_checkout_url', 'woocommerce_get_myaccount_page_permalink', 'woocommerce_get_checkout_order_received_url', 'woocommerce_ajax_get_endpoint', 'get_pagenum_link'] as $hook) {
     add_filter($hook, 'slovenka_language_url');
 }
+// WooCommerce redirects plain-permalink shop page links to this archive URL.
+add_filter('post_type_archive_link', function ($url, $type) {
+    return $type === 'product' ? slovenka_language_url($url) : $url;
+}, 10, 2);
 add_filter('post_type_link', function ($url, $post) {
     return $post->post_type === 'product' ? slovenka_language_url($url) : $url;
 }, 10, 2);

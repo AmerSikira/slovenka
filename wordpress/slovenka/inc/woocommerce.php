@@ -70,6 +70,18 @@ function slovenka_measurements_tab() {
     }
 }
 
+// Keep the shop introduction to a single, translated heading. Category archives
+// retain WooCommerce's own titles and descriptions.
+add_filter('woocommerce_page_title', function ($title) {
+    return is_shop() && !is_search() ? slovenka_text('Trgovina', 'Shop') : $title;
+});
+add_action('wp', function () {
+    if (is_shop()) {
+        remove_action('woocommerce_archive_description', 'woocommerce_product_archive_description', 10);
+        remove_action('woocommerce_before_main_content', 'woocommerce_breadcrumb', 20);
+    }
+});
+
 // WooCommerce's own archive and single-product templates own the entire loop.
 add_action('after_setup_theme', function () {
     remove_action('woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10);

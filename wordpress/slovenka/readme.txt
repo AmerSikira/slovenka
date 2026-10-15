@@ -1,5 +1,5 @@
 === MK Slovenka ===
-Version: 1.2.2
+Version: 1.2.3
 License: GPLv2 or later
 
 Classic WordPress theme with native WooCommerce archive queries, product loops,
@@ -16,7 +16,8 @@ UPGRADING FROM AN OLDER EXPORT
 4. Manage products through WooCommerce, pages through WordPress, and navigation
    through Appearance > Menus. Product re-import is unnecessary for existing data.
 
-Activation and ordinary requests never import content or change store settings.
+Activation creates the primary menu when none is assigned, preserving existing
+menus. Editorial pages/products and store settings are never imported automatically.
 Cart/Checkout support native shortcodes and blocks. WooCommerce controls sorting,
 pagination, filtering, stock, variations, cart, checkout and add-to-cart redirects.
 
@@ -34,3 +35,8 @@ PRODUCT SWATCHES
 Colour circles and size buttons are built into the theme, with no swatch plugin.
 The enhancement script loads only on variable product pages and uses the existing
 WooCommerce variation logic. Native dropdowns work when JavaScript is disabled.
+
+SHOP NAVIGATION
+The shop header shows only Trgovina (Shop in English), without introductory copy.
+Categories open beneath Trgovina on hover/focus, or its separate mobile toggle.
+To create a missing menu on an already active install, reactivate the theme once.
