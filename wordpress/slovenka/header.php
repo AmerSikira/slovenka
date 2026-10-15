@@ -17,9 +17,6 @@
 <?php } ?>
 <nav id="site-navigation" class="desktop-nav" aria-label="<?php echo esc_attr(slovenka_text('Glavna navigacija','Primary navigation')); ?>">
 <?php wp_nav_menu(['theme_location'=>'primary', 'container'=>false, 'menu_class'=>'primary-menu', 'fallback_cb'=>'slovenka_primary_fallback']); ?>
-<?php if (taxonomy_exists('product_cat')) { ?>
-<details class="native-categories"><summary><?php echo esc_html(slovenka_text('Kategorije','Categories')); ?></summary><div><?php slovenka_category_links(); ?></div></details>
-<?php } ?>
 </nav>
 <div class="utilities">
 <?php $page = slovenka_page(); $other = slovenka_language() === 'en' ? 'bs' : 'en';

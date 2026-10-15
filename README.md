@@ -1,6 +1,6 @@
 # MK Slovenka
 
-The installable WordPress/WooCommerce theme and upgrade instructions are in [wordpress/README.md](wordpress/README.md). Version 1.2.2 uses native WooCommerce queries/templates/hooks and optional explicit editorial setup. Product import is separate. The root HTML files below remain the static design preview.
+The installable WordPress/WooCommerce theme and upgrade instructions are in [wordpress/README.md](wordpress/README.md). Version 1.2.3 uses native WooCommerce queries/templates/hooks and optional explicit editorial setup. Product import is separate. The root HTML files below remain the static design preview.
 
 Standalone HTML pages with shared CSS and small JavaScript enhancements. No browser framework, package installation or build step is needed to open or host the finished site.
 

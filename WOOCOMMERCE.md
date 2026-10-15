@@ -1,6 +1,6 @@
 # WooCommerce theme handoff
 
-**Production implementation:** See [wordpress/README.md](wordpress/README.md) for the installable theme, separate optional product import and native WooCommerce archive queries, shared templates/hooks and purchase flow. Theme activation does not import or change merchant settings; old exports require the explicit Appearance → Slovenka setup content upgrade. The notes below describe the static design preview and its original handoff.
+**Production implementation:** See [wordpress/README.md](wordpress/README.md) for the installable theme, separate optional product import and native WooCommerce archive queries, shared templates/hooks and purchase flow. Theme activation creates a primary menu only when unassigned; it never imports products/pages or changes store settings; old exports require the explicit Appearance → Slovenka setup content upgrade. The notes below describe the static design preview and its original handoff.
 
 This is a static HTML design preview. Product prices, delivery fees, payment choices and orders are examples. It does not charge, email, reserve stock or create WooCommerce orders. Checkout details and the last 20 preview receipts are stored only in `sessionStorage`; the cart and selected sample delivery method use `localStorage`.
 

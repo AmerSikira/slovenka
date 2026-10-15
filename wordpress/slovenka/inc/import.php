@@ -1,5 +1,5 @@
 <?php
-/** Optional starter content setup. No activation, cron or admin-init imports. */
+/** Optional editorial setup, plus navigation-only setup on theme activation. */
 if (!defined('ABSPATH')) { exit; }
 function slovenka_data() {
     static $data;
@@ -8,6 +8,68 @@ function slovenka_data() {
 function slovenka_find($type, $key, $value) {
     $ids = get_posts(['post_type'=>$type,'post_status'=>'any','meta_key'=>$key,'meta_value'=>$value,'fields'=>'ids','posts_per_page'=>1]);
     return $ids ? (int)$ids[0] : 0;
+}
+function slovenka_menu_destination($file) {
+    $pages = get_option('slovenka_pages', []);
+    $id = (int)($pages[$file] ?? 0);
+    if ($file === 'shop.html' && function_exists('wc_get_page_id') && wc_get_page_id('shop') > 0) { $id = wc_get_page_id('shop'); }
+    if ($file === 'index.html' && get_option('show_on_front') === 'page' && get_option('page_on_front')) { $id = (int)get_option('page_on_front'); }
+    if (!$id || get_post_status($id) !== 'publish') {
+        $id = slovenka_find('page', '_slovenka_source', $file);
+    }
+    if (!$id || get_post_status($id) !== 'publish') {
+        $page = get_page_by_path(pathinfo($file, PATHINFO_FILENAME));
+        $id = $page && $page->post_status === 'publish' ? $page->ID : 0;
+    }
+    if ($id && get_post_status($id) === 'publish') {
+        return ['menu-item-type'=>'post_type', 'menu-item-object'=>'page', 'menu-item-object-id'=>$id, 'menu-item-url'=>get_permalink($id)];
+    }
+    $url = $file === 'index.html' ? home_url('/') : home_url('/' . pathinfo($file, PATHINFO_FILENAME) . '/');
+    if ($file === 'shop.html' && post_type_exists('product')) { $url = get_post_type_archive_link('product') ?: home_url('/?post_type=product'); }
+    return ['menu-item-type'=>'custom', 'menu-item-object'=>'custom', 'menu-item-object-id'=>0, 'menu-item-url'=>$url];
+}
+function slovenka_menu_item_signature($item) {
+    // Refresh only untouched starter links; labels, order, children and custom attributes are merchant edits.
+    $fields = ['title','type','object','object_id','url','menu_item_parent','menu_order','target','attr_title','description','classes','xfn'];
+    return array_intersect_key((array)$item, array_flip($fields));
+}
+function slovenka_setup_primary_menu() {
+    $locations = get_theme_mod('nav_menu_locations', []);
+    if (!empty($locations['primary']) && wp_get_nav_menu_object($locations['primary'])) { return; }
+    $menu = wp_get_nav_menu_object((int)get_option('slovenka_primary_menu', 0));
+    if (!$menu) {
+        $name = 'Slovenka primary'; $suffix = 2;
+        while (wp_get_nav_menu_object($name)) { $name = 'Slovenka primary ' . $suffix++; }
+        $id = wp_create_nav_menu($name);
+        if (is_wp_error($id)) { return; }
+        update_option('slovenka_primary_menu', $id, false);
+        $seed = [];
+        foreach (['index.html'=>'Početna','shop.html'=>'Trgovina','company.html'=>'O nama','manufacturing.html'=>'Proizvodnja','contact.html'=>'Kontakt'] as $file=>$title) {
+            $item = wp_update_nav_menu_item($id, 0, ['menu-item-title'=>$title, 'menu-item-status'=>'publish'] + slovenka_menu_destination($file));
+            if (is_wp_error($item)) { continue; }
+            update_post_meta($item, '_slovenka_navigation_key', $file);
+            $seed[$item] = ['file'=>$file, 'signature'=>slovenka_menu_item_signature(wp_setup_nav_menu_item(get_post($item)))];
+        }
+        update_option('slovenka_primary_menu_seed', $seed, false);
+    } else { $id = $menu->term_id; }
+    $locations['primary'] = $id;
+    set_theme_mod('nav_menu_locations', $locations);
+}
+add_action('after_switch_theme', 'slovenka_setup_primary_menu');
+function slovenka_refresh_primary_menu_links() {
+    $id = (int)get_option('slovenka_primary_menu', 0);
+    if (!$id || !wp_get_nav_menu_object($id)) { return; }
+    $seed = get_option('slovenka_primary_menu_seed', []);
+    foreach (wp_get_nav_menu_items($id) ?: [] as $item) {
+        $original = $seed[$item->ID] ?? null;
+        if (!$original || slovenka_menu_item_signature($item) !== $original['signature']) { continue; }
+        $destination = slovenka_menu_destination($original['file']);
+        // Resolve starter fallback links once pages exist, without creating or restoring deleted items.
+        if ($item->type !== 'custom' || $destination['menu-item-type'] !== 'post_type') { continue; }
+        $result = wp_update_nav_menu_item($id, $item->ID, ['menu-item-title'=>$item->title, 'menu-item-status'=>'publish', 'menu-item-position'=>$item->menu_order] + $destination);
+        if (!is_wp_error($result)) { $seed[$item->ID]['signature'] = slovenka_menu_item_signature(wp_setup_nav_menu_item(get_post($item->ID))); }
+    }
+    update_option('slovenka_primary_menu_seed', $seed, false);
 }
 function slovenka_import_url($value, $pages) {
     if (str_starts_with($value, 'assets/')) { return get_theme_file_uri($value); }
@@ -144,6 +206,7 @@ function slovenka_import_site($assign_empty = false) {
             }
         }
     }
+    slovenka_refresh_primary_menu_links();
     // Obsolete continuation events must never restart an old automatic import.
     wp_clear_scheduled_hook('slovenka_continue_import');
     return ['created'=>count($created), 'upgraded'=>$updated];
@@ -159,7 +222,7 @@ function slovenka_setup_screen() {
     wp_nonce_field('slovenka_setup');
     echo '<p><label><input type="checkbox" name="assign_empty" value="1"> Assign the imported home/privacy/shop/cart/checkout/terms pages only where no valid page is currently configured.</label></p>';
     submit_button('Create missing pages / upgrade imported content');
-    echo '</form><p>Then manage content in Pages, navigation in Appearance → Menus, and store assignments/currency in WooCommerce settings. No setup runs automatically.</p></div>';
+    echo '</form><p>Then manage content in Pages, navigation in Appearance → Menus, and store assignments/currency in WooCommerce settings. Theme activation creates a primary menu only when none is assigned; editorial pages and products are never imported automatically.</p></div>';
 }
 add_action('admin_post_slovenka_setup', function () {
     if (!current_user_can('manage_options')) { wp_die(esc_html__('Not permitted.','slovenka'), '', ['response'=>403]); }
