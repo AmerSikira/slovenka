@@ -1,10 +1,10 @@
-# MK Slovenka theme 1.2.0
+# MK Slovenka theme 1.2.1
 
 The theme handles presentation and offers 23 Bosnian/English starter editorial pages through an explicit setup action. Products live entirely in WooCommerce; photos live in the Media Library. The theme does not contain a product registry, static product detail pages, starter prices, variations or stock, and never imports or updates products during activation or admin requests.
 
 ## Install or upgrade
 
-Build the theme with `python3 scripts/build-theme.py`. Upload `dist/slovenka.zip` or `dist/slovenka-1.2.0.zip` under Appearance → Themes. On an existing install choose **Replace current with uploaded**, then clear page/CDN caches. Existing products, photos, product edits, orders and page edits remain in WordPress. Re-importing is unnecessary for existing products.
+Build the theme with `python3 scripts/build-theme.py`. Upload `dist/slovenka.zip` or `dist/slovenka-1.2.1.zip` under Appearance → Themes. On an existing install choose **Replace current with uploaded**, then clear page/CDN caches. Existing products, photos, product edits, orders and page edits remain in WordPress. Re-importing is unnecessary for existing products.
 
 A separate, optional [product import package](PRODUCT-IMPORT.md) is built with `python3 scripts/build-product-import.py`. It contains 12 starter products (11 published; MIJA remains a draft at 220 KM), 90 variations and 56 product photographs. Install the independent importer plugin and explicitly click **Products → Slovenka import → Import missing products**. It can be deactivated/deleted afterwards. A portable WooCommerce CSV/image archive is also built for standard imports and bulk editing. Neither archive is part of the theme.
 
@@ -14,7 +14,7 @@ Edit products under **Products**, including names, descriptions, short descripti
 
 The catalogue uses WooCommerce’s own shared archive and product templates, with theme styling and wrapper hooks. There is no custom catalogue adapter, catch-all woocommerce.php or template override directory. Product details use WooCommerce's native gallery, descriptions, attribute selectors, variation availability and add-to-cart form, styled with the site's fonts and colours. Native WooCommerce handles quantities, shipping, taxes, coupons, gateways, checkout and order confirmation. All templates remain full width without a sidebar. Legacy detail-page links from older theme exports redirect to native products, preserving colour selections when possible.
 
-WooCommerce's configured language controls its labels. The two editorial languages share the live catalogue; product translations use the site's WooCommerce translation workflow rather than static alternate product records. Existing `_slovenka_en` metadata is preserved but does not override later edits to current product fields.
+The storefront defaults to the imported homepage’s language, independently of the administrator’s WordPress language. A `?lang=bs` / `?lang=en` selection follows product, category, search, cart and checkout links. The flag switcher is available on native product and shop pages as well as editorial pages. WooCommerce interface labels use that language; the theme includes the community Bosnian translation as a fallback when no merchant-installed Bosnian WooCommerce pack exists. Administrator, REST and cron locales are unchanged. The two languages share the live catalogue; merchant-authored product descriptions, category names and custom menu labels use the site's normal product/content translation workflow rather than static alternate product records. Existing `_slovenka_en` metadata is preserved but does not override later edits to current product fields.
 
 Activation, updates, ordinary admin visits and cron never import content or assign store settings. After upgrading an older export, open **Appearance → Slovenka setup** and explicitly click **Create missing pages / upgrade imported content**. This migrates old imported catalogue HTML to a normal shop description, preserves additional edited text/blocks, and saves a backup of upgraded content. It creates missing starter editorial pages; existing edited pages are not replaced with seed content. Products/media are untouched. The optional unchecked checkbox assigns imported pages only when no valid role is already configured. Currency is always merchant-controlled.
 
@@ -32,6 +32,7 @@ WordPress processes page content through `the_content`, including blocks, shortc
 python3 scripts/build-product-import.py
 python3 scripts/build-theme.py
 python3 scripts/check-theme-package.py
+python3 scripts/check-storefront-language.py --url http://127.0.0.1:5196/
 find wordpress -name '*.php' -exec php -l '{}' \;
 node --check script.js
 node --check wordpress/slovenka/theme.js

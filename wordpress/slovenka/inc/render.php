@@ -3,11 +3,12 @@ if (!defined('ABSPATH')) { exit; }
 function slovenka_page() {
     // A taxonomy's queried object ID belongs to the terms table, never postmeta.
     if (!is_singular('page')) { return null; }
+    if (function_exists('is_cart') && (is_cart() || is_checkout() || is_account_page())) { return null; }
     $file = get_post_meta(get_queried_object_id(), '_slovenka_source', true);
     return slovenka_data()['pages'][$file] ?? null;
 }
 function slovenka_language() {
-    return slovenka_page()['lang'] ?? (str_starts_with(determine_locale(), 'bs') ? 'bs' : 'en');
+    return (did_action('wp') ? (slovenka_page()['lang'] ?? null) : null) ?? slovenka_requested_language();
 }
 function slovenka_text($bosnian, $english) {
     return slovenka_language() === 'bs' ? $bosnian : $english;
@@ -16,9 +17,12 @@ function slovenka_page_url($file) {
     $id = (int)(get_option('slovenka_pages', [])[$file] ?? 0);
     return $id && get_post_status($id) === 'publish' ? get_permalink($id) : '';
 }
+function slovenka_home_url() {
+    return slovenka_page_url('index' . (slovenka_language() === 'en' ? '-en' : '') . '.html') ?: slovenka_language_url(home_url('/'));
+}
 function slovenka_primary_fallback() {
     echo '<ul class="primary-menu">';
-    $links = [[home_url('/'), slovenka_text('Početna','Home')]];
+    $links = [[slovenka_home_url(), slovenka_text('Početna','Home')]];
     if (function_exists('wc_get_page_permalink')) { $links[] = [wc_get_page_permalink('shop'), slovenka_text('Trgovina','Shop')]; }
     foreach (['company'=>['O nama','Our company'], 'manufacturing'=>['Proizvodnja','Manufacturing'], 'contact'=>['Kontakt','Contact']] as $name=>$label) {
         $url = slovenka_page_url($name . (slovenka_language() === 'en' ? '-en' : '') . '.html');
