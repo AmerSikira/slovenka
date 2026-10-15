@@ -5,6 +5,7 @@ require_once __DIR__ . '/inc/render.php';
 require_once __DIR__ . '/inc/language.php';
 require_once __DIR__ . '/inc/woocommerce.php';
 require_once __DIR__ . '/inc/swatches.php';
+require_once __DIR__ . '/inc/swatch-admin.php';
 require_once __DIR__ . '/inc/size-tables.php';
 require_once __DIR__ . '/inc/forms.php';
 add_action('after_setup_theme', function () {

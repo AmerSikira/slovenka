@@ -1,0 +1,47 @@
+#!/usr/bin/env node
+// Actual attribute/term admin forms and local/global storefront integration.
+const assert=require('node:assert/strict');
+const {execFileSync}=require('node:child_process');
+const {chromium}=require('playwright');
+const wpPath=process.argv[2];
+const sitePath=process.argv[3];
+const base=process.argv[4] || 'http://127.0.0.1:5196';
+assert(wpPath && sitePath, 'Usage: node check-swatch-admin.cjs /path/to/wp-cli.phar /path/to/disposable-wordpress http://127.0.0.1:5196');
+assert(['127.0.0.1','localhost'].includes(new URL(base).hostname));
+const wp=code=>execFileSync('php',['-d','error_reporting=22527',wpPath,'--path='+sitePath,'eval',code],{encoding:'utf8'}).trim();
+assert(['127.0.0.1','localhost'].includes(new URL(wp('echo home_url();')).hostname), 'Disposable localhost only');
+const auth=JSON.parse(wp('$u=get_users(["role"=>"administrator","number"=>1])[0];$expiry=time()+900;$token=WP_Session_Tokens::get_instance($u->ID)->create($expiry);echo wp_json_encode(["admin"=>$u->ID,"token"=>$token,"cookies"=>[AUTH_COOKIE=>wp_generate_auth_cookie($u->ID,$expiry,"auth",$token),LOGGED_IN_COOKIE=>wp_generate_auth_cookie($u->ID,$expiry,"logged_in",$token)]]);'));
+(async()=>{const b=await chromium.launch();let attr=0,product=0;try{
+ const context=await b.newContext({viewport:{width:1440,height:1000}});
+ await context.addCookies(Object.entries(auth.cookies).map(([name,value])=>({name,value,domain:new URL(base).hostname,path:'/'})));
+ const page=await context.newPage();page.setDefaultTimeout(15000);const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(base+'/wp-admin/edit.php?post_type=product&page=product_attributes',{waitUntil:'networkidle'});
+ const slug='qa-shade-'+Date.now().toString().slice(-7);
+ await page.locator('#attribute_label').fill('Unrelated Fabric QA');await page.locator('#attribute_name').fill(slug);await page.locator('#attribute_type').selectOption('slovenka_color');
+ await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded'}),page.locator('[name=add_new_attribute]').click()]);
+ attr=Number(wp(`echo wc_attribute_taxonomy_id_by_name('${slug}');`));assert(attr>0);
+ const taxonomy='pa_'+slug;
+ await page.goto(base+'/wp-admin/edit-tags.php?taxonomy='+taxonomy+'&post_type=product',{waitUntil:'networkidle'});
+ await page.locator('#tag-name').fill('Moonlight shade');await page.locator('#tag-slug').fill('moonlight');await page.locator('.wp-color-result').click();await page.locator('.slovenka-color-field').fill('#1258a2');
+ await page.locator('#addtag #submit').click();await page.locator('#the-list .row-title').filter({hasText:'Moonlight shade'}).waitFor();
+ const term=Number(wp(`echo get_term_by('slug','moonlight','${taxonomy}')->term_id;`));assert.equal(wp(`echo get_term_meta(${term},'_slovenka_swatch_color',true);`),'#1258a2');
+ await page.goto(`${base}/wp-admin/term.php?taxonomy=${taxonomy}&tag_ID=${term}&post_type=product`,{waitUntil:'networkidle'});
+ await page.locator('.wp-color-result').click();assert.equal(await page.locator('.slovenka-color-field').inputValue(),'#1258a2');await page.locator('.slovenka-color-field').fill('#8a34b7');await page.locator('#name').fill('Completely renamed shade');
+ await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded'}),page.locator('#edittag [type=submit]').click()]);
+ assert.equal(wp(`echo get_term_meta(${term},'_slovenka_swatch_color',true);`),'#8a34b7');
+ product=Number(wp(`$p=new WC_Product_Variable();$p->set_name('Temporary shade browser QA');$p->set_status('publish');$a=new WC_Product_Attribute();$a->set_id(${attr});$a->set_name('${taxonomy}');$a->set_options([${term}]);$a->set_visible(true);$a->set_variation(true);$s=new WC_Product_Attribute();$s->set_name('Fit arbitrary');$s->set_options(['Mixed Case']);$s->set_visible(true);$s->set_variation(true);$p->set_attributes([$a,$s]);$p->update_meta_data('_slovenka_swatch_settings',['fit-arbitrary'=>['type'=>'size','colors'=>[]]]);$p->save();$v=new WC_Product_Variation();$v->set_parent_id($p->get_id());$v->set_status('publish');$v->set_attributes(['${taxonomy}'=>'moonlight','fit-arbitrary'=>'Mixed Case']);$v->set_regular_price('10');$v->save();WC_Product_Variable::sync($p->get_id());echo $p->get_id();`));
+ await page.goto(`${base}/wp-admin/post.php?post=${product}&action=edit`,{waitUntil:'networkidle'});
+ await page.locator('.attribute_options a').click();
+ const local=page.locator('.woocommerce_attribute').filter({has:page.locator('input.attribute_name[value="Fit arbitrary"]')});
+ await local.locator('h3').click();await local.locator('.slovenka-swatch-type').selectOption('color');await local.locator('.wp-color-result').click();await local.locator('.slovenka-color-field').fill('#e56437');
+ await local.locator('.slovenka-color-field').press('Tab');
+ const [saveResponse]=await Promise.all([page.waitForResponse(r=>r.url().includes('admin-ajax.php')&&(r.request().postData()||'').includes('woocommerce_save_attributes')),page.locator('.save_attributes').click()]);assert((await saveResponse.json()).success);
+ assert.equal(wp(`echo wc_get_product(${product})->get_meta('_slovenka_swatch_settings')['fit-arbitrary']['colors']['Mixed Case'];`),'#e56437');
+ await page.goto(base+'/?p='+product+'&post_type=product',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('.product-swatch-color').count(),2);
+ assert.equal(await page.locator('.product-swatch[data-value=moonlight]').evaluate(el=>getComputedStyle(el,'::before').backgroundColor),'rgb(138, 52, 183)');
+ assert.equal(await page.locator('.product-swatch[data-value="Mixed Case"]').evaluate(el=>getComputedStyle(el,'::before').backgroundColor),'rgb(229, 100, 55)');
+ assert.equal(await page.locator('script#slovenka-swatch-admin-js,script[src*="wp-admin/js/color-picker"]').count(),0);
+ await page.locator('.product-swatch[data-value=moonlight]').click();await page.locator('.product-swatch[data-value="Mixed Case"]').click();await page.waitForFunction(()=>Number(document.querySelector('input.variation_id')?.value)>0);
+ assert.deepEqual(errors,[]);console.log('PASS: real admin type creation, term add/edit shade picker and rename, native global product term UI, local Save attributes AJAX, exact saved frontend shades/variation selection, no frontend colour-picker assets');
+}finally{await b.close();if(product)wp(`$p=wc_get_product(${product});foreach($p->get_children() as $id)wc_get_product($id)->delete(true);$p->delete(true);`);if(attr)wp(`wc_delete_attribute(${attr});`);wp(`WP_Session_Tokens::get_instance(${auth.admin})->destroy('${auth.token}');`);}})().catch(e=>{console.error(e);process.exit(1)});

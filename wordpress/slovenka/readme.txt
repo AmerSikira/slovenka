@@ -1,5 +1,5 @@
 === MK Slovenka ===
-Version: 1.2.3
+Version: 1.2.4
 License: GPLv2 or later
 
 Classic WordPress theme with native WooCommerce archive queries, product loops,
@@ -40,3 +40,11 @@ SHOP NAVIGATION
 The shop header shows only Trgovina (Shop in English), without introductory copy.
 Categories open beneath Trgovina on hover/focus, or its separate mobile toggle.
 To create a missing menu on an already active install, reactivate the theme once.
+
+ATTRIBUTE TYPES AND SHADES
+Products > Attributes: select Type = Boja / Colour or Veličina / Size.
+For Colour, Configure terms > add/edit term > Nijansa / Shade sets its actual HEX
+shade. Attribute names do not control shared attribute display.
+For existing per-product attributes, choose Prikaz / Display and edit value shades
+in the product Attributes tab, then Save attributes. Existing imported defaults
+remain until explicitly edited. The colour picker is admin-only.
