@@ -23,7 +23,7 @@ switch = product.select_one('a.language[hreflang="en"]')
 assert switch, 'Product language switch missing'
 english = read(switch['href'])
 assert language(english) == 'en', 'English product switch failed'
-assert 'Add to cart' in english.get_text(), 'English controls missing'
+assert 'Add to bag' in english.get_text(), 'English controls missing'
 assert parse_qs(urlsplit(english.select_one('.bag-trigger')['href']).query).get('lang') == ['en'], 'Cart loses selected language'
 cart = read(english.select_one('.bag-trigger')['href'])
 assert language(cart) == 'en', 'Cart resets English selection'

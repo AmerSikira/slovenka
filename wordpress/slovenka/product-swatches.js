@@ -11,6 +11,7 @@
       if (!options.length) return;
       const group = document.createElement('div');
       group.className = 'product-swatches';
+      group.dataset.swatchType = select.dataset.slovenkaSwatches;
       group.setAttribute('role', 'group');
       const label = [...form.querySelectorAll('label')].find(label => label.htmlFor === select.id);
       if (label) {
@@ -53,7 +54,9 @@
       const selected = document.createElement('span');
       selected.className = 'swatch-selection';
       selected.setAttribute('aria-live', 'polite');
-      select.after(group, selected);
+      select.after(group);
+      if (select.dataset.slovenkaSwatches === 'color' && label) label.append(selected);
+      else group.after(selected);
       // Keep the successful form control and validation, with the buttons as UI.
       select.classList.add('swatch-select');
       select.tabIndex = -1;
@@ -72,7 +75,7 @@
         button.disabled = select.disabled || !option || option.disabled;
         button.setAttribute('aria-pressed', String(select.value === button.dataset.value));
       });
-      selected.textContent = select.dataset.slovenkaSwatches === 'color' && select.value ? select.selectedOptions[0]?.textContent || '' : '';
+      selected.textContent = select.dataset.slovenkaSwatches === 'color' && select.value ? ': ' + (select.selectedOptions[0]?.textContent || '') : '';
     });
     $(form).on('change.slovenkaSwatches woocommerce_update_variation_values.slovenkaSwatches reset_data.slovenkaSwatches found_variation.slovenkaSwatches', sync);
     sync();

@@ -1,0 +1,72 @@
+#!/usr/bin/env node
+// Compare the restored purchase controls to the approved static ARIA reference.
+const assert = require('node:assert/strict');
+const path = require('node:path');
+const { pathToFileURL } = require('node:url');
+const { chromium } = require('playwright');
+const base = (process.argv[2] || 'http://127.0.0.1:5196').replace(/\/$/, '');
+assert(['127.0.0.1','localhost'].includes(new URL(base).hostname));
+const reference = pathToFileURL(path.resolve(__dirname, '../product-aria-en.html')).href;
+(async () => {
+  const browser = await chromium.launch({headless:true});
+  try {
+    const page = await browser.newPage({viewport:{width:1280,height:1600}});
+    const errors = [];
+    page.on('pageerror', error => errors.push(error.message));
+    const metrics = native => page.evaluate(native => {
+      const panel = document.querySelector(native ? '.summary' : '.purchase-panel');
+      const size = panel.querySelector(native ? '[data-swatch-type="size"] button' : '.sizes button');
+      const button = panel.querySelector(native ? '.single_add_to_cart_button' : '.add-to-bag');
+      const pills = panel.querySelector('.product-benefits');
+      const pill = getComputedStyle(pills.children[0]);
+      return {width:panel.offsetWidth, size:[size.offsetWidth,size.offsetHeight], button:[button.offsetWidth,button.offsetHeight], pillFont:pill.fontSize, pillBackground:pill.backgroundColor, pillBorder:pill.borderColor, pillRadius:pill.borderRadius, pillRows:[...pills.children].map(li=>li.offsetTop-pills.offsetTop)};
+    }, native);
+    await page.goto(reference);
+    const approved = await metrics(false);
+    await page.goto(base + '/?product=aria&lang=en', {waitUntil:'networkidle'});
+    assert.deepEqual(await metrics(true), approved, 'Purchase controls drifted from the approved design');
+    assert.equal(await page.locator('.summary .product-benefit').count(), 3);
+    assert.deepEqual(await page.locator('.product-accordions > details > summary').allTextContents().then(t=>t.slice(0,3).map(x=>x.trim())), ['Fit & details','Composition & care','Delivery & returns']);
+    const guide = page.locator('.product-size-guide-trigger');
+    const sizeRow = page.locator('.variations tr').filter({has:page.locator('select[data-slovenka-swatches="size"]')});
+    assert(await guide.evaluate(el=>getComputedStyle(el).textDecorationLine.includes('underline')));
+    const labelBox = await sizeRow.locator('th.label').boundingBox();
+    const guideBox = await guide.boundingBox();
+    assert(Math.abs(labelBox.y-guideBox.y) < 2, 'Size guide is not aligned with size label');
+    assert(guideBox.x > labelBox.x, 'Size guide must sit to the right');
+    assert.equal(await page.locator('.woocommerce-tabs, #tab-slovenka_measurements').count(), 0);
+    assert.equal(await page.locator('.product-swatch[data-value="black"]').getAttribute('aria-pressed'), 'true', 'Initial colour should match the approved page');
+    await page.locator('.product-swatch[data-value="38"]').click();
+    assert(await page.locator('.product-swatch[data-value="44"]').isDisabled(), 'Unavailable size must be crossed out');
+    await page.waitForFunction(()=>Number(document.querySelector('input.variation_id')?.value)>0);
+    const variation = await page.locator('input.variation_id').inputValue();
+    await guide.click();
+    const dialog = page.locator('dialog.product-size-guide');
+    assert(await dialog.isVisible());
+    assert(await dialog.locator('table').count());
+    assert(await dialog.locator('[data-measurement-size="38"]').evaluate(row=>row.classList.contains('selected')));
+    await page.keyboard.press('Escape');
+    await dialog.waitFor({state:'hidden'});
+    assert(await guide.evaluate(link=>link===document.activeElement));
+    assert.equal(await page.locator('input.variation_id').inputValue(), variation);
+    await page.setViewportSize({width:390,height:844});
+    await guide.click();
+    assert(await dialog.isVisible());
+    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+    await dialog.locator('.icon-button').click();
+    await dialog.waitFor({state:'hidden'});
+    await page.goto(base+'/?product=ami&lang=bs',{waitUntil:'networkidle'});
+    await page.locator('.product-size-guide-trigger').click();
+    assert((await page.locator('dialog.product-size-guide').innerText()).includes('još nije dostupna'));
+    await page.keyboard.press('Escape');
+    const plain = await browser.newContext({javaScriptEnabled:false});
+    const fallback = await plain.newPage();
+    await fallback.goto(base+'/?product=aria&lang=bs');
+    assert(await fallback.locator('#product-measurements').isVisible());
+    assert(await fallback.locator('#product-measurements table').count());
+    assert(await fallback.locator('select[name=attribute_size]').isVisible());
+    await plain.close();
+    assert.deepEqual(errors, []);
+    console.log('PASS: approved reference dimensions/pill styling/wrapping; aligned size guide; live tables, selected row, unavailable sizes, Escape/focus, mobile and no-JS fallback; native variation unchanged');
+  } finally { await browser.close(); }
+})().catch(error=>{ console.error(error); process.exitCode=1; });
