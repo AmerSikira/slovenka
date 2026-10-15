@@ -1187,6 +1187,19 @@ function setupProduct(id, colorId) {
 }
 
 function measurementChart() {
+  if (window.SlovenkaSite?.production) {
+    const groups = productState.p.sizeTables || [];
+    if (!groups.length) return `<p class="measurement-note">${t("Tabela mjera za ovaj model još nije dostupna. Kontaktirajte nas za pomoć pri odabiru veličine.", "Measurements for this model are not available yet. Contact us for help choosing a size.")}</p>`;
+    return groups.map(group => `<section class="measurement-chart" aria-label="${escapeHTML(group.name)}">
+      <h3>${escapeHTML(group.name)}</h3>
+      ${group.tables.map(table => `<div class="measurement-table" role="region" tabindex="0" aria-label="${escapeHTML(group.name + " / " + table.sheet)}"><table>
+        <caption>${escapeHTML(group.name)}${group.tables.length > 1 ? " / " + escapeHTML(table.sheet) : ""} (cm)</caption>
+        <thead><tr>${table.headers.map(label => `<th scope="col">${escapeHTML(label)}</th>`).join("")}</tr></thead>
+        <tbody>${table.rows.map(row => `<tr class="${String(row[0]) === productState.size ? "selected" : ""}">${row.map((value, i) => i === 0 ? `<th scope="row">${escapeHTML(value)}</th>` : `<td>${escapeHTML(value)}</td>`).join("")}</tr>`).join("")}</tbody>
+      </table></div>`).join("")}
+      <p class="measurement-note">${t("Mjere odjevnog predmeta u cm. Oznaka /2 predstavlja polovinu obima. Vrijednosti su prenesene iz tabele proizvođača.", "Garment measurements in cm. /2 indicates half the circumference. Values are taken from the manufacturer's table.")}</p>
+    </section>`).join("");
+  }
   return `<section class="measurement-chart" aria-label="Tjelesne mjere" lang="bs">
     <div class="measurement-table">${measurementTable()}</div>
     <p class="measurement-note">Primjeri tjelesnih mjera. Potvrđene mjere za ovaj model još nisu dostupne.</p>
@@ -1305,6 +1318,10 @@ function openDialog(kind) {
     $("[data-measurement-chart]", content).innerHTML = measurementChart();
     $("[data-measurement-product]", content).textContent = `${productState.p.name} / ${productState.p.label.bs}`;
     $("[data-bust-instruction]", content).hidden = productState.p.type === "trousers";
+    if (window.SlovenkaSite?.production) {
+      dialog.setAttribute("lang", lang);
+      $(".measurement-instructions", content).innerHTML = `<h3>${t("Kako koristiti tabelu", "How to use the table")}</h3><p>${t("Uporedite mjere s odjevnim predmetom koji vam dobro pristaje. Obratite pažnju na oznake obima i poluobima (/2). Ako niste sigurni koju veličinu odabrati, kontaktirajte nas.", "Compare these measurements with a garment that fits you well. Check whether each measurement is a full or half circumference (/2). Contact us for help choosing your size.")}</p>`;
+    }
   }
   dialog.showModal();
   document.body.style.overflow = "hidden";

@@ -12,6 +12,8 @@ assert not any(name.startswith('assets/img/') for name in files), 'Original auth
 assert not any(name.endswith(('.jpg', '.jpeg')) for name in files), 'Redundant JPEG fallbacks were packaged'
 data = json.loads(files['data/site.json'])
 assert len(data['pages']) == 50, 'A bilingual page was lost'
+assert all(name in files for name in ['inc/size-tables.php','inc/forms.php']), 'Admin feature modules were omitted'
+assert {table['key'] for table in data['size_tables']} == {'alba','aria','coco'}, 'Manufacturer tables were omitted'
 assert len(data['products']) == 12, 'A product or MIJA draft was lost'
 assert len(data['images']) == 68, 'The active photo registry changed unexpectedly'
 for image in data['images'].values():

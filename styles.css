@@ -1149,6 +1149,11 @@ button:disabled {
   background: var(--warm);
   border: 1px solid var(--divider);
 }
+.measurement-chart + .measurement-chart { margin-top: 20px; }
+.measurement-chart h3 { margin-bottom: 14px; font-size: 1rem; }
+.measurement-table { max-width: 100%; overflow-x: auto; }
+.measurement-table table { min-width: 460px; }
+.measurement-table:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .measurement-instructions h3 {
   font-size: 0.9375rem;
   letter-spacing: -0.02em;
