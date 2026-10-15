@@ -1,5 +1,5 @@
 === MK Slovenka ===
-Version: 1.2.5
+Version: 1.2.6
 License: GPLv2 or later
 
 Classic WordPress theme with native WooCommerce archive queries, product loops,

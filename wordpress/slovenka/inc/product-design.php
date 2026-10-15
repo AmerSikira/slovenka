@@ -97,7 +97,7 @@ function slovenka_product_measurements() {
 function slovenka_product_accordions() {
     global $product;
     $tabs = apply_filters('woocommerce_product_tabs', []);
-    unset($tabs['slovenka_measurements']);
+    unset($tabs['slovenka_measurements'], $tabs['reviews']);
     echo '<div class="product-accordions">';
     $render = static function ($key, $tab) {
         $title = $key === 'description' ? slovenka_text('Kroj i detalji','Fit & details') : $tab['title'];
@@ -119,6 +119,8 @@ function slovenka_product_accordions() {
 }
 add_action('after_setup_theme', function () {
     remove_action('woocommerce_single_product_summary','woocommerce_template_single_title',5);
+    remove_action('woocommerce_single_product_summary','woocommerce_template_single_rating',10);
+    remove_action('woocommerce_after_shop_loop_item_title','woocommerce_template_loop_rating',5);
     remove_action('woocommerce_single_product_summary','woocommerce_template_single_price',10);
     remove_action('woocommerce_single_product_summary','woocommerce_template_single_excerpt',20);
     remove_action('woocommerce_after_single_product_summary','woocommerce_output_product_data_tabs',10);
@@ -151,3 +153,16 @@ add_filter('woocommerce_attribute_label', function ($label, $name, $target) {
     if (is_admin() || !is_product() || !($target instanceof WC_Product) || !$target->get_meta('_slovenka_product') || taxonomy_exists($name)) { return $label; }
     return ['colour'=>slovenka_text('Boja','Colour'),'color'=>slovenka_text('Boja','Colour'),'size'=>slovenka_text('Veličina','Size')][$label] ?? $label;
 }, 20, 3);
+
+// Hide product reviews on the storefront and close review submissions without
+// deleting existing reviews or changing the merchant's product settings.
+add_filter('woocommerce_product_tabs', function ($tabs) {
+    unset($tabs['reviews']);
+    return $tabs;
+}, 99);
+add_filter('woocommerce_product_get_reviews_allowed', function ($allowed) {
+    return is_admin() ? $allowed : false;
+});
+add_filter('comments_open', function ($open, $post_id) {
+    return get_post_type($post_id) === 'product' && !is_admin() ? false : $open;
+}, 20, 2);
