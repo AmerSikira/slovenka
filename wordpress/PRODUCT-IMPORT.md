@@ -4,7 +4,7 @@ The theme contains no product seeds, product detail pages, prices, sizes or stoc
 
 ## Recommended: one manual import
 
-1. Replace the theme with `slovenka-1.2.0.zip` in Appearance → Themes. Existing products remain in WooCommerce. Clear page/CDN caches.
+1. Replace the theme with `slovenka.zip` in Appearance → Themes. Existing products remain in WooCommerce. Clear page/CDN caches.
 2. Install `slovenka-product-import.zip` under Plugins → Add New → Upload Plugin, and activate it alongside WooCommerce.
 3. Open **Products → Slovenka import** and click **Import missing products**. Keep the page open until it reports completion. Batches can be retried safely.
 4. Manage names, descriptions, categories, images/galleries, prices, attributes, sizes, colours, variations and stock under **Products**. New products appear automatically. Native WooCommerce product pages use the current fields and variation form.
@@ -13,6 +13,26 @@ The theme contains no product seeds, product detail pages, prices, sizes or stoc
 The plugin never imports automatically. It adds missing starter products, copies photographs into the Media Library and imports the supplied ALBA/ARIA/COCO size tables when the size-table editor is available. Existing products are skipped, including edited prices, descriptions, photos, variation stock and custom SKUs. Previously imported products with blank SKUs receive stable `slovenka-*` SKUs so the standard CSV importer can match them later. Existing size-table assignments are preserved. Interrupted records created by this importer resume; existing unrelated records are untouched.
 
 MIJA remains an unpublished draft at 220 KM with no invented photos, sizes or description. Legacy product-page links redirect to native WooCommerce products. Products hidden/deleted in WooCommerce do not leave a stale static detail page visible.
+
+## Approved prices and existing-store updates
+
+| Product | Price (KM) | Confirmed size range |
+| --- | ---: | --- |
+| Sako PEPITO | 123.50 | |
+| Sako SIGNATURE | 123.50 | |
+| Hlače SIGNATURE | 65.00 | |
+| Sako AMI | 123.50 | |
+| Sako COCO | 123.50 | |
+| Jakna HASI | 190.00 | |
+| OVER | 175.00 | |
+| Kaput MIJA | 220.00 | Draft until product details are supplied |
+| Hlače ARIA | 75.00 | |
+| ICON (formerly Hlače HASI) | 65.00 | 36, 38, 40, 42, 44, 46 |
+| ICON EXTRA | 75.00 | 48, 50, 52, 54 |
+
+ALBA retains its existing 65.00 KM price. Internal `hasi` identifiers/SKUs remain stable so ICON updates match existing products.
+
+The starter import skips existing products. To deliberately update existing regular prices, use **Products → Import**, upload `slovenka-price-updates.csv` (also `price-updates.csv` in the CSV/photo archive), check **Update existing products**, and map only **SKU** and **Regular price**. It contains all 90 variation prices plus MIJA's price, with no name, description, image, size, stock or publication columns. Existing sale prices remain in force until edited separately. Use this file only when your products/variations use the matching `slovenka-*` SKUs; for custom or blank SKUs, export the live products and edit that export instead. A price-only update does not rename existing products or add missing sizes; the full starter import already defines ICON/ICON EXTRA with the names/ranges above.
 
 ## Alternative: standard CSV import
 

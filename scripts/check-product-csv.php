@@ -19,7 +19,7 @@ WC_Post_Data::do_deferred_product_sync();
 if ($result['failed'] || count($result['imported']) !== 12 || count($result['imported_variations']) !== 90) {
     throw new RuntimeException('CSV import mismatch: ' . wp_json_encode(['imported'=>count($result['imported']),'variations'=>count($result['imported_variations']),'first_error'=>$result['failed'][0] ?? null]));
 }
-foreach (['coco'=>123.5,'alba'=>65,'aria'=>75,'hasi'=>65,'icon-extra'=>75,'mija'=>220] as $key=>$price) {
+foreach (['pepito'=>123.5,'signature'=>123.5,'signature-trousers'=>65,'ami'=>123.5,'coco'=>123.5,'jakna-hasi'=>190,'over'=>175,'mija'=>220,'aria'=>75,'hasi'=>65,'icon-extra'=>75,'alba'=>65] as $key=>$price) {
     $product = wc_get_product(wc_get_product_id_by_sku('slovenka-' . $key));
     if (!$product || (float)$product->get_price() !== (float)$price || ($key === 'mija' && $product->get_status() !== 'draft')) { throw new RuntimeException('CSV product incorrect: ' . $key); }
     if ($key !== 'mija' && (!$product->get_image_id() || !$product->get_children())) { throw new RuntimeException('CSV product missing images or children'); }
