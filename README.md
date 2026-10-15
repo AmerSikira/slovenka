@@ -14,7 +14,7 @@ Then visit http://127.0.0.1:5187.
 
 ## Pages and navigation
 
-Every destination is a physical document: `index.html`, `shop.html`, `company.html`, `manufacturing.html`, `inquiry.html`, `contact.html`, nine `product-*.html` pages and five `support-*.html` pages. Commerce has separate `cart.html`, `checkout.html` and `order.html` pages. English documents use an `-en` suffix, including `index-en.html` and `product-coco-en.html`.
+Every destination is a physical document: `index.html`, `shop.html`, `company.html`, `manufacturing.html`, `inquiry.html`, `contact.html`, eleven `product-*.html` pages and five `support-*.html` pages. Commerce has separate `cart.html`, `checkout.html` and `order.html` pages. English documents use an `-en` suffix, including `index-en.html` and `product-coco-en.html`.
 
 Navigation follows ordinary links and loads the next document. There is no hash router or client-side page replacement. Search and catalogue selections use native query strings such as `shop.html?category=trousers&size=38`; JavaScript enhances the catalogue results, product gallery, variant selections and drawers. Base product content and navigation remain available with JavaScript disabled. Each document declares its language, page title and description. Language links lead to the matching physical page and preserve query parameters and anchors when JavaScript is available.
 
@@ -44,7 +44,7 @@ For later WordPress conversion, shared header/footer markup can become `header.p
 
 ## Preview behavior
 
-Prices, sizes, body measurements, stock and delivery charges are examples. The cart persists in browser storage. Checkout previews do not take payments, send emails, reserve inventory or create an order on a server.
+Prices were supplied on 14 October 2026. Body measurements, unspecified sizes, stock and delivery charges remain preview data. The cart persists in browser storage. Checkout previews do not take payments, send emails, reserve inventory or create an order on a server.
 
 Product pages open the Bosnian body-measurement table from “Tabela mjera” beside the size selector. `BODY_MEASUREMENTS` in `script.js` contains shared sample circumferences for sizes 36–44. Replace them with approved sizing data before live sales; they are not garment dimensions.
 
@@ -66,4 +66,8 @@ Motion uses transforms and `autoAlpha` for short, one-time entrances near the vi
 
 The homepage cooperation steps are three bordered cards, arranged in a row on desktop and stacked on mobile. Each card fades and rises into view once, with a short stagger when several enter together. Its badge counts from `00` to `01`, `02` or `03`. The four homepage statistics also count from zero to their final values, retaining language-specific separators and `+` suffixes. Screen readers receive static final statistics, while the changing visual counters are hidden from assistive technology. Inline card animation styles are cleared on completion. The cards are excluded from generic entrances to prevent competing motion.
 
-The catalogue includes AMI and PEPITO blazers, OVER coats (black, charcoal, burgundy and bronze), and JAKNA HASI jackets (black and burgundy), using the supplied October 2026 photography. The homepage features these four additions; `shop.html?edit=new` filters to them. Categories are Jakne / Jackets, Sakoi / Blazers, Kaputi / Coats, Hlače / Trousers, and the retained Odijela / Suits category for SIGNATURE. New product prices and sizes use the same clearly labelled sample data as the existing catalogue. Gallery entries accept original image paths as well as the existing numbered photograph convention.
+The catalogue includes AMI and PEPITO blazers, OVER coats (black, charcoal, burgundy and bronze), and JAKNA HASI jackets (black and burgundy), using the supplied October 2026 photography. The homepage features these four additions; `shop.html?edit=new` filters to them. Categories are Jakne / Jackets, Sakoi / Blazers, Kaputi / Coats, Hlače / Trousers, and the retained Odijela / Suits category for SIGNATURE. Approved retail prices are stored in `PRODUCTS`. ICON trousers (formerly HASI) cover sizes 36–46 at 65 KM; ICON EXTRA covers sizes 48–54 at 75 KM. SIGNATURE blazer and trousers are sold separately at 123.50 KM and 65 KM. Other sizes and availability still need confirmation. Gallery entries accept original image paths as well as the existing numbered photograph convention.
+
+## WordPress production package
+
+The installable theme and automatic activation import are described in [wordpress/README.md](wordpress/README.md). Run `python3 scripts/build-theme.py` after regenerating pages to produce `dist/slovenka.zip`. Activation imports both languages, site pages, images and WooCommerce products. MIJA is imported as a draft at 220 KM. Production commerce uses native WooCommerce cart and checkout; the root static HTML remains a browser preview.

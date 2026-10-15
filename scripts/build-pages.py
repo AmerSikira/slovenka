@@ -33,7 +33,7 @@ def card(p, lang):
     c = p['colors'][0]; href = url('/product/' + p['id'] + '?color=' + c['id'], lang)
     secondary = picture(gallery_path(p,c['images'][1])) if len(c['images']) > 1 else ''
     secondary = secondary.replace('<img ', '<img class="hover-image" ')
-    return f'<article class="product-card" data-product="{p["id"]}"><a class="product-image" href="{href}">{picture(c["cover"], p["name"] + " — " + p["label"][lang])}{secondary}</a><div class="product-card-top"><a href="{href}"><h3>{p["name"]}</h3></a><span>{money(p["price"],lang)}</span></div><a class="product-description" href="{href}">{p["label"][lang]}</a><div class="swatches">{swatches(p,lang)}<span>{"Primjer cijene" if lang == "bs" else "Sample price"}</span></div></article>'
+    return f'<article class="product-card" data-product="{p["id"]}"><a class="product-image" href="{href}">{picture(c["cover"], p["name"] + " — " + p["label"][lang])}{secondary}</a><div class="product-card-top"><a href="{href}"><h3>{p["name"]}</h3></a><span>{money(p["price"],lang)}</span></div><a class="product-description" href="{href}">{p["label"][lang]}</a><div class="swatches">{swatches(p,lang)}<span>{"Cijena" if lang == "bs" else "Price"}</span></div></article>'
 def body_content(key, lang):
     if key == 'home' and lang == 'bs': return fragment(str(source.select_one('#main'))).select_one('main')
     return fragment(source.find('template', id=key + '-' + lang).decode_contents())
@@ -88,6 +88,8 @@ def materialize(key, lang, p=None):
         if prod: existing.replace_with(fragment(card(prod,lang)))
     if key == 'home':
         replace_contents(main.select_one('.selected-section .product-grid'), ''.join(card(x,lang) for x in products if x.get('isNew')))
+    for select in [group.select('select')[1] for group in doc.select('.desktop-filters, .filter-fields') if len(group.select('select')) > 1]:
+        replace_contents(select, '<option value="">' + ('Sve veličine' if lang == 'bs' else 'All sizes') + '</option>' + ''.join(f'<option value="{size}">{size}</option>' for size in sorted({s for item in products for s in item['sizes']}, key=int)))
     for menu in doc.select('.shop-menu'):
         chosen = menu.select('div')[1]
         replace_contents(chosen, '<p class="eyebrow">' + ('Naš izbor' if lang == 'bs' else 'Our selection') + '</p>' + ''.join(f'<a href="{url("/product/" + x["id"], lang)}">{x["name"]}</a>' for x in products if x.get('isNew')))
@@ -100,7 +102,7 @@ def materialize(key, lang, p=None):
     if p:
         c=p['colors'][0]; main.h1.string = p['name'];main.select_one('.breadcrumbs [aria-current="page"]').string=p['name']
         main.select_one('.product-subtitle').string=p['label'][lang]
-        replace_contents(main.select_one('.product-price'), money(p['price'],lang)+f'<span>{"Primjer cijene" if lang == "bs" else "Sample price"}</span>')
+        replace_contents(main.select_one('.product-price'), money(p['price'],lang)+f'<span>{"Cijena" if lang == "bs" else "Price"}</span>')
         main.select_one('.product-intro').string=p['description'][lang]
         main.select_one('.product-accordions details p').string=p['description'][lang]
         replace_contents(main.select_one('.swatches.large'),swatches(p,lang,'product'))

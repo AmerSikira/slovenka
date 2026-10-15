@@ -1,5 +1,7 @@
 # WooCommerce theme handoff
 
+**Production implementation:** See [wordpress/README.md](wordpress/README.md) for the installable theme, automatic import and native WooCommerce purchase flow. The notes below describe the static design preview and its original handoff.
+
 This is a static HTML design preview. Product prices, delivery fees, payment choices and orders are examples. It does not charge, email, reserve stock or create WooCommerce orders. Checkout details and the last 20 preview receipts are stored only in `sessionStorage`; the cart and selected sample delivery method use `localStorage`.
 
 | Page | WooCommerce role | Design content |
