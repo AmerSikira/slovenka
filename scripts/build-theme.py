@@ -45,6 +45,7 @@ for file in sorted(ROOT.glob('*.html')):
         'after': ''.join(after), 'content': main.decode_contents(),
     }
 data['pages'] = pages
+data['size_tables'] = json.loads((ROOT / 'templates/size-tables.json').read_text())
 
 # Retain photographs reached by markup, every colour/gallery, categories, or runtime helpers.
 used_images = set()
@@ -128,7 +129,7 @@ for name in ['commerce.css', 'commerce.js']:
 (THEME / 'data/site.json').write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')))
 
 # Explicit package manifest also excludes accidental backups, editor files and stale outputs.
-package_files = set(runtime_files) | {'data/site.json', 'style.css', 'notices.css', 'production.js', 'functions.php', 'header.php', 'footer.php', 'index.php', 'inc/import.php', 'inc/render.php'} | assets
+package_files = set(runtime_files) | {'data/site.json', 'style.css', 'notices.css', 'production.js', 'functions.php', 'header.php', 'footer.php', 'index.php', 'inc/import.php', 'inc/render.php', 'inc/size-tables.php', 'inc/forms.php'} | assets
 output = ROOT / 'dist/slovenka.zip'
 output.parent.mkdir(exist_ok=True)
 with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:

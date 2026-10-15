@@ -71,3 +71,5 @@ The catalogue includes AMI and PEPITO blazers, OVER coats (black, charcoal, burg
 ## WordPress production package
 
 The installable theme and automatic activation import are described in [wordpress/README.md](wordpress/README.md). Run `python3 scripts/build-theme.py` after regenerating pages to produce `dist/slovenka.zip`. Activation imports both languages, site pages, images and WooCommerce products. MIJA is imported as a draft at 220 KM. Production commerce uses native WooCommerce cart and checkout; the root static HTML remains a browser preview.
+
+The production ZIP also includes the existing XLSX **Tabele mjera** importer, multiple reusable table assignments per product, the supplied ALBA/ARIA/COCO tables, and a private **Upiti / Inquiries** inbox for production and contact forms. See the [production administration notes](wordpress/README.md).

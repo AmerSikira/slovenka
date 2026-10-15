@@ -21,7 +21,7 @@ Production product selection submits the chosen WooCommerce variation to its nat
 
 Edit imported pages under **Pages**, prices/variations/stock under **Products**, and photographs under **Media**. The shared header, footer and dialogs preserve the supplied website markup in the theme bundle. Product gallery/copy authoring remains in `script.js`; the production adapter reads current WooCommerce prices, published state, size attributes and available colour/size variations. New products and new colour photography require updating the catalogue source and rebuilding the theme. Changing source data does not overwrite a completed production import.
 
-The original site includes sample measurements, availability outside the explicitly supplied ICON ranges, materials/care and retail-policy copy. Review those values along with payment, shipping, tax and store visibility settings before accepting live orders. Contact forms retain their existing mail-app behavior; production inquiries retain their existing local-browser storage behavior. Activation cannot transfer preview carts, preview receipts, inquiry files or other browser-local data.
+The original site includes sample measurements, availability outside the explicitly supplied ICON ranges, materials/care and retail-policy copy. Review those values along with payment, shipping, tax and store visibility settings before accepting live orders. Contact forms submit to WordPress; production and contact inquiries are saved privately in the WordPress **Upiti / Inquiries** inbox, with optional private attachments and an email notification attempt. Activation cannot transfer preview carts, preview receipts, inquiry files or other browser-local data.
 
 ## Verification
 
@@ -57,3 +57,15 @@ Generated assets, the data manifest and ZIP are ignored by Git. The builder reco
 | No activation importer | Stable page/product/media IDs, background continuation, dependency recovery | Repeated import, edited content/price preservation and missing-variation repair pass |
 
 Verified locally with WordPress 7.1.3, WooCommerce 11.2.1 and PHP 8.5. Syntax checks also pass. The local test store has no payment gateway configured, so no paid order was attempted.
+
+## Tabele mjera and Upiti (restored in 1.0.3)
+
+The existing `mk_size_table` and `mk_inquiry` modules from the separately developed Local Sites theme are included in this ZIP. Existing records and `_mk_size_table_ids` product assignments keep their original types/keys. These features load on a normal admin request after replacing the ZIP; reactivating the theme or resetting the content import is unnecessary.
+
+- **Products → Tabele mjera → Add New**: enter a name, upload an XLSX (up to 5 MB), and publish. Both size-across-columns and size-down-rows workbooks are supported. Successful replacement updates every assigned product; invalid files preserve the existing measurements. PHP ZIP and SimpleXML are required for new uploads.
+- **Products → Edit product → Tabele mjera**: select any number of reusable tables. Published assigned tables appear in the size guide. Products without a table show an honest unavailable message rather than sample body measurements.
+- The supplied ALBA, ARIA and COCO manufacturer tables are bundled as parsed data and assigned on fresh installs/upgrades. COCO's `/2` half-measurement labels and every source value are preserved. Existing table data and explicit product assignments are not overwritten.
+- **Upiti / Inquiries**: production and contact submissions are private posts, visible to authorized WordPress staff. A nonce, field/type/size validation and a submission rate limit protect the public endpoint. PDF/JPG/PNG technical packs up to 10 MB are stored outside the public web root and downloaded through an authenticated, nonce-protected admin action.
+- An email notification is attempted using the existing `mk_inquiry_email` option (default `slovenka.dd@gmail.com`). Failed email does not discard the inquiry; the inbox shows whether the message was handed to the mailer. Confirm working WordPress mail delivery on the host.
+
+The XLSX module was ported from the existing implementation; `templates/size-tables.json` contains the normalized manufacturer data. `scripts/check-size-tables.php` verifies the original XLSX layouts/values and assignment security. `scripts/check-admin-features.py` checks actual admin screens and public inquiry/contact requests against a disposable localhost WordPress store, with outbound mail explicitly disabled.
