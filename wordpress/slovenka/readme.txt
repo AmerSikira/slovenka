@@ -1,5 +1,5 @@
 === MK Slovenka ===
-Version: 1.2.1
+Version: 1.2.2
 License: GPLv2 or later
 
 Classic WordPress theme with native WooCommerce archive queries, product loops,
@@ -29,3 +29,8 @@ uses explicit lang=bs/en links through the catalogue, search, cart and checkout.
 Bosnian WooCommerce translations are bundled; installed language packs take
 precedence. Administrator language and merchant product content are unchanged.
 See languages/README.md for translation attribution, source and license.
+
+PRODUCT SWATCHES
+Colour circles and size buttons are built into the theme, with no swatch plugin.
+The enhancement script loads only on variable product pages and uses the existing
+WooCommerce variation logic. Native dropdowns work when JavaScript is disabled.

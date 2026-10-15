@@ -19,8 +19,17 @@ assert(['localhost','127.0.0.1'].includes(new URL(fixture.shop).hostname));
     await page.locator('select.orderby').selectOption('price-desc');
     await page.waitForURL(url => url.searchParams.get('orderby') === 'price-desc');
     await page.goto(fixture.variable);
-    await page.locator('select[name=attribute_colour]').selectOption('green');
-    await page.locator('select[name=attribute_size]').selectOption('36');
+    assert(await page.locator('.product-swatch-color').first().evaluate(button => parseFloat(getComputedStyle(button, '::before').height) > 0), 'Colour fill is invisible');
+    await page.locator('.product-swatch-color[data-value="green"]').click();
+    await page.locator('.product-swatch[data-value="36"]').click();
+    assert.equal(await page.locator('select[name=attribute_colour]').inputValue(), 'green');
+    assert.equal(await page.locator('select[name=attribute_size]').inputValue(), '36');
+    assert.equal(await page.locator('.product-swatch[data-value="36"]').getAttribute('aria-pressed'), 'true');
+    await page.locator('.reset_variations').click();
+    assert.equal(await page.locator('.product-swatch[aria-pressed="true"]').count(), 0);
+    await page.locator('.product-swatch-color[data-value="green"]').focus();
+    await page.keyboard.press('Space');
+    await page.locator('.product-swatch[data-value="36"]').click();
     await page.waitForFunction(() => Number(document.querySelector('input.variation_id')?.value)>0 && !document.querySelector('.single_add_to_cart_button').classList.contains('disabled'));
     await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded'}), page.locator('.single_add_to_cart_button').click()]);
     // The merchant's redirect option is disabled; a successful purchase selection stays here.
@@ -46,6 +55,8 @@ assert(['localhost','127.0.0.1'].includes(new URL(fixture.shop).hostname));
       await page.setViewportSize({width,height:844});
       await page.goto(fixture.variable);
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Product page overflows at '+width);
+      assert(await page.locator('.product-swatch-color').first().isVisible());
+      assert(await page.locator('.product-swatch[data-value="36"]').isVisible());
       if (width===390) {
         await page.locator('.mobile-menu').click();
         assert(await page.locator('#site-navigation.is-open').isVisible());
@@ -53,6 +64,12 @@ assert(['localhost','127.0.0.1'].includes(new URL(fixture.shop).hostname));
       await page.goto(fixture.shop);
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Shop overflows at '+width);
     }
+    const plain = await browser.newContext({javaScriptEnabled:false});
+    const fallback = await plain.newPage();
+    await fallback.goto(fixture.variable);
+    assert(await fallback.locator('select[name=attribute_colour]').isVisible(), 'No-JS colour select missing');
+    assert(await fallback.locator('select[name=attribute_size]').isVisible(), 'No-JS size select missing');
+    await plain.close();
     assert.deepEqual(errors, [], 'Browser JavaScript errors');
     console.log('PASS: native ordering, variable add-to-cart honors redirect=no, cart/classic checkout, account, Cart/Checkout blocks, native product search, mobile menu/layout; no JavaScript errors.');
   } finally { await browser.close(); }
