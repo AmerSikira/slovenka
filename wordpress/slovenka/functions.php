@@ -7,6 +7,11 @@ add_action('after_setup_theme', function () {
     add_theme_support('woocommerce');
     register_nav_menus(['primary' => 'Primary navigation', 'footer' => 'Footer navigation']);
 });
+// Load after WooCommerce's styles, including notices outside shop templates.
+add_action('wp_enqueue_scripts', function () {
+    if (!class_exists('WooCommerce')) { return; }
+    wp_enqueue_style('slovenka-notices', get_template_directory_uri() . '/notices.css', [], (string) filemtime(get_template_directory() . '/notices.css'));
+}, 100);
 add_action('after_switch_theme', 'slovenka_import_site');
 add_action('slovenka_continue_import', 'slovenka_import_site');
 // Also resume when WooCommerce is installed after the theme, or an import was interrupted.
