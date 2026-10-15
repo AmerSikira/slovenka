@@ -1235,26 +1235,73 @@ function updateGallery() {
   if (p.id === "hasi") paths.push("HASI/Primjena/HASI 1.png");
   $(".variant-group p").innerHTML =
     `${t("Boja", "Colour")}: <strong>${color.name[lang]}</strong>`;
-  $(".gallery-main").innerHTML =
-    image(
+  const main = $(".gallery-main");
+  main.innerHTML =
+    `<button type="button" class="gallery-open" data-action="open-gallery" aria-label="${t("Uvećaj fotografiju", "Enlarge image")}">` + image(
       paths[imageIndex],
       `${p.name}, ${color.name[lang]}, ${t("prikaz", "view")} ${imageIndex + 1}`,
       "",
       true,
     ) +
-    `<span class="gallery-count">${imageIndex + 1} / ${paths.length}</span>`;
+    `<span class="gallery-zoom" aria-hidden="true">${icon("search", 20)}</span></button><span class="gallery-count">${imageIndex + 1} / ${paths.length}</span>`;
+  const focusedIndex = document.activeElement?.matches('[data-action="gallery"]') ? document.activeElement.dataset.index : null;
   $(".gallery-thumbnails").innerHTML = paths
     .map(
       (path, i) =>
         `<button type="button" data-action="gallery" data-index="${i}" class="${i === imageIndex ? "selected" : ""}" aria-label="${t("Prikaz", "View")} ${i + 1}" aria-pressed="${i === imageIndex}">${image(path)}</button>`,
     )
     .join("");
+  if (focusedIndex !== null) $(`.gallery-thumbnails [data-index="${focusedIndex}"]`)?.focus({ preventScroll: true });
   $$(".swatches.large .swatch").forEach((b) => {
     const selected = b.dataset.color === color.id;
     b.classList.toggle("selected", selected);
     b.setAttribute("aria-pressed", selected);
   });
 }
+// A separate modal keeps the full-size photograph independent of store drawers.
+function openGallery() {
+  const viewer = document.createElement("dialog");
+  viewer.className = "product-lightbox";
+  viewer.setAttribute("aria-label", t("Galerija proizvoda", "Product gallery"));
+  viewer.innerHTML = `<header><span>${escapeHTML(productState.p.name)}</span><button type="button" data-viewer="close" autofocus aria-label="${t("Zatvori", "Close")}">×</button></header><div class="lightbox-stage"><button type="button" data-viewer="previous" aria-label="${t("Prethodna fotografija", "Previous image")}">‹</button><img alt=""><button type="button" data-viewer="next" aria-label="${t("Sljedeća fotografija", "Next image")}">›</button></div><p class="lightbox-count" role="status" aria-live="polite"></p>`;
+  const paths = productState.color.images.map(n => galleryPath(productState.p, n));
+  if (productState.p.id === "hasi") paths.push("HASI/Primjena/HASI 1.png");
+  const render = () => {
+    const index = productState.imageIndex;
+    const img = viewer.querySelector("img");
+    img.src = IMAGES[paths[index]].src;
+    img.alt = `${productState.p.name}, ${productState.color.name[lang]}, ${t("prikaz", "view")} ${index + 1}`;
+    viewer.querySelector(".lightbox-count").textContent = `${index + 1} / ${paths.length}`;
+    viewer.querySelectorAll('.lightbox-stage button').forEach(button => button.hidden = paths.length < 2);
+  };
+  const move = delta => {
+    productState.imageIndex = (productState.imageIndex + delta + paths.length) % paths.length;
+    render();
+  };
+  viewer.addEventListener("click", event => {
+    const action = event.target.closest("[data-viewer]")?.dataset.viewer;
+    if (action === "close" || event.target === viewer) viewer.close();
+    if (action === "previous") move(-1);
+    if (action === "next") move(1);
+  });
+  viewer.addEventListener("keydown", event => {
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+      event.preventDefault();
+      move(event.key === "ArrowLeft" ? -1 : 1);
+    }
+  });
+  viewer.addEventListener("close", () => {
+    document.documentElement.classList.remove("gallery-is-open");
+    viewer.remove();
+    updateGallery();
+    document.querySelector(".gallery-open")?.focus({ preventScroll: true });
+  }, { once: true });
+  document.body.append(viewer);
+  render();
+  viewer.showModal();
+  document.documentElement.classList.add("gallery-is-open");
+}
+
 function addToBag() {
   const { p, size, color } = productState;
   if (!size) {
@@ -1615,6 +1662,7 @@ document.addEventListener("click", (event) => {
     updateGallery();
     return;
   }
+  if (action === "open-gallery") return openGallery();
   if (action === "gallery") {
     productState.imageIndex = Number(button.dataset.index);
     updateGallery();
