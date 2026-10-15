@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30">
+  <defs>
+    <clipPath id="bounds"><path d="M0 0h60v30H0z"/></clipPath>
+    <path id="star" d="m0-2.3.516 1.588h1.67L.835.269l.516 1.588L0 .876l-1.351.981.516-1.588-1.351-.981h1.67Z"/>
+  </defs>
+  <g clip-path="url(#bounds)">
+    <path fill="#002395" d="M0 0h60v30H0z"/>
+    <path fill="#fecb00" d="M20 0h30v30z"/>
+    <g fill="#fff">
+      <use href="#star" x="14" y="-1"/>
+      <use href="#star" x="18" y="3"/>
+      <use href="#star" x="22" y="7"/>
+      <use href="#star" x="26" y="11"/>
+      <use href="#star" x="30" y="15"/>
+      <use href="#star" x="34" y="19"/>
+      <use href="#star" x="38" y="23"/>
+      <use href="#star" x="42" y="27"/>
+      <use href="#star" x="46" y="31"/>
+    </g>
+  </g>
+</svg>

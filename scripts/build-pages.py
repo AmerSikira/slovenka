@@ -26,14 +26,14 @@ def picture(path, alt='', eager=False):
     m = images[path]
     priority = ' fetchpriority="high"' if eager else ''
     return f'<picture class="responsive-image"><source type="image/webp" srcset="{m["srcSet"]}" sizes="(max-width:767px) 100vw, 50vw"><img src="{m["fallback"]}" width="{m["width"]}" height="{m["height"]}" alt="{escape(alt)}" loading="{"eager" if eager else "lazy"}"{priority}></picture>'
-def gallery_path(p, n): return f'{p["name"]}/{"Sređeno" if p["id"] == "aria" else "Sređene"}/{p["name"]} {n}.png'
+def gallery_path(p, n): return n if isinstance(n, str) else f'{p["name"]}/{"Sređeno" if p["id"] == "aria" else "Sređene"}/{p["name"]} {n}.png'
 def swatches(p, lang, context='card'):
     return ''.join(f'<button type="button" class="swatch {"selected" if i == 0 else ""}" style="--swatch:{c["hex"]}" data-action="{context}-color" data-product="{p["id"]}" data-color="{c["id"]}" aria-label="{c["name"][lang]}" aria-pressed="{str(i == 0).lower()}"></button>' for i,c in enumerate(p['colors']))
 def card(p, lang):
     c = p['colors'][0]; href = url('/product/' + p['id'] + '?color=' + c['id'], lang)
     secondary = picture(gallery_path(p,c['images'][1])) if len(c['images']) > 1 else ''
     secondary = secondary.replace('<img ', '<img class="hover-image" ')
-    return f'<article class="product-card" data-product="{p["id"]}"><a class="product-image" href="{href}">{picture(c["cover"], p["name"] + " — " + p["label"][lang])}{secondary}<span class="product-tag">{p["name"]}</span></a><div class="product-card-top"><a href="{href}"><h3>{p["name"]}</h3></a><span>{money(p["price"],lang)}</span></div><a class="product-description" href="{href}">{p["label"][lang]}</a><div class="swatches">{swatches(p,lang)}<span>{"Primjer cijene" if lang == "bs" else "Sample price"}</span></div></article>'
+    return f'<article class="product-card" data-product="{p["id"]}"><a class="product-image" href="{href}">{picture(c["cover"], p["name"] + " — " + p["label"][lang])}{secondary}</a><div class="product-card-top"><a href="{href}"><h3>{p["name"]}</h3></a><span>{money(p["price"],lang)}</span></div><a class="product-description" href="{href}">{p["label"][lang]}</a><div class="swatches">{swatches(p,lang)}<span>{"Cijena" if lang == "bs" else "Price"}</span></div></article>'
 def body_content(key, lang):
     if key == 'home' and lang == 'bs': return fragment(str(source.select_one('#main'))).select_one('main')
     return fragment(source.find('template', id=key + '-' + lang).decode_contents())
@@ -70,7 +70,13 @@ def materialize(key, lang, p=None):
         contact.select_one('.contact-breadcrumbs').decompose()
         contact.select_one('h1').name = 'h2'
         contact.select_one('#contact-form-title').name = 'h3'
+        for heading in contact.select('.contact-location h2'): heading.name = 'h3'
         main.append(contact)
+    if main.select_one('[data-contact-map]'):
+        stylesheet = doc.new_tag('link', rel='stylesheet', href='assets/vendor/maplibre/maplibre-gl.css')
+        doc.select_one('link[rel="stylesheet"]').insert_before(stylesheet)
+        doc.head.append(doc.new_tag('script', src='assets/vendor/maplibre/maplibre-gl.js', defer=''))
+        doc.head.append(doc.new_tag('script', src='contact-map.js?v=20261013-openfreemap-2', defer=''))
     doc.body.append(fragment(source.find('template', id='footer-' + lang).decode_contents()))
     doc.body.append(deepcopy(source.select_one('#site-dialog')))
     for template_id in ['shopMenu-' + lang, 'search-' + lang, 'filters-' + lang, 'size-guide']:
@@ -80,7 +86,15 @@ def materialize(key, lang, p=None):
         link = existing.select_one('a[href]'); match = re.search(r'(?:product/|product-)([^?#.]+)', link['href']) if link else None
         prod = next((x for x in products if match and x['id'] == match[1]), None)
         if prod: existing.replace_with(fragment(card(prod,lang)))
+    if key == 'home':
+        replace_contents(main.select_one('.selected-section .product-grid'), ''.join(card(x,lang) for x in products if x.get('isNew')))
+    for select in [group.select('select')[1] for group in doc.select('.desktop-filters, .filter-fields') if len(group.select('select')) > 1]:
+        replace_contents(select, '<option value="">' + ('Sve veličine' if lang == 'bs' else 'All sizes') + '</option>' + ''.join(f'<option value="{size}">{size}</option>' for size in sorted({s for item in products for s in item['sizes']}, key=int)))
+    for menu in doc.select('.shop-menu'):
+        chosen = menu.select('div')[1]
+        replace_contents(chosen, '<p class="eyebrow">' + ('Naš izbor' if lang == 'bs' else 'Our selection') + '</p>' + ''.join(f'<a href="{url("/product/" + x["id"], lang)}">{x["name"]}</a>' for x in products if x.get('isNew')))
     if key == 'shop':
+        main.select_one('.listing-toolbar > span').string = f'{len(products)} ' + ('modela' if lang == 'bs' else 'pieces')
         replace_contents(main.select_one('.listing-grid'), ''.join(card(x,lang) for x in products))
         for i,s in enumerate(main.select('.desktop-filters select')): s['data-filter'] = ['color','size','price'][i]
         main.select_one('.sort-label select')['data-filter'] = 'sort'
@@ -88,7 +102,7 @@ def materialize(key, lang, p=None):
     if p:
         c=p['colors'][0]; main.h1.string = p['name'];main.select_one('.breadcrumbs [aria-current="page"]').string=p['name']
         main.select_one('.product-subtitle').string=p['label'][lang]
-        replace_contents(main.select_one('.product-price'), money(p['price'],lang)+f'<span>{"Primjer cijene" if lang == "bs" else "Sample price"}</span>')
+        replace_contents(main.select_one('.product-price'), money(p['price'],lang)+f'<span>{"Cijena" if lang == "bs" else "Price"}</span>')
         main.select_one('.product-intro').string=p['description'][lang]
         main.select_one('.product-accordions details p').string=p['description'][lang]
         replace_contents(main.select_one('.swatches.large'),swatches(p,lang,'product'))
@@ -113,8 +127,13 @@ def materialize(key, lang, p=None):
         for a in template.select('a[href]'):
             if a['href'].startswith('#/'): a['href']=url(a['href'][1:],lang)
     for button in list(doc.select('button.language')):
-        a=doc.new_tag('a', href=url(path,'en' if lang=='bs' else 'bs')); a['class']=['language']; a['hreflang']='en' if lang=='bs' else 'bs'
-        a.string='English' if lang=='bs' else 'Bosanski';button.replace_with(a)
+        next_lang='en' if lang=='bs' else 'bs'
+        a=doc.new_tag('a', href=url(path,next_lang)); a['class']=button.get('class',['language']); a['hreflang']=next_lang
+        if 'language-flag' in a['class']:
+            a['aria-label']=button['aria-label']; a['title']=button['title']
+            for child in list(button.contents): a.append(child.extract())
+        else: a.string='English' if lang=='bs' else 'Bosanski'
+        button.replace_with(a)
     for a in doc.select('.desktop-nav a'):
         if a['href'].split('?')[0] == url(path,lang): a['aria-current']='page';a['class']=a.get('class',[])+['active']
     for form in doc.select('.search-panel form'):

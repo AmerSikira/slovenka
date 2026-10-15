@@ -1,3 +1,13 @@
 .DS_Store
 __pycache__/
 node_modules/
+
+# Reproducible WordPress package (python3 scripts/build-theme.py).
+dist/
+wordpress/slovenka/assets/
+wordpress/slovenka/data/
+wordpress/slovenka/styles.css
+wordpress/slovenka/commerce.css
+wordpress/slovenka/script.js
+wordpress/slovenka/motion.js
+wordpress/slovenka/contact-map.js

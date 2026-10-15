@@ -5,7 +5,7 @@
 <meta content="#f7f4ef" name="theme-color"/>
 <meta content="Vaša korpa. MK Slovenka — konfekcijska proizvodnja od 1979." name="description"/>
 <link href="assets/favicon.svg" rel="icon"/>
-<link href="styles.css" rel="stylesheet"/>
+<link href="styles.css?v=20261013-openfreemap" rel="stylesheet"/>
 <title>Vaša korpa. — MK Slovenka</title>
 <script defer="" src="script.js"></script>
 <script defer="" src="assets/vendor/gsap/gsap-3.15.0.min.js"></script>
@@ -40,7 +40,9 @@
 </svg>
 </a>
 </nav>
-<div class="utilities"><a class="language" href="cart-en.html" hreflang="en">English</a>
+<div class="utilities"><a aria-label="Prebaci na engleski" class="language language-flag" href="cart-en.html" hreflang="en" title="English">
+<img alt="" class="language-flag-image" height="14" src="assets/flags/gb.svg" width="28"/>
+</a>
 <button aria-label="Pretraga" class="icon-button" type="button">
 <svg class="lucide lucide-search" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg">
 <circle cx="11" cy="11" r="8"></circle>
@@ -101,15 +103,11 @@
 </summary>
 <div>
 <a href="shop.html"> Sva odjeća </a>
-<a href="shop.html?category=trousers">
-                  Hlače
-                </a>
-<a href="shop.html?category=blazers">
-                  Sakoi
-                </a>
-<a href="shop.html?category=suits">
-                  Odijela
-                </a>
+<a href="shop.html?category=jackets">Jakne</a>
+<a href="shop.html?category=blazers">Sakoi</a>
+<a href="shop.html?category=coats">Kaputi</a>
+<a href="shop.html?category=trousers">Hlače</a>
+<a href="shop.html?category=suits">Odijela</a>
 </div>
 </details>
 <details open="">
@@ -193,19 +191,13 @@
 <div>
 <p class="eyebrow">Otkrijte kolekciju</p>
 <a href="shop.html"> Sva odjeća </a>
-<a href="shop.html?category=trousers"> Hlače </a>
-<a href="shop.html?category=blazers"> Sakoi </a>
-<a href="shop.html?category=suits"> Odijela </a>
-<a href="shop.html?category=all"> Poslovni stil </a>
+<a href="shop.html?category=jackets">Jakne</a>
+<a href="shop.html?category=blazers">Sakoi</a>
+<a href="shop.html?category=coats">Kaputi</a>
+<a href="shop.html?category=trousers">Hlače</a>
+<a href="shop.html?category=suits">Odijela</a>
 </div>
-<div>
-<p class="eyebrow">Naš izbor</p>
-<a href="product-aria.html"> ARIA </a>
-<a href="product-coco.html"> COCO </a>
-<a href="product-alba.html"> ALBA </a>
-<a href="product-signature.html"> SIGNATURE </a>
-<a href="product-hasi.html"> HASI </a>
-</div>
+<div><p class="eyebrow">Naš izbor</p><a href="product-ami.html">AMI</a><a href="product-over.html">OVER</a><a href="product-jakna-hasi.html">JAKNA HASI</a><a href="product-pepito.html">PEPITO</a></div>
 <a class="menu-photo" href="shop.html">
 <picture class="responsive-image">
 <source sizes="auto, (max-width: 767px) 100vw, 50vw" srcset="
@@ -337,21 +329,17 @@
 <option value="">Sve boje</option>
 <option value="black">Crna</option>
 <option value="navy">Tamnoplava</option>
-<option value="brown">Tamnosmeđa</option>
+<option value="brown">Smeđa</option>
 <option value="green">Zelena</option>
 <option value="olive">Maslina</option>
+<option value="charcoal">Tamnosiva</option>
+<option value="burgundy">Bordo</option>
+<option value="bronze">Bronzana</option>
 </select>
 </label>
 <label>
           Veličina
-          <select>
-<option value="">Sve veličine</option>
-<option>36</option>
-<option>38</option>
-<option>40</option>
-<option>42</option>
-<option>44</option>
-</select>
+          <select><option value="">Sve veličine</option><option value="36">36</option><option value="38">38</option><option value="40">40</option><option value="42">42</option><option value="44">44</option><option value="46">46</option><option value="48">48</option><option value="50">50</option><option value="52">52</option><option value="54">54</option></select>
 </label>
 <label>
           Cijena do
@@ -362,7 +350,7 @@
 <option value="200">200 KM</option>
 </select>
 </label>
-<button class="button" type="button">Prikaži 5 modela</button>
+<button class="button" type="button">Prikaži 9 modela</button>
 <button class="underlined" type="button">Ukloni sve</button>
 </div>
 </template><template id="size-guide">
