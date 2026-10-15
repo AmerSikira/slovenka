@@ -14,8 +14,8 @@ def wp(code):
 assert wp('echo has_filter("pre_wp_mail","__return_false") !== false ? "disabled":"active";').strip()=='disabled','Disable all test mail first'
 config_url=json.loads(wp('echo wp_json_encode(get_permalink(get_option("slovenka_pages")["inquiry.html"]));'))
 page=urllib.request.urlopen(config_url).read().decode()
-config=json.loads(re.search(r'window.SlovenkaSite = (.*?);</script>',page).group(1))
-base={'action':'mk_inquiry','nonce':config['inquiryNonce'],'lang':'en','name':'Local QA inquiry','email':'qa@example.invalid','company':'QA test','garmentType':'Trousers','description':'Synthetic local integration test project.','quantity':'100-500','timing':'flexible','services[]':['sewing','sampling']}
+config=json.loads(re.search(r'window.SlovenkaForms = (.*?);',page).group(1))
+base={'action':'mk_inquiry','nonce':config['nonce'],'lang':'en','name':'Local QA inquiry','email':'qa@example.invalid','company':'QA test','garmentType':'Trousers','description':'Synthetic local integration test project.','quantity':'100-500','timing':'flexible','services[]':['sewing','sampling']}
 created=[]
 def send(fields, attachment=None):
     if attachment:
@@ -52,7 +52,7 @@ try:
     assert 'sewing, sampling' in record['body']
     attachment=Path(record['attachment']);assert attachment.is_file()
     assert not attachment.resolve().is_relative_to(Path(args.path).resolve()),'Attachment is public'
-    status,result=send({'action':'mk_inquiry','nonce':config['inquiryNonce'],'kind':'contact','name':'Local QA contact','email':'qa@example.invalid','message':'Synthetic local contact submission.'})
+    status,result=send({'action':'mk_inquiry','nonce':config['nonce'],'kind':'contact','name':'Local QA contact','email':'qa@example.invalid','message':'Synthetic local contact submission.'})
     assert status==200 and result['success'],result
     created.append(int(result['data']['reference'].split('-')[-1]))
     # Verify the actual admin pages expose both restored tools.

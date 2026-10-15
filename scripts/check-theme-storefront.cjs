@@ -1,73 +1,59 @@
 #!/usr/bin/env node
-// Requires Playwright. Run only against a disposable localhost WordPress store.
+// Invoked by check-native-compatibility.py with disposable fixture URLs.
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const { chromium } = require('playwright');
-const shop = process.argv[2] || 'http://127.0.0.1:5191/?post_type=product';
-assert(['localhost', '127.0.0.1'].includes(new URL(shop).hostname));
+const fixture = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+assert(['localhost','127.0.0.1'].includes(new URL(fixture.shop).hostname));
 (async () => {
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({headless:true});
   try {
-    const page = await browser.newPage();
-    page.setDefaultTimeout(15000);
+    const page = await browser.newPage({viewport:{width:1440,height:1000}});
+    page.setDefaultTimeout(20000);
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
-    await page.goto(shop);
-    const site = await page.evaluate(() => window.SlovenkaSite);
-    // Check every imported template, including cart, checkout and both languages.
-    for (const url of new Set(Object.values(site.urls))) {
-      const response = await page.request.get(url);
-      assert(response.ok(), `Broken page: ${url}`);
-      assert(!/id=["']sidebar["']|class=["'][^"']*widget-area/.test(await response.text()), `Sidebar on ${url}`);
-    }
-    // Both the WooCommerce archive and the English ordinary page must use the
-    // same complete catalogue markup, without the native duplicate loop.
-    for (const url of [shop, site.urls['shop-en.html']]) {
-      await page.goto(url);
-      assert.equal(await page.locator('h1').count(), 1, 'Repeated shop intro');
-      assert.equal(await page.locator('#sidebar, .woocommerce-products-header, ul.products').count(), 0);
-      assert.equal(await page.locator('.sort-label select').count(), 1, 'Shop controls stripped');
-      assert.equal(await page.locator('.product-card').count(), site.products.length);
-      for (const link of await page.locator('.product-card a[href]').evaluateAll(nodes => nodes.map(node => node.href))) {
-        assert(!new URL(link).pathname.endsWith('.html'), `Static product link: ${link}`);
+    await page.goto(fixture.shop);
+    assert.equal(await page.locator('h1').count(), 1);
+    assert(await page.locator('ul.products > li.product').count());
+    assert.equal(await page.locator('.product-card, #sidebar').count(), 0);
+    await page.locator('select.orderby').selectOption('price-desc');
+    await page.waitForURL(url => url.searchParams.get('orderby') === 'price-desc');
+    await page.goto(fixture.variable);
+    await page.locator('select[name=attribute_colour]').selectOption('green');
+    await page.locator('select[name=attribute_size]').selectOption('36');
+    await page.waitForFunction(() => Number(document.querySelector('input.variation_id')?.value)>0 && !document.querySelector('.single_add_to_cart_button').classList.contains('disabled'));
+    await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded'}), page.locator('.single_add_to_cart_button').click()]);
+    // The merchant's redirect option is disabled; a successful purchase selection stays here.
+    assert.equal(new URL(page.url()).pathname, new URL(fixture.variable).pathname);
+    assert(await page.locator('.woocommerce-message, .wc-block-components-notice-banner').count());
+    await page.locator('a.bag-trigger').click();
+    assert((await page.locator('main').innerText()).includes('COCO'));
+    await page.goto(fixture.checkout);
+    assert(await page.locator('form.checkout').count());
+    await page.goto(fixture.account);
+    assert(await page.locator('form.woocommerce-form-login').count());
+    await page.goto(fixture.blockCart);
+    await page.locator('.wc-block-cart-items').waitFor();
+    await page.goto(fixture.blockCheckout);
+    await page.locator('.wp-block-woocommerce-checkout').waitFor();
+    await page.goto(fixture.shop);
+    await page.locator('[data-open-search]').click();
+    await page.locator('#site-search input[name=s]').fill('Native');
+    await page.locator('#site-search button[type=submit]').click();
+    await page.waitForURL(url => url.searchParams.get('s') === 'Native' && url.searchParams.get('post_type') === 'product');
+    assert(await page.locator('ul.products > li.product').count());
+    for (const width of [1024,390]) {
+      await page.setViewportSize({width,height:844});
+      await page.goto(fixture.variable);
+      assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Product page overflows at '+width);
+      if (width===390) {
+        await page.locator('.mobile-menu').click();
+        assert(await page.locator('#site-navigation.is-open').isVisible());
       }
-      // Request all lazy photos without relying on viewport preload heuristics.
-      await page.locator('.product-card img').evaluateAll(images => images.forEach(image => image.loading = 'eager'));
-      await page.waitForFunction(() => [...document.querySelectorAll('.product-card img')].every(image => image.complete && image.naturalWidth > 0));
+      await page.goto(fixture.shop);
+      assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Shop overflows at '+width);
     }
-    await page.goto(shop);
-    await page.locator('.desktop-filters select[data-filter="color"]').selectOption('green');
-    await page.waitForURL(url => url.searchParams.get('color') === 'green');
-    assert.equal(await page.locator('.product-card').count(), site.products.filter(p => p.colors.some(c => c.id === 'green')).length);
-    await page.locator('.sort-label select').selectOption('price-asc');
-    await page.waitForURL(url => url.searchParams.get('sort') === 'price-asc');
-    const model = site.products.find(product => product.name.startsWith('COCO'));
-    assert(model, 'Import the starter catalogue before running this flow');
-    const coco = page.locator(`.product-card[data-product="${model.id}"] a`).first();
-    await coco.click();
-    assert(new URL(page.url()).searchParams.get('attribute_colour') === 'green');
-    assert.equal(await page.locator('form.variations_form').count(), 1);
-    assert.equal(await page.locator('select[name="attribute_colour"]').inputValue(), 'green');
-    assert.equal(await page.locator('#sidebar').count(), 0);
-    const size = await page.locator('select[name="attribute_size"] option:not([value=""]):not([disabled])').first().getAttribute('value');
-    await page.locator('select[name="attribute_size"]').selectOption(size);
-    await page.locator('.single_add_to_cart_button').click();
-    await page.waitForURL(url => url.href === site.cart);
-    assert((await page.locator('main').innerText()).includes('COCO'), 'Chosen product missing from native cart');
-    await page.goto(site.urls['checkout.html']);
-    assert.equal(await page.locator('#sidebar').count(), 0);
-    // Exercise WooCommerce's native product fallback route too.
-    await page.goto(model.permalink);
-    await page.waitForFunction(() => getComputedStyle(document.querySelector('.woocommerce-product-gallery')).opacity === '1');
-    assert.equal(await page.locator('#sidebar').count(), 0);
-    assert.equal(await page.locator('h1').count(), 1);
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(shop);
-    assert.equal(await page.locator('h1').count(), 1);
-    assert(await page.locator('.filter-trigger').isVisible());
-    assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-    assert.deepEqual(errors, [], 'Storefront JavaScript errors');
-    console.log('PASS: all imported routes have no sidebar; both shop languages have one intro/grid, working images, filters, product URLs, native variant selection, native cart/checkout and mobile layout.');
-  } finally {
-    await browser.close();
-  }
-})().catch(error => { console.error(error); process.exitCode = 1; });
+    assert.deepEqual(errors, [], 'Browser JavaScript errors');
+    console.log('PASS: native ordering, variable add-to-cart honors redirect=no, cart/classic checkout, account, Cart/Checkout blocks, native product search, mobile menu/layout; no JavaScript errors.');
+  } finally { await browser.close(); }
+})().catch(error => { console.error(error); process.exitCode=1; });

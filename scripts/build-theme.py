@@ -21,39 +21,22 @@ for file in sorted(ROOT.glob('*.html')):
     route = doc.body['data-page']
     if route.startswith('/product/'):
         continue
-    for grid in main.select('.product-grid'):
-        grid.clear()
-        grid['data-live-products'] = '0' if route == '/shop' else '4'
-    # Filter values are filled from the current WooCommerce catalogue.
-    for select in main.select('.desktop-filters select, .sort-label select'):
-        if select.find_parent(class_='sort-label'):
-            continue
-        for option in select.select('option')[1:]:
-            option.decompose()
-    for note in main.select('.catalog-note, .preview-helper'):
-        if route == '/shop' or route.startswith('/product/'):
+    if route == '/order' or (route in ['/shop','/cart','/checkout'] and doc.html['lang'] == 'en'):
+        continue
+    if route == '/shop':
+        intro = main.select_one('p.muted')
+        content = '<p>' + (intro.decode_contents() if intro else '') + '</p>'
+    elif route in ['/cart','/checkout']:
+        content = '[woocommerce_cart]' if route == '/cart' else '[woocommerce_checkout]'
+    else:
+        for grid in main.select('.product-grid'):
+            grid.replace_with('[products limit="4" columns="4" orderby="date" order="DESC"]')
+        for note in main.select('.catalog-note, .preview-helper'):
             note.decompose()
-    # Production uses native WooCommerce, so don't ship its unused preview UI/CSS/JS.
-    for tag in doc.head.select('script[src="commerce.js"], link[href="commerce.css"]'):
-        tag.decompose()
-    if route in ['/cart', '/checkout']:
-        main.clear()
-        main.append('[woocommerce_cart]' if route == '/cart' else '[woocommerce_checkout]')
-    if route == '/order':
-        main.clear()
-        main.append('Detalji narudžbe dostupni su na potvrdi kupovine. / Order details are available in your checkout confirmation.')
-    before, after = [], []
-    found = False
-    for node in doc.body.contents:
-        if node is main:
-            found = True
-            continue
-        (after if found else before).append(str(node))
+        content = main.decode_contents()
     pages[file.name] = {
         'title': doc.title.get_text().replace(' — MK Slovenka', ''),
-        'lang': doc.html['lang'], 'route': route,
-        'head': doc.head.decode_contents(), 'before': ''.join(before),
-        'after': ''.join(after), 'content': main.decode_contents(),
+        'lang': doc.html['lang'], 'route': route, 'content': content,
     }
 data['pages'] = pages
 # Product seeds and manufacturer measurements belong only in the separate import package.
@@ -63,7 +46,7 @@ data.pop('categories', None)
 # Retain photographs reached by markup, every colour/gallery, categories, or runtime helpers.
 used_images = set()
 page_source = json.dumps(pages, ensure_ascii=False)
-runtime = script.split('// Small helpers.')[1]
+runtime = (THEME / 'theme.js').read_text()
 for key, image in data['images'].items():
     if image['fallback'] in page_source or image['src'] in page_source or key in runtime:
         used_images.add(key)
@@ -71,39 +54,29 @@ unused_images = set(data['images']) - used_images
 all_images = data['images']
 data['images'] = {key: image for key, image in all_images.items() if key in used_images}
 
-# WebP already exists for each JPEG fallback. Share that single full-size file with
-# <img>, <source>, the JS registry and the activation importer; keep responsive sizes.
+# WebP already exists for each JPEG fallback. Share one full-size file with
+# editorial <img>/<source> elements and starter content; keep responsive sizes.
 aliases = {image['fallback']: image['src'] for image in all_images.values() if image['fallback'] != image['src']}
 def replace_images(text):
     for old, new in aliases.items():
         text = text.replace(old, new)
     return text
 for page in pages.values():
-    for key in ['head', 'before', 'after', 'content']:
+    for key in ['content']:
         page[key] = replace_images(page[key])
 for image in data['images'].values():
     image['fallback'] = image['src']
-# Render old imported HTML against the lean package without overwriting page edits.
+# Provide one-time image URL migration for old imported editorial HTML.
 # Only retain aliases for photos still in use; unused source photos aren't bundled.
 data['image_aliases'] = {old: new for old, new in aliases.items() if any(image['src'] == new for image in data['images'].values())}
-start = script.index('const IMAGES = ')
-end = script.index('// Production configuration', start)
-script = script[:start] + 'const IMAGES = ' + json.dumps(data['images'], ensure_ascii=False) + ';\n\n' + script[end:]
-script = replace_images(script)
-
-# Production ships an empty catalogue; WordPress supplies every product at runtime.
-a = script.index('const PRODUCTS = ')
-b = script.index('const IMAGES = ', a)
-script = script[:a] + 'const PRODUCTS = [];\nconst CATEGORIES = [];\n' + script[b:]
-
-runtime_files = {'script.js': script}
-for name in ['styles.css', 'motion.js', 'contact-map.js']:
-    runtime_files[name] = (ROOT / name).read_text()
+runtime_files = {'styles.css': (ROOT / 'styles.css').read_text(), 'motion.js': (ROOT / 'motion.js').read_text(), 'contact-map.js': (ROOT / 'contact-map.js').read_text()}
 asset_pattern = re.compile(r'assets/[A-Za-z0-9_./%+\-]+')
 # Legacy alias keys deliberately name omitted files; don't treat them as dependencies.
 references = json.dumps({key: value for key, value in data.items() if key != 'image_aliases'}, ensure_ascii=False)
 references += '\n'.join(runtime_files.values())
-assets = {path for path in asset_pattern.findall(references) if not path.endswith('/')}
+references += '\n'.join(path.read_text() for path in THEME.rglob('*.php'))
+assets_extra = {'assets/favicon.svg','assets/flags/gb.svg','assets/flags/ba.svg','assets/vendor/gsap/gsap-3.15.0.min.js','assets/vendor/maplibre/maplibre-gl.css','assets/vendor/maplibre/maplibre-gl.js'}
+assets = {path for path in asset_pattern.findall(references) if not path.endswith('/')} | assets_extra
 # Licence notices remain required even though the browser doesn't fetch them.
 assets.update(['assets/fonts/OFL.txt', 'assets/icons-LICENSE.txt', 'assets/vendor/gsap/LICENSE.txt', 'assets/vendor/maplibre/LICENSE.txt'])
 # Resolve dependencies of bundled text assets too (for example CSS font URLs).
@@ -133,13 +106,13 @@ with tempfile.TemporaryDirectory(prefix='slovenka-assets-', dir=THEME.parent) as
 for name, content in runtime_files.items():
     (THEME / name).write_text(content)
 # Remove obsolete generated files from older builds, keeping all authored sources outside the theme.
-for name in ['commerce.css', 'commerce.js']:
+for name in ['commerce.css', 'commerce.js', 'script.js', 'production.js']:
     (THEME / name).unlink(missing_ok=True)
 (THEME / 'data').mkdir(exist_ok=True)
 (THEME / 'data/site.json').write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')))
 
 # Explicit package manifest also excludes accidental backups, editor files and stale outputs.
-package_files = set(runtime_files) | {'data/site.json', 'style.css', 'notices.css', 'products.css', 'production.js', 'functions.php', 'header.php', 'footer.php', 'index.php', 'woocommerce.php', 'sidebar.php', 'inc/import.php', 'inc/render.php', 'inc/catalogue.php', 'inc/size-tables.php', 'inc/forms.php'} | assets
+package_files = set(runtime_files) | {'readme.txt', 'data/site.json', 'style.css', 'notices.css', 'products.css', 'native.css', 'theme.js', 'functions.php', 'header.php', 'footer.php', 'index.php', 'page.php', 'searchform.php', 'comments.php', '404.php', 'sidebar.php', 'inc/import.php', 'inc/render.php', 'inc/woocommerce.php', 'inc/size-tables.php', 'inc/forms.php'} | assets
 output = ROOT / 'dist/slovenka.zip'
 output.parent.mkdir(exist_ok=True)
 with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:

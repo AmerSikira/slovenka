@@ -4,7 +4,7 @@ The theme contains no product seeds, product detail pages, prices, sizes or stoc
 
 ## Recommended: one manual import
 
-1. Replace the theme with `slovenka-1.1.0.zip` in Appearance → Themes. Existing products remain in WooCommerce. Clear page/CDN caches.
+1. Replace the theme with `slovenka-1.2.0.zip` in Appearance → Themes. Existing products remain in WooCommerce. Clear page/CDN caches.
 2. Install `slovenka-product-import.zip` under Plugins → Add New → Upload Plugin, and activate it alongside WooCommerce.
 3. Open **Products → Slovenka import** and click **Import missing products**. Keep the page open until it reports completion. Batches can be retried safely.
 4. Manage names, descriptions, categories, images/galleries, prices, attributes, sizes, colours, variations and stock under **Products**. New products appear automatically. Native WooCommerce product pages use the current fields and variation form.

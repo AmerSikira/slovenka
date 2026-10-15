@@ -1,22 +1,24 @@
-# MK Slovenka theme 1.1.0
+# MK Slovenka theme 1.2.0
 
-The theme handles presentation and imports 28 Bosnian/English editorial pages. Products live entirely in WooCommerce; photos live in the Media Library. The theme does not contain a product registry, static product detail pages, starter prices, variations or stock, and never imports or updates products during activation or admin requests.
+The theme handles presentation and offers 23 Bosnian/English starter editorial pages through an explicit setup action. Products live entirely in WooCommerce; photos live in the Media Library. The theme does not contain a product registry, static product detail pages, starter prices, variations or stock, and never imports or updates products during activation or admin requests.
 
 ## Install or upgrade
 
-Build the theme with `python3 scripts/build-theme.py`. Upload `dist/slovenka.zip` or `dist/slovenka-1.1.0.zip` under Appearance → Themes. On an existing install choose **Replace current with uploaded**, then clear page/CDN caches. Existing products, photos, product edits, orders and page edits remain in WordPress. Re-importing is unnecessary for existing products.
+Build the theme with `python3 scripts/build-theme.py`. Upload `dist/slovenka.zip` or `dist/slovenka-1.2.0.zip` under Appearance → Themes. On an existing install choose **Replace current with uploaded**, then clear page/CDN caches. Existing products, photos, product edits, orders and page edits remain in WordPress. Re-importing is unnecessary for existing products.
 
 A separate, optional [product import package](PRODUCT-IMPORT.md) is built with `python3 scripts/build-product-import.py`. It contains 12 starter products (11 published; MIJA remains a draft at 220 KM), 90 variations and 56 product photographs. Install the independent importer plugin and explicitly click **Products → Slovenka import → Import missing products**. It can be deactivated/deleted afterwards. A portable WooCommerce CSV/image archive is also built for standard imports and bulk editing. Neither archive is part of the theme.
 
 ## Manage the shop
 
-Edit products under **Products**, including names, descriptions, short descriptions, prices/sale prices, product images/galleries, categories, local/global attributes, variations and stock. Add a new WooCommerce product normally or via CSV; it appears without editing the theme or rebuilding it. Product URLs come from WooCommerce. The catalogue, colour/size/category filters, search, homepage cards and navigation read current WooCommerce data. Deleted/draft/hidden products disappear from the catalogue; no stale static product page remains published in their place.
+Edit products under **Products**, including names, descriptions, short descriptions, prices/sale prices, product images/galleries, categories, local/global attributes, variations and stock. Add a new WooCommerce product normally or via CSV; it appears without editing the theme or rebuilding it. Product URLs come from WooCommerce. The shop, category/tag/attribute archives, sorting, pagination, price filters and product search use WooCommerce’s main query, standard loop and extension hooks. Homepage product sections use WooCommerce’s standard products shortcode. Configure navigation under Appearance → Menus. Deleted/draft/hidden products disappear from the catalogue; no stale static product page remains published in their place.
 
-The custom shop layout is retained. Product details use WooCommerce's native gallery, descriptions, attribute selectors, variation availability and add-to-cart form, styled with the site's fonts and colours. Native WooCommerce handles quantities, shipping, taxes, coupons, gateways, checkout and order confirmation. All templates remain full width without a sidebar. Legacy detail-page links from older theme exports redirect to native products, preserving colour selections when possible.
+The catalogue uses WooCommerce’s own shared archive and product templates, with theme styling and wrapper hooks. There is no custom catalogue adapter, catch-all woocommerce.php or template override directory. Product details use WooCommerce's native gallery, descriptions, attribute selectors, variation availability and add-to-cart form, styled with the site's fonts and colours. Native WooCommerce handles quantities, shipping, taxes, coupons, gateways, checkout and order confirmation. All templates remain full width without a sidebar. Legacy detail-page links from older theme exports redirect to native products, preserving colour selections when possible.
 
 WooCommerce's configured language controls its labels. The two editorial languages share the live catalogue; product translations use the site's WooCommerce translation workflow rather than static alternate product records. Existing `_slovenka_en` metadata is preserved but does not override later edits to current product fields.
 
-Theme activation imports editorial pages and assigns home/shop/cart/checkout/privacy/terms pages. It initializes BAM once, but does not configure payment gateways, shipping, taxes or mail. Existing page edits remain intact. Old imported product pages are retained as legacy URL records and redirected; new installs never create them. Editorial photography/fonts/map assets remain bundled with the theme; commerce photos are served from Media.
+Activation, updates, ordinary admin visits and cron never import content or assign store settings. After upgrading an older export, open **Appearance → Slovenka setup** and explicitly click **Create missing pages / upgrade imported content**. This migrates old imported catalogue HTML to a normal shop description, preserves additional edited text/blocks, and saves a backup of upgraded content. It creates missing starter editorial pages; existing edited pages are not replaced with seed content. Products/media are untouched. The optional unchecked checkbox assigns imported pages only when no valid role is already configured. Currency is always merchant-controlled.
+
+WordPress processes page content through `the_content`, including blocks, shortcodes, password protection and plugin content filters. Titles, language attributes, menus, assets, post pagination and comments use standard WordPress APIs. Cart/checkout pages may use standard WooCommerce shortcodes or Cart/Checkout blocks. The merchant controls redirect-after-add, payment, shipping, taxes, policies, currency and page assignments. Legacy English cart/checkout aliases redirect only when they are not themselves the configured page; endpoint/query data is retained. Editorial photography/fonts/map assets remain bundled; product photos use Media.
 
 ## Tabele mjera and Upiti
 
@@ -32,17 +34,17 @@ python3 scripts/build-theme.py
 python3 scripts/check-theme-package.py
 find wordpress -name '*.php' -exec php -l '{}' \;
 node --check script.js
-node --check wordpress/slovenka/production.js
+node --check wordpress/slovenka/theme.js
 ```
 
 On a disposable localhost WordPress store with WooCommerce/the theme active:
 
 ```sh
 wp eval-file scripts/check-theme-import.php --path=/path/to/test-wordpress
-node scripts/check-theme-storefront.cjs 'http://127.0.0.1:5191/?post_type=product'
+python3 scripts/check-native-compatibility.py --wp /path/to/wp-cli.phar --path /path/to/test-wordpress --url http://127.0.0.1:5196
 ```
 
-The storefront check requires Playwright. Import isolation checks prove theme setup leaves products/media unchanged and new/edited WooCommerce records appear automatically. The browser check covers both shop languages, current Media images, native product links and variation form, stock, add-to-cart, checkout and mobile layout.
+The native compatibility runner requires BeautifulSoup and Playwright, a localhost store with imported starter products, administrator access and mail disabled. It creates and cleans up temporary fixtures. It checks native queries, category/search routes, sorting/price limits/pagination, extension hooks, content filters/dynamic blocks, menus/titles/language, merchant setting preservation, product types, account, classic and block cart/checkout, add-to-cart redirect behavior and responsive layout. Separate setup tests cover preservation of edited shop content. This is tested compatibility, not a guarantee for every third-party extension.
 
 On a separate **empty** localhost store with the optional importer active:
 
