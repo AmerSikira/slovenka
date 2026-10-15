@@ -10,7 +10,9 @@ kses_init();
 function check_import($condition, $message) { if (!$condition) { throw new RuntimeException($message); } }
 $expected = ['pepito'=>123.5, 'signature'=>123.5, 'signature-trousers'=>65, 'ami'=>123.5, 'coco'=>123.5, 'jakna-hasi'=>190, 'over'=>175, 'mija'=>220, 'aria'=>75, 'hasi'=>65, 'icon-extra'=>75, 'alba'=>65];
 check_import(count(get_option('slovenka_pages')) === 50, 'Not all bilingual pages were imported');
-check_import(count(get_option('slovenka_media')) === 72, 'Not all displayed images were imported');
+foreach (slovenka_data()['images'] as $image) {
+    check_import(slovenka_find('attachment', '_slovenka_asset', $image['fallback']) || slovenka_find('attachment', '_slovenka_asset', array_search($image['fallback'], slovenka_data()['image_aliases'], true)), 'A displayed photograph is missing');
+}
 foreach ($expected as $key => $price) {
     $id = slovenka_find('product', '_slovenka_product', $key);
     $product = wc_get_product($id);
@@ -20,6 +22,25 @@ foreach ($expected as $key => $price) {
 }
 check_import(wc_get_product(slovenka_find('product', '_slovenka_product', 'hasi'))->get_attribute('size') === '36 | 38 | 40 | 42 | 44 | 46', 'ICON sizes incorrect');
 check_import(wc_get_product(slovenka_find('product', '_slovenka_product', 'icon-extra'))->get_attribute('size') === '48 | 50 | 52 | 54', 'ICON EXTRA sizes incorrect');
+foreach (slovenka_data()['image_aliases'] as $old => $current) {
+    $before = wp_count_posts('attachment');
+    check_import(slovenka_media($current) === slovenka_media($old), 'Legacy image alias created a duplicate attachment');
+    check_import($before == wp_count_posts('attachment'), 'Image upgrade created a duplicate upload');
+    check_import(!str_contains(slovenka_html('<img src="' . $old . '">'), $old), 'Saved page still points at a removed fallback');
+}
+// Fresh installs must be able to sideload the retained WebP directly.
+$photo = array_values(slovenka_data()['images'])[0]['fallback'];
+$existing_photo = slovenka_media($photo);
+$new_photo = 0;
+try {
+    delete_post_meta($existing_photo, '_slovenka_asset');
+    $new_photo = slovenka_media($photo);
+    check_import($new_photo !== $existing_photo && get_post_mime_type($new_photo) === 'image/webp', 'Fresh WebP media import failed');
+    check_import(is_file(get_attached_file($new_photo)), 'Fresh WebP attachment file is missing');
+} finally {
+    if ($new_photo && $new_photo !== $existing_photo) { wp_delete_attachment($new_photo, true); }
+    update_post_meta($existing_photo, '_slovenka_asset', $photo);
+}
 $pages = get_option('slovenka_pages');
 check_import(str_contains(get_post($pages['contact.html'])->post_content, '<form'), 'Contact form was stripped');
 check_import(str_contains(get_post($pages['cart.html'])->post_content, '[woocommerce_cart]'), 'Production cart is not native WooCommerce');

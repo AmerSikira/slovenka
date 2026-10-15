@@ -14,6 +14,8 @@ function slovenka_urls() {
     return $urls;
 }
 function slovenka_html($html) {
+    // Older imported pages may still reference the previous JPEG fallback names.
+    $html = strtr($html, slovenka_data()['image_aliases'] ?? []);
     $base = get_template_directory_uri() . '/';
     $urls = slovenka_urls();
     // Replace only known local documents; preserve queries, anchors and external URLs.
@@ -25,7 +27,7 @@ function slovenka_html($html) {
         if (str_starts_with($suffix, '?') && str_contains($url, '?')) { $suffix = '&' . substr($suffix, 1); }
         return $match[1] . '=' . $match[2] . esc_url($url . $suffix) . $match[2];
     }, $html);
-    $html = preg_replace_callback('~(?<=["\'\s(,])(assets/[^"\'\s),]+|(?:styles|commerce)\.css(?:\?[^"\'\s]+)?|(?:script|motion|contact-map)\.js(?:\?[^"\'\s]+)?)~', fn($m) => esc_url($base . $m[1]), $html);
+    $html = preg_replace_callback('~(?<=["\'\s(,])(assets/[^"\'\s),]+|styles\.css(?:\?[^"\'\s]+)?|(?:script|motion|contact-map)\.js(?:\?[^"\'\s]+)?)~', fn($m) => esc_url($base . $m[1]), $html);
     return $html;
 }
 function slovenka_catalogue() {

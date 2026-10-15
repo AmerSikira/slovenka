@@ -3,8 +3,6 @@ if (!defined('ABSPATH')) { exit; }
 $page = slovenka_page();
 $fallback = slovenka_data()['pages']['index.html'];
 $head = $page['head'] ?? $fallback['head'];
-// Native checkout scripts are supplied by WooCommerce. Never load the browser-only preview.
-$head = preg_replace('~<script\b[^>]*\bsrc="commerce\.js"[^>]*></script>~', '', $head);
 if (!$page) { $head = preg_replace('~<title>.*?</title>~s', '<title>' . esc_html(wp_get_document_title()) . '</title>', $head); }
 ?><!doctype html>
 <html lang="<?php echo esc_attr($page['lang'] ?? 'bs'); ?>"><head>
