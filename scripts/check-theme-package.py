@@ -11,19 +11,21 @@ assert not {'commerce.js', 'commerce.css'} & files.keys(), 'Browser-only commerc
 assert not any(name.startswith('assets/img/') for name in files), 'Original authoring photos were packaged'
 assert not any(name.endswith(('.jpg', '.jpeg')) for name in files), 'Redundant JPEG fallbacks were packaged'
 data = json.loads(files['data/site.json'])
-assert len(data['pages']) == 28, 'A bilingual page was lost'
-assert all(name in files for name in ['inc/size-tables.php','inc/forms.php','woocommerce.php','sidebar.php','products.css','inc/catalogue.php']), 'Admin feature modules were omitted'
+assert len(data['pages']) == 23, 'A bilingual page was lost'
+assert all(name in files for name in ['inc/size-tables.php','inc/forms.php','inc/woocommerce.php','page.php','comments.php','native.css','theme.js','products.css']), 'Admin feature modules were omitted'
 assert not {'products', 'categories', 'size_tables'} & data.keys(), 'Catalogue seeds leaked into the theme'
 assert not any(page['route'].startswith('/product/') for page in data['pages'].values()), 'Static product detail pages remain'
-assert 'const PRODUCTS = [];' in files['script.js'].decode(), 'Static product registry remains'
-assert b'function slovenka_import_product' not in files['inc/import.php'], 'Theme still imports products'
+assert not {'woocommerce.php','inc/catalogue.php','script.js','production.js'} & files.keys(), 'Custom catalogue adapter remains'
+assert b'function slovenka_import_product(' not in files['inc/import.php'], 'Theme still imports products'
 for image in data['images'].values():
     assert image['src'] == image['fallback'], 'Separate fallback photo remains'
     assert image['src'] in files, 'A displayed photo is missing'
 pattern = re.compile(r'assets/[A-Za-z0-9_./%+\-]+')
 references = json.dumps({key: value for key, value in data.items() if key != 'image_aliases'}, ensure_ascii=False)
-references += '\n'.join(content.decode() for name, content in files.items() if name.endswith(('.css', '.js', '.svg')))
+references += '\n'.join(content.decode() for name, content in files.items() if name.endswith(('.css', '.js', '.svg', '.php')))
 used = {path for path in pattern.findall(references) if not path.endswith('/')}
+# header.php resolves this fixed two-language map dynamically.
+used |= {'assets/flags/ba.svg','assets/flags/gb.svg'}
 licences = {'assets/fonts/OFL.txt', 'assets/icons-LICENSE.txt', 'assets/vendor/gsap/LICENSE.txt', 'assets/vendor/maplibre/LICENSE.txt'}
 assets = {name for name in files if name.startswith('assets/')}
 assert used <= assets, f'Missing runtime files: {sorted(used - assets)}'
@@ -36,7 +38,7 @@ for name in sorted(assets):
     assert digest not in hashes, f'Duplicate photo/image: {hashes.get(digest)} and {name}'
     hashes[digest] = name
 for page in data['pages'].values():
-    assert 'commerce.css' not in page['head'] and 'commerce.js' not in page['head'], 'Unused preview dependency remains'
+    assert not {'head','before','after'} & page.keys(), 'Page bypass data remains'
     if page['route'] in ['/cart', '/checkout']:
         assert page['content'] in ['[woocommerce_cart]', '[woocommerce_checkout]'], 'Unused preview markup remains'
 print(f'PASS: {len(files)} packaged files, {len(assets)} required assets, editorial pages, no product seeds, no missing assets, duplicate images or preview files.')

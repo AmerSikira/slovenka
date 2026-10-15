@@ -39,3 +39,22 @@ body.woocommerce .native-product div.product .woocommerce-tabs ul.tabs li { back
 body.woocommerce .native-product div.product .woocommerce-tabs ul.tabs li.active { border-bottom: 2px solid var(--accent); }
 body.woocommerce .native-product div.product .woocommerce-tabs ul.tabs li::before,
 body.woocommerce .native-product div.product .woocommerce-tabs ul.tabs li::after { display: none; }
+/* Style core templates without replacing their query, hooks or controls. */
+.native-commerce { padding-block:clamp(32px,5vw,80px); }
+.native-commerce .woocommerce-products-header { margin-bottom:40px; }
+.native-commerce .woocommerce-products-header__title { font-size:clamp(32px,4vw,56px); line-height:1.1; letter-spacing:-.04em; margin-block:16px; }
+.native-commerce .term-description { max-width:760px; color:var(--muted); line-height:1.7; }
+body.woocommerce .native-commerce ul.products li.product .woocommerce-loop-product__title,
+.editorial-content .woocommerce ul.products li.product .woocommerce-loop-product__title { font-size:.875rem; font-weight:500; color:var(--text); }
+body.woocommerce .native-commerce ul.products li.product .price,
+.editorial-content .woocommerce ul.products li.product .price { color:var(--text); font-size:.875rem; }
+.native-commerce .woocommerce-ordering select { max-width:100%; padding:12px; border:1px solid var(--divider); color:var(--text); background:var(--canvas); font:inherit; }
+body.woocommerce .native-commerce a.button, .editorial-content .woocommerce a.button { background:var(--text); color:var(--canvas); border-radius:0; font-weight:400; padding:14px 20px; }
+body.woocommerce .native-commerce nav.woocommerce-pagination ul { border:0; }
+body.woocommerce .native-commerce nav.woocommerce-pagination ul li { border:0; margin:4px; }
+.native-commerce .woocommerce-breadcrumb { font-size:.75rem; }
+.native-commerce .woocommerce-result-count, .native-commerce .woocommerce-ordering { margin-bottom:32px; }
+@media (max-width:767px) {
+  .native-commerce .woocommerce-result-count, .native-commerce .woocommerce-ordering { float:none; }
+  .native-commerce .woocommerce-ordering select { width:100%; }
+}
