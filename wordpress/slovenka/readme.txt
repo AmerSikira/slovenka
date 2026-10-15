@@ -1,5 +1,5 @@
 === MK Slovenka ===
-Version: 1.2.4
+Version: 1.2.5
 License: GPLv2 or later
 
 Classic WordPress theme with native WooCommerce archive queries, product loops,
@@ -48,3 +48,9 @@ shade. Attribute names do not control shared attribute display.
 For existing per-product attributes, choose Prikaz / Display and edit value shades
 in the product Attributes tab, then Save attributes. Existing imported defaults
 remain until explicitly edited. The colour picker is admin-only.
+
+APPROVED PRODUCT DESIGN
+Product pages retain the approved ARIA layout, size buttons, full-width bag action
+and three green benefit pills. Tabela mjera beside the size label opens assigned
+manufacturer measurements in a dialog. Without JavaScript the table stays below
+the product. Real stock/variations and native checkout remain authoritative.
