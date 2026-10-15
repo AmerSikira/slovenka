@@ -11,11 +11,12 @@ assert not {'commerce.js', 'commerce.css'} & files.keys(), 'Browser-only commerc
 assert not any(name.startswith('assets/img/') for name in files), 'Original authoring photos were packaged'
 assert not any(name.endswith(('.jpg', '.jpeg')) for name in files), 'Redundant JPEG fallbacks were packaged'
 data = json.loads(files['data/site.json'])
-assert len(data['pages']) == 50, 'A bilingual page was lost'
-assert all(name in files for name in ['inc/size-tables.php','inc/forms.php','woocommerce.php','sidebar.php']), 'Admin feature modules were omitted'
-assert {table['key'] for table in data['size_tables']} == {'alba','aria','coco'}, 'Manufacturer tables were omitted'
-assert len(data['products']) == 12, 'A product or MIJA draft was lost'
-assert len(data['images']) == 68, 'The active photo registry changed unexpectedly'
+assert len(data['pages']) == 28, 'A bilingual page was lost'
+assert all(name in files for name in ['inc/size-tables.php','inc/forms.php','woocommerce.php','sidebar.php','products.css','inc/catalogue.php']), 'Admin feature modules were omitted'
+assert not {'products', 'categories', 'size_tables'} & data.keys(), 'Catalogue seeds leaked into the theme'
+assert not any(page['route'].startswith('/product/') for page in data['pages'].values()), 'Static product detail pages remain'
+assert 'const PRODUCTS = [];' in files['script.js'].decode(), 'Static product registry remains'
+assert b'function slovenka_import_product' not in files['inc/import.php'], 'Theme still imports products'
 for image in data['images'].values():
     assert image['src'] == image['fallback'], 'Separate fallback photo remains'
     assert image['src'] in files, 'A displayed photo is missing'
@@ -38,4 +39,4 @@ for page in data['pages'].values():
     assert 'commerce.css' not in page['head'] and 'commerce.js' not in page['head'], 'Unused preview dependency remains'
     if page['route'] in ['/cart', '/checkout']:
         assert page['content'] in ['[woocommerce_cart]', '[woocommerce_checkout]'], 'Unused preview markup remains'
-print(f'PASS: {len(files)} packaged files, {len(assets)} required assets, complete pages/catalogue, no missing assets, duplicate images or preview files.')
+print(f'PASS: {len(files)} packaged files, {len(assets)} required assets, editorial pages, no product seeds, no missing assets, duplicate images or preview files.')

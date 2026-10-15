@@ -69,7 +69,7 @@ try:
     editor=admin('/wp-admin/post.php?post='+product_id+'&action=edit')
     assert 'mk_size_table_ids[]' in editor and 'Tabele mjera' in editor
     # Tables, shared assignments and seed idempotency.
-    result=json.loads(wp('slovenka_seed_size_tables();$out=[];foreach(["alba","aria","coco"] as $key){$id=slovenka_find("product","_slovenka_product",$key);$out[$key]=mk_product_size_tables($id);}echo wp_json_encode($out);'))
+    result=json.loads(wp('$out=[];foreach(["alba","aria","coco"] as $key){$id=slovenka_find("product","_slovenka_product",$key);$out[$key]=mk_product_size_tables($id);}echo wp_json_encode($out);'))
     assert result['alba'][0]['tables'][0]['rows'][0]==['36','76','97','98.5']
     assert result['aria'][0]['tables'][0]['rows'][0]==['36','77','99','113.5']
     assert result['coco'][0]['tables'][0]['headers'][1]=='O GRUDI/2'

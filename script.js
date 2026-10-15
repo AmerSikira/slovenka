@@ -934,11 +934,13 @@ const IMAGES = {
 // Production configuration is supplied by the WordPress theme before this script.
 if (typeof window !== "undefined" && window.SlovenkaSite) {
   PRODUCTS.splice(0, PRODUCTS.length, ...window.SlovenkaSite.products);
+  CATEGORIES.splice(0, CATEGORIES.length, ...window.SlovenkaSite.categories);
   for (const image of Object.values(IMAGES)) {
     for (const key of ["src", "fallback", "srcSet"]) {
       if (image[key]) image[key] = image[key].replaceAll("assets/", window.SlovenkaSite.assetBase + "assets/");
     }
   }
+  Object.assign(IMAGES, window.SlovenkaSite.images);
 }
 
 // Small helpers. Everything below uses native browser APIs.
@@ -967,11 +969,14 @@ const pageUrl = (path, language = lang) => {
   const url = new URL(path, "https://local.invalid");
   const name = url.pathname === "/" ? "index" : url.pathname.slice(1).replaceAll("/", "-");
   const filename = `${name}${language === "en" ? "-en" : ""}.html`;
-  const target = window.SlovenkaSite?.urls[filename];
+  const product = window.SlovenkaSite?.products.find(item => url.pathname === `/product/${item.id}`);
+  const target = product?.permalink || window.SlovenkaSite?.urls[filename];
   if (target) {
     const result = new URL(target, location.href);
     for (const [key, value] of url.searchParams) {
-      if (!["page_id", "p", "pagename"].includes(key)) result.searchParams.set(key, value);
+      if (product && key === "color") {
+        if (value && product.colourAttribute) result.searchParams.set(`attribute_${product.colourAttribute}`, value);
+      } else if (!["page_id", "p", "pagename"].includes(key)) result.searchParams.set(key, value);
     }
     result.hash = url.hash;
     return result.href;
@@ -1007,7 +1012,7 @@ const icon = (name, size = 18) => {
 function image(path, alt = "", className = "", eager = false) {
   const m = IMAGES[path];
   if (!m) return "";
-  return `<picture class="responsive-image"><source type="image/webp" srcset="${escapeHTML(m.srcSet)}" sizes="${eager ? "" : "auto, "}(max-width:767px) 100vw, 50vw"><img src="${m.fallback}" width="${m.width}" height="${m.height}" alt="${escapeHTML(alt)}" class="${className}" loading="${eager ? "eager" : "lazy"}" ${eager ? 'fetchpriority="high"' : ""}></picture>`;
+  return `<picture class="responsive-image">${m.srcSet ? `<source srcset="${escapeHTML(m.srcSet)}" sizes="(max-width:767px) 100vw, 50vw">` : ""}<img src="${escapeHTML(m.fallback)}" width="${m.width}" height="${m.height}" alt="${escapeHTML(alt)}" class="${className}" loading="${eager ? "eager" : "lazy"}" ${eager ? 'fetchpriority="high"' : ""}></picture>`;
 }
 function template(name) {
   return document.getElementById(`${name}-${lang}`)?.innerHTML || "";
@@ -1061,15 +1066,15 @@ function colorButtons(p, selected, context = "card") {
   return p.colors
     .map(
       (c) =>
-        `<button type="button" class="swatch ${c.id === selected ? "selected" : ""}" style="--swatch:${c.hex}" data-action="${context}-color" data-product="${p.id}" data-color="${c.id}" aria-label="${c.name[lang]}" aria-pressed="${c.id === selected}"></button>`,
+        `<button type="button" class="swatch ${c.id === selected ? "selected" : ""}" style="--swatch:${escapeHTML(c.hex)}" data-action="${context}-color" data-product="${escapeHTML(p.id)}" data-color="${escapeHTML(c.id)}" aria-label="${escapeHTML(c.name[lang])}" aria-pressed="${c.id === selected}"></button>`,
     )
     .join("");
 }
 function productCard(p, colorId = p.colors[0].id) {
   const c = p.colors.find((c) => c.id === colorId) || p.colors[0];
-  const href = pageUrl(`/product/${p.id}?color=${c.id}`);
+  const href = escapeHTML(pageUrl(`/product/${p.id}?color=${encodeURIComponent(c.id)}`));
   const second = c.images[1];
-  return `<article class="product-card" data-product="${p.id}"><a class="product-image" href="${href}">${image(c.cover, `${p.name} — ${p.label[lang]} — ${c.name[lang]}`)}${second ? image(galleryPath(p, second), "", "hover-image") : ""}</a><div class="product-card-top"><a href="${href}"><h3>${p.name}</h3></a><span>${money(p.price)}</span></div><a class="product-description" href="${href}">${p.label[lang]}</a><div class="swatches">${colorButtons(p, c.id)}<span>${t("Cijena", "Price")}</span></div></article>`;
+  return `<article class="product-card" data-product="${escapeHTML(p.id)}"><a class="product-image" href="${href}">${image(c.cover, `${p.name} — ${p.label[lang]} — ${c.name[lang]}`)}${second ? image(galleryPath(p, second), "", "hover-image") : ""}</a><div class="product-card-top"><a href="${href}"><h3>${escapeHTML(p.name)}</h3></a><span>${p.priceHtml ?? money(p.price)}</span></div><a class="product-description" href="${href}">${escapeHTML(p.label[lang])}</a>${c.id ? `<div class="swatches">${colorButtons(p, c.id)}</div>` : ""}</article>`;
 }
 function galleryPath(p, n) {
   if (typeof n === "string") return n;
@@ -1084,7 +1089,7 @@ function matchingProducts(params = route().params) {
     price = params.get("price");
   const list = PRODUCTS.filter(
     (p) =>
-      (category === "all" || p.type === category) &&
+      (category === "all" || p.type === category || p.categories?.includes(category)) &&
       (params.get("edit") !== "new" || p.isNew) &&
       (!q ||
         normalise(`${p.name} ${p.label.bs} ${p.label.en} ${CATEGORIES.find((c) => c.id === p.type)?.bs || ""} ${CATEGORIES.find((c) => c.id === p.type)?.en || ""}`).includes(
@@ -1101,6 +1106,9 @@ function matchingProducts(params = route().params) {
   return list;
 }
 function setupShop() {
+  if (window.SlovenkaSite) {
+    $(".category-tabs").innerHTML = `<a href="${escapeHTML(pageUrl('/shop'))}">${t('Sva odjeća', 'Shop all')}</a>` + CATEGORIES.map(c => `<a href="${escapeHTML(pageUrl(`/shop?category=${encodeURIComponent(c.id)}`))}">${escapeHTML(c[lang])}</a>`).join('');
+  }
   $$(".desktop-filters select").forEach(
     (s, i) => (s.dataset.filter = ["color", "size", "price"][i]),
   );
@@ -1300,13 +1308,14 @@ function openDialog(kind) {
   if (kind === "menu") {
     const nextLanguage = lang === "bs" ? "en" : "bs";
     const languageName = lang === "bs" ? "English" : "Bosanski";
-    content.innerHTML = `<nav><a href="${pageUrl(`/shop`)}">${t("Sva odjeća", "Shop all")}</a><details><summary>${t("Kategorije", "Categories")}</summary>${CATEGORIES.map((c) => `<a href="${pageUrl(`/shop?category=${c.id}`)}">${c[lang]}</a>`).join("")}</details><a href="${pageUrl(`/company`)}">${t("O nama", "Our company")}</a><a href="${pageUrl(`/manufacturing`)}">${t("Proizvodnja", "Manufacturing")}</a><a href="${pageUrl(`/contact`)}">${t("Kontakt", "Contact")}</a><a class="language language-flag" href="${pageUrl(`${route().path}${location.search}${location.hash}`, nextLanguage)}" hreflang="${nextLanguage}" aria-label="${t("Prebaci na engleski", "Switch to Bosnian")}" title="${languageName}"><img src="${window.SlovenkaSite?.assetBase || ""}assets/flags/${nextLanguage === "en" ? "gb" : "ba"}.svg" class="language-flag-image" width="28" height="14" alt=""/></a></nav>`;
+    content.innerHTML = `<nav><a href="${pageUrl(`/shop`)}">${t("Sva odjeća", "Shop all")}</a><details><summary>${t("Kategorije", "Categories")}</summary>${CATEGORIES.map((c) => `<a href="${pageUrl(`/shop?category=${c.id}`)}">${escapeHTML(c[lang])}</a>`).join("")}</details><a href="${pageUrl(`/company`)}">${t("O nama", "Our company")}</a><a href="${pageUrl(`/manufacturing`)}">${t("Proizvodnja", "Manufacturing")}</a><a href="${pageUrl(`/contact`)}">${t("Kontakt", "Contact")}</a><a class="language language-flag" href="${pageUrl(`${route().path}${location.search}${location.hash}`, nextLanguage)}" hreflang="${nextLanguage}" aria-label="${t("Prebaci na engleski", "Switch to Bosnian")}" title="${languageName}"><img src="${window.SlovenkaSite?.assetBase || ""}assets/flags/${nextLanguage === "en" ? "gb" : "ba"}.svg" class="language-flag-image" width="28" height="14" alt=""/></a></nav>`;
   }
   if (kind === "filters") {
     content.innerHTML = template("filters");
     $$(".filter-fields select", content).forEach((s, i) => {
       s.dataset.filter = ["color", "size", "price"][i];
-      if (i === 1) populateSizeFilter(s);
+      if (s.dataset.filter === "color") populateColourFilter(s);
+      if (s.dataset.filter === "size") populateSizeFilter(s);
       s.value = route().params.get(s.dataset.filter) || "";
     });
     $(".filter-fields .button").dataset.action = "apply-filters";
@@ -1389,7 +1398,7 @@ function updateSearch(query) {
     list
       .map(
         (p) =>
-          `<a class="search-result" href="${pageUrl(`/product/${p.id}`)}">${image(p.colors[0].cover)}<span><strong>${p.name}</strong><span>${p.label[lang]}</span></span>${icon("arrow")}</a>`,
+          `<a class="search-result" href="${pageUrl(`/product/${p.id}`)}">${image(p.colors[0].cover)}<span><strong>${escapeHTML(p.name)}</strong><span>${escapeHTML(p.label[lang])}</span></span>${icon("arrow")}</a>`,
       )
       .join("") ||
     `<p>${t("Nema rezultata. Pokušajte „hlače“, „sako“ ili naziv modela.", "No results. Try “trousers”, “blazer” or a piece name.")}</p>`;
@@ -1705,6 +1714,15 @@ window.SlovenkaCommerce = {
   setBag: (items) => { bag = items; updateBag(); },
 };
 updateBag();
+if (window.SlovenkaSite) {
+  const footerCategories = document.querySelector('.footer-groups details:first-child > div');
+  if (footerCategories) footerCategories.innerHTML = `<a href="${escapeHTML(pageUrl('/shop'))}">${t('Sva odjeća', 'Shop all')}</a>` + CATEGORIES.map(c => `<a href="${escapeHTML(pageUrl(`/shop?category=${encodeURIComponent(c.id)}`))}">${escapeHTML(c[lang])}</a>`).join('');
+  for (const grid of document.querySelectorAll('[data-live-products]')) {
+    const limit = Number(grid.dataset.liveProducts);
+    const items = limit ? PRODUCTS.slice(0, limit) : PRODUCTS;
+    grid.innerHTML = items.map(p => productCard(p)).join('');
+  }
+}
 if (route().path === "/shop") setupShop();
 if (route().path.startsWith("/product/")) setupProduct(route().path.split("/").pop(), route().params.get("color"));
 if (route().path === "/inquiry") {
@@ -1717,6 +1735,7 @@ if (route().path === "/inquiry") {
 
 // Language links preserve the current native search and fragment when available.
 $$("a.language").forEach((link) => {
+  if (window.SlovenkaSite && route().path === "/woocommerce") { link.href = location.href; return; }
   link.href = pageUrl(`${route().path}${location.search}${location.hash}`, lang === "bs" ? "en" : "bs");
 });
 
@@ -1729,4 +1748,14 @@ function populateSizeFilter(select) {
   for (const size of sizes) select.add(new Option(size, size));
   select.value = route().params.get("size") || "";
 }
+function populateColourFilter(select) {
+  if (!window.SlovenkaSite) return;
+  const first = select.options[0]?.cloneNode(true);
+  select.replaceChildren();
+  if (first) select.append(first);
+  const colors = new Map(PRODUCTS.flatMap(p => p.colors).filter(c => c.id).map(c => [c.id, c.name[lang]]));
+  for (const [id, name] of colors) select.add(new Option(name, id));
+  select.value = route().params.get('color') || '';
+}
 for (const select of document.querySelectorAll('select[data-filter="size"]')) populateSizeFilter(select);
+for (const select of document.querySelectorAll('select[data-filter="color"]')) populateColourFilter(select);

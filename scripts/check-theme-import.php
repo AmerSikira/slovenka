@@ -1,75 +1,67 @@
 <?php
-/** Run with wp eval-file against a disposable localhost WordPress installation. */
-if (!defined('WP_CLI') || !WP_CLI || !in_array(wp_parse_url(home_url(), PHP_URL_HOST), ['127.0.0.1', 'localhost'], true)) {
-    throw new RuntimeException('Run this integration check only on a disposable localhost installation.');
-}
-$admins = get_users(['role'=>'administrator', 'number'=>1]);
-if (!$admins) { throw new RuntimeException('Test installation needs an administrator account.'); }
-wp_set_current_user($admins[0]->ID);
-kses_init();
+/** Theme isolation and live edits; use wp eval-file against a disposable localhost store. */
+if (!defined('WP_CLI') || !WP_CLI || !in_array(wp_parse_url(home_url(), PHP_URL_HOST), ['127.0.0.1','localhost'], true)) { throw new RuntimeException('Disposable localhost only.'); }
 function check_import($condition, $message) { if (!$condition) { throw new RuntimeException($message); } }
-$expected = ['pepito'=>123.5, 'signature'=>123.5, 'signature-trousers'=>65, 'ami'=>123.5, 'coco'=>123.5, 'jakna-hasi'=>190, 'over'=>175, 'mija'=>220, 'aria'=>75, 'hasi'=>65, 'icon-extra'=>75, 'alba'=>65];
-check_import(count(get_option('slovenka_pages')) === 50, 'Not all bilingual pages were imported');
-foreach (slovenka_data()['images'] as $image) {
-    check_import(slovenka_find('attachment', '_slovenka_asset', $image['fallback']) || slovenka_find('attachment', '_slovenka_asset', array_search($image['fallback'], slovenka_data()['image_aliases'], true)), 'A displayed photograph is missing');
-}
-foreach ($expected as $key => $price) {
-    $id = slovenka_find('product', '_slovenka_product', $key);
-    $product = wc_get_product($id);
-    check_import($product && (float) $product->get_price() === (float) $price, 'Incorrect price: ' . $key);
-    check_import($product->get_status() === ($key === 'mija' ? 'draft' : 'publish'), 'Incorrect publication state: ' . $key);
-    foreach ($product->get_children() as $variation_id) { check_import((float) wc_get_product($variation_id)->get_regular_price() === (float) $price, 'Incorrect variation price: ' . $key); }
-}
-check_import(wc_get_product(slovenka_find('product', '_slovenka_product', 'hasi'))->get_attribute('size') === '36 | 38 | 40 | 42 | 44 | 46', 'ICON sizes incorrect');
-check_import(wc_get_product(slovenka_find('product', '_slovenka_product', 'icon-extra'))->get_attribute('size') === '48 | 50 | 52 | 54', 'ICON EXTRA sizes incorrect');
-foreach (slovenka_data()['image_aliases'] as $old => $current) {
-    $before = wp_count_posts('attachment');
-    check_import(slovenka_media($current) === slovenka_media($old), 'Legacy image alias created a duplicate attachment');
-    check_import($before == wp_count_posts('attachment'), 'Image upgrade created a duplicate upload');
-    check_import(!str_contains(slovenka_html('<img src="' . $old . '">'), $old), 'Saved page still points at a removed fallback');
-}
-// Fresh installs must be able to sideload the retained WebP directly.
-$photo = array_values(slovenka_data()['images'])[0]['fallback'];
-$existing_photo = slovenka_media($photo);
-$new_photo = 0;
+$admins = get_users(['role'=>'administrator','number'=>1]); wp_set_current_user($admins[0]->ID);
+$ids = []; $attribute_ids = []; $term_ids = [];
 try {
-    delete_post_meta($existing_photo, '_slovenka_asset');
-    $new_photo = slovenka_media($photo);
-    check_import($new_photo !== $existing_photo && get_post_mime_type($new_photo) === 'image/webp', 'Fresh WebP media import failed');
-    check_import(is_file(get_attached_file($new_photo)), 'Fresh WebP attachment file is missing');
-} finally {
-    if ($new_photo && $new_photo !== $existing_photo) { wp_delete_attachment($new_photo, true); }
-    update_post_meta($existing_photo, '_slovenka_asset', $photo);
-}
-$pages = get_option('slovenka_pages');
-check_import(str_contains(get_post($pages['contact.html'])->post_content, '<form'), 'Contact form was stripped');
-check_import(str_contains(get_post($pages['cart.html'])->post_content, '[woocommerce_cart]'), 'Production cart is not native WooCommerce');
-$counts = [];
-foreach (['page', 'attachment', 'product', 'product_variation'] as $type) { $counts[$type] = wp_count_posts($type); }
-$contact = get_post($pages['contact.html'])->post_content;
-$variation = wc_get_product(wc_get_product(slovenka_find('product', '_slovenka_product', 'hasi'))->get_children()[0]);
-$old_price = $variation->get_regular_price();
-try {
-    wp_update_post(wp_slash(['ID'=>$pages['contact.html'], 'post_content'=>$contact . '<p>Editorial change to preserve.</p>']));
-    $variation->set_regular_price('66'); $variation->save();
-    delete_option('slovenka_pages_version'); delete_option('slovenka_products_version');
+    $product = new WC_Product_Simple();
+    $product->set_name('Live catalogue test'); $product->set_status('publish'); $product->set_regular_price('42'); $product->set_description('Live description');
+    $id = $product->save(); $ids[] = $id;
+    $product->set_name('Edited catalogue name'); $product->set_regular_price('57'); $product->set_short_description('Current short copy'); $product->save();
+    $media = get_posts(['post_type'=>'attachment','post_status'=>'inherit','fields'=>'ids','numberposts'=>3]);
+    if ($media) { $product->set_image_id($media[0]); $product->set_gallery_image_ids(array_slice($media, 1)); $product->save(); }
+    // A wholly new product with global colour/size attributes must also work.
+    $attributes = []; $global_terms = [];
+    foreach (['color'=>['Live violet'], 'size'=>['Live small','Live large']] as $name=>$values) {
+        $attribute_id = wc_attribute_taxonomy_id_by_name($name);
+        if (!$attribute_id) { $attribute_id = wc_create_attribute(['name'=>ucfirst($name),'slug'=>$name,'type'=>'select']); $attribute_ids[] = $attribute_id; }
+        $taxonomy = 'pa_' . $name;
+        if (!taxonomy_exists($taxonomy)) { register_taxonomy($taxonomy, 'product', ['public'=>false]); }
+        $options = [];
+        foreach ($values as $value) {
+            $term = wp_insert_term($value, $taxonomy, ['slug'=>'qa-' . sanitize_title($value)]);
+            check_import(!is_wp_error($term), 'Could not create global attribute fixture');
+            $options[] = (int)$term['term_id']; $term_ids[] = [$term['term_id'],$taxonomy];
+            $global_terms[$name][] = get_term($term['term_id'], $taxonomy);
+        }
+        $attribute = new WC_Product_Attribute(); $attribute->set_id($attribute_id); $attribute->set_name($taxonomy); $attribute->set_options($options); $attribute->set_visible(true); $attribute->set_variation(true); $attributes[] = $attribute;
+    }
+    $variable = new WC_Product_Variable(); $variable->set_name('Brand new dynamic model'); $variable->set_status('publish'); $variable->set_attributes($attributes);
+    if ($media) { $variable->set_image_id($media[0]); }
+    $variable_id = $variable->save(); $ids[] = $variable_id;
+    $variation = new WC_Product_Variation(); $variation->set_parent_id($variable_id); $variation->set_attributes(['pa_color'=>$global_terms['color'][0]->slug,'pa_size'=>$global_terms['size'][0]->slug]); $variation->set_regular_price('83'); $variation->set_manage_stock(true); $variation->set_stock_quantity(7); $variation->set_status('publish');
+    if (count($media) > 1) { $variation->set_image_id($media[1]); }
+    $ids[] = $variation->save(); WC_Product_Variable::sync($variable_id);
+    $before = [];
+    foreach (['product','product_variation','attachment'] as $type) { $before[$type] = wp_count_posts($type); }
+    $snapshot = wc_get_product($id)->get_data();
+    // Force the theme's installation path even on an already-upgraded database.
+    delete_option('slovenka_pages_version'); delete_option('slovenka_store_pages_version');
     slovenka_import_site();
-    check_import(get_option('slovenka_import_errors') === [], 'Retry did not complete');
-    check_import(str_contains(get_post($pages['contact.html'])->post_content, 'Editorial change to preserve.'), 'Reactivation overwrote edited content');
-    check_import(wc_get_product($variation->get_id())->get_regular_price() === '66', 'Reactivation overwrote edited prices');
-    foreach ($counts as $type => $count) { check_import($count == wp_count_posts($type), 'Reactivation duplicated ' . $type); }
+    check_import(get_option('slovenka_import_errors') === [], 'Editorial import errors');
+    check_import($snapshot == wc_get_product($id)->get_data(), 'Theme import changed a product');
+    foreach ($before as $type=>$counts) {
+        $now = wp_count_posts($type);
+        check_import($now == $counts, 'Theme created/removed catalogue records: ' . $type);
+    }
+    $catalogue = slovenka_catalogue();
+    $item = array_values(array_filter($catalogue['products'], fn($item) => $item['id'] === (string)$id));
+    check_import($item && $item[0]['name'] === 'Edited catalogue name' && $item[0]['price'] === 57.0 && $item[0]['label']['bs'] === 'Current short copy', 'New/edited product data is stale');
+    $live = array_values(array_filter($catalogue['products'], fn($item) => $item['id'] === (string)$variable_id))[0] ?? null;
+    check_import($live && $live['colors'][0]['name']['bs'] === 'Live violet' && count($live['sizes']) === 2 && !array_diff($live['sizes'], ['Live small','Live large']) && $live['unavailable'] === ['Live large'], 'Global attributes or stock are stale: ' . wp_json_encode($live));
+    check_import($live['price'] === 83.0 && $live['colourAttribute'] === 'pa_color', 'Variable price/global attribute mapping incorrect');
+    if (count($media) > 1) { check_import($live['colors'][0]['cover'] === 'media-' . $media[1], 'Edited variation photo not used'); }
+    check_import($item[0]['permalink'] === $product->get_permalink(), 'Product URL is static');
+    check_import(!isset(slovenka_data()['products']), 'Theme ships a product registry');
+    check_import(!function_exists('slovenka_import_product'), 'Theme can still import products');
+    foreach (slovenka_data()['pages'] as $file=>$page) {
+        check_import(!str_starts_with($page['route'], '/product/'), 'Theme contains static product detail pages');
+        check_import(isset(get_option('slovenka_pages')[$file]), 'Editorial page missing');
+    }
+    echo "PASS: theme imports editorial pages only; no product/media mutations; arbitrary new products, edited names/prices/copy and native URLs appear from WooCommerce.\n";
 } finally {
-    wp_update_post(wp_slash(['ID'=>$pages['contact.html'], 'post_content'=>$contact]));
-    $variation->set_regular_price($old_price); $variation->save();
-    WC_Product_Variable::sync($variation->get_parent_id());
+    foreach (array_reverse($ids) as $id) { wp_delete_post($id, true); }
+    foreach ($term_ids as [$id,$taxonomy]) { wp_delete_term($id,$taxonomy); }
+    foreach ($attribute_ids as $id) { wc_delete_attribute($id); }
 }
-// A partial product import must repair its missing variation without duplicating siblings.
-$product_id = slovenka_find('product', '_slovenka_product', 'pepito');
-$children = wc_get_product($product_id)->get_children();
-wp_delete_post($children[0], true);
-delete_post_meta($product_id, '_slovenka_import_complete');
-delete_option('slovenka_products_version');
-slovenka_import_site();
-check_import(count(wc_get_product($product_id)->get_children()) === count($children), 'Interrupted product import did not repair variations');
-check_import(get_option('slovenka_import_errors') === [], 'Import errors remain');
-echo "PASS: prices, ICON sizes, MIJA draft, all pages/images, native cart, idempotency, edited content/prices, interrupted variation recovery.\n";

@@ -10,3 +10,7 @@ wordpress/slovenka/styles.css
 wordpress/slovenka/script.js
 wordpress/slovenka/motion.js
 wordpress/slovenka/contact-map.js
+
+# Reproducible independent catalogue import (scripts/build-product-import.py).
+wordpress/slovenka-catalogue-import/assets/
+wordpress/slovenka-catalogue-import/data/

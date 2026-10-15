@@ -2,16 +2,21 @@
 if (!defined('ABSPATH')) { exit; }
 require_once __DIR__ . '/inc/import.php';
 require_once __DIR__ . '/inc/render.php';
+require_once __DIR__ . '/inc/catalogue.php';
 require_once __DIR__ . '/inc/size-tables.php';
 require_once __DIR__ . '/inc/forms.php';
 add_action('after_setup_theme', function () {
     add_theme_support('post-thumbnails');
     add_theme_support('woocommerce');
+    add_theme_support('wc-product-gallery-zoom');
+    add_theme_support('wc-product-gallery-lightbox');
+    add_theme_support('wc-product-gallery-slider');
     register_nav_menus(['primary' => 'Primary navigation', 'footer' => 'Footer navigation']);
 });
 // Load after WooCommerce's styles, including notices outside shop templates.
 add_action('wp_enqueue_scripts', function () {
     if (!class_exists('WooCommerce')) { return; }
+    wp_enqueue_style('slovenka-products', get_template_directory_uri() . '/products.css', [], (string) filemtime(get_template_directory() . '/products.css'));
     wp_enqueue_style('slovenka-notices', get_template_directory_uri() . '/notices.css', [], (string) filemtime(get_template_directory() . '/notices.css'));
 }, 100);
 add_action('after_switch_theme', 'slovenka_import_site');
@@ -23,7 +28,7 @@ add_action('admin_init', function () {
 add_action('admin_notices', function () {
     $errors = get_option('slovenka_import_errors', []);
     if (!class_exists('WooCommerce')) {
-        $errors[] = 'Activate WooCommerce to finish importing products. Pages and images are already imported; the catalogue import resumes automatically.';
+        $errors[] = 'Activate WooCommerce to manage products. Import your catalogue separately under Products; the theme does not create or overwrite products.';
     }
     foreach (array_unique($errors) as $error) {
         echo '<div class="notice notice-warning"><p>' . esc_html($error) . '</p></div>';
