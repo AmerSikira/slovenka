@@ -66,8 +66,8 @@ function slovenka_prepare_content($content, $page, $pages) {
                 $content = substr_replace($content, '', $start, $end - $start);
             }
         }
-        $content = preg_replace('~<h1\b[^>]*>[\s\S]*?</h1>~i', '', $content, 1);
-        $content = preg_replace('~<p\b[^>]*class="eyebrow"[^>]*>[\s\S]*?</p>~i', '', $content, 1);
+        $content = preg_replace('~<h1\b[^>]*>\s*(?:Odjeća za vaš ritam\.|Clothes for your rhythm\.)\s*</h1>~i', '', $content, 1);
+        $content = preg_replace('~<p\b[^>]*class="eyebrow"[^>]*>\s*MK SLOVENKA / (?:KOLEKCIJA|COLLECTION)\s*</p>~i', '', $content, 1);
     }
     $content = strtr($content, slovenka_data()['image_aliases'] ?? []);
     $content = slovenka_import_product_blocks($content);

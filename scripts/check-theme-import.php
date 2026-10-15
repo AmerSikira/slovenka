@@ -16,9 +16,9 @@ try {
     $edited = '<p class="muted">Intro</p><p>MERCHANT_NOTICE</p><!-- wp:shortcode -->[merchant_shortcode]<!-- /wp:shortcode -->';
     $prepared = slovenka_prepare_content($edited, ['route'=>'/shop','lang'=>'bs'], []);
     check_import(str_contains($prepared, 'MERCHANT_NOTICE') && str_contains($prepared, '[merchant_shortcode]'), 'Shop edit lost');
-    $preview = '<section class="listing"><h1>Old intro</h1><p class="muted">Intro</p><div class="listing-toolbar"><div>Old filters</div></div><div class="product-grid listing-grid"><article>Old product</article></div></section><p>MERCHANT_NOTICE</p>';
+    $preview = '<h1>MERCHANT_HEADING</h1><section class="listing"><h1>Odjeća za vaš ritam.</h1><p class="muted">Intro</p><div class="listing-toolbar"><div>Old filters</div></div><div class="product-grid listing-grid"><article>Old product</article></div></section><p>MERCHANT_NOTICE</p>';
     $prepared = slovenka_prepare_content($preview, ['route'=>'/shop','lang'=>'bs'], []);
-    check_import(str_contains($prepared, 'MERCHANT_NOTICE') && str_contains($prepared, 'Intro') && !str_contains($prepared, 'Old product') && !str_contains($prepared, '<h1>'), 'Shop legacy migration incorrect');
+    check_import(str_contains($prepared, 'MERCHANT_NOTICE') && str_contains($prepared, 'Intro') && !str_contains($prepared, 'Old product') && !str_contains($prepared, 'Odjeća za vaš ritam.') && str_contains($prepared, 'MERCHANT_HEADING'), 'Shop legacy migration incorrect');
     check_import(!function_exists('slovenka_catalogue') && !function_exists('slovenka_import_product'), 'Custom catalogue remains');
     foreach (slovenka_data()['pages'] as $page) { check_import(!str_starts_with($page['route'], '/product/'), 'Product seed remains'); }
     echo "PASS: optional setup preserves merchant settings/products/media, edited shop content and blocks; removes only obsolete catalogue markup; no product templates or registry.\n";
