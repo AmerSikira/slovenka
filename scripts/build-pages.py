@@ -26,7 +26,7 @@ def picture(path, alt='', eager=False):
     m = images[path]
     priority = ' fetchpriority="high"' if eager else ''
     return f'<picture class="responsive-image"><source type="image/webp" srcset="{m["srcSet"]}" sizes="(max-width:767px) 100vw, 50vw"><img src="{m["fallback"]}" width="{m["width"]}" height="{m["height"]}" alt="{escape(alt)}" loading="{"eager" if eager else "lazy"}"{priority}></picture>'
-def gallery_path(p, n): return f'{p["name"]}/{"Sređeno" if p["id"] == "aria" else "Sređene"}/{p["name"]} {n}.png'
+def gallery_path(p, n): return n if isinstance(n, str) else f'{p["name"]}/{"Sređeno" if p["id"] == "aria" else "Sređene"}/{p["name"]} {n}.png'
 def swatches(p, lang, context='card'):
     return ''.join(f'<button type="button" class="swatch {"selected" if i == 0 else ""}" style="--swatch:{c["hex"]}" data-action="{context}-color" data-product="{p["id"]}" data-color="{c["id"]}" aria-label="{c["name"][lang]}" aria-pressed="{str(i == 0).lower()}"></button>' for i,c in enumerate(p['colors']))
 def card(p, lang):
@@ -86,7 +86,13 @@ def materialize(key, lang, p=None):
         link = existing.select_one('a[href]'); match = re.search(r'(?:product/|product-)([^?#.]+)', link['href']) if link else None
         prod = next((x for x in products if match and x['id'] == match[1]), None)
         if prod: existing.replace_with(fragment(card(prod,lang)))
+    if key == 'home':
+        replace_contents(main.select_one('.selected-section .product-grid'), ''.join(card(x,lang) for x in products if x.get('isNew')))
+    for menu in doc.select('.shop-menu'):
+        chosen = menu.select('div')[1]
+        replace_contents(chosen, '<p class="eyebrow">' + ('Naš izbor' if lang == 'bs' else 'Our selection') + '</p>' + ''.join(f'<a href="{url("/product/" + x["id"], lang)}">{x["name"]}</a>' for x in products if x.get('isNew')))
     if key == 'shop':
+        main.select_one('.listing-toolbar > span').string = f'{len(products)} ' + ('modela' if lang == 'bs' else 'pieces')
         replace_contents(main.select_one('.listing-grid'), ''.join(card(x,lang) for x in products))
         for i,s in enumerate(main.select('.desktop-filters select')): s['data-filter'] = ['color','size','price'][i]
         main.select_one('.sort-label select')['data-filter'] = 'sort'

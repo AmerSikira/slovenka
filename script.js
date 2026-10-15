@@ -172,6 +172,225 @@ const PRODUCTS = [
     sizes: ["36", "38", "40", "42", "44"],
     unavailable: ["44"],
   },
+  {
+    "id": "ami",
+    "name": "AMI",
+    "type": "blazers",
+    "label": {
+      "bs": "Crni sako s dvorednim kopčanjem",
+      "en": "Black double-breasted blazer"
+    },
+    "price": 189,
+    "description": {
+      "bs": "AMI je crni sako s dvorednim kopčanjem, reverima i džepovima s preklopom. Kombinujte ga s hlačama za poslovni izgled ili nosite u svakodnevnim kombinacijama.",
+      "en": "AMI is a black double-breasted blazer with lapels and flap pockets. Pair it with tailored trousers for work or wear it as part of an everyday look."
+    },
+    "colors": [
+      {
+        "id": "black",
+        "name": {
+          "bs": "Crna",
+          "en": "Black"
+        },
+        "hex": "#262622",
+        "cover": "AMI/F8AAD997-156E-4132-9CD6-2D0E6BFE20C2.jpeg",
+        "images": [
+          "AMI/F8AAD997-156E-4132-9CD6-2D0E6BFE20C2.jpeg",
+          "AMI/410D7695-0C78-4C04-8C95-AD624CA45060.png",
+          "AMI/DE34DBA1-C4DF-4799-BC2A-3BB2276B11EF.png"
+        ]
+      }
+    ],
+    "sizes": [
+      "36",
+      "38",
+      "40",
+      "42",
+      "44"
+    ],
+    "unavailable": [],
+    "isNew": true
+  },
+  {
+    "id": "over",
+    "name": "OVER",
+    "type": "coats",
+    "label": {
+      "bs": "Prošiveni kaput s pojasom",
+      "en": "Belted quilted coat"
+    },
+    "price": 249,
+    "description": {
+      "bs": "OVER je prošiveni kaput s reverima i pojasom koji naglašava struk. Birajte između crne, tamnosive, bordo i bronzane varijante.",
+      "en": "OVER is a quilted coat with lapels and a waist-defining belt. Choose from black, charcoal, burgundy and bronze variants."
+    },
+    "colors": [
+      {
+        "id": "black",
+        "name": {
+          "bs": "Crna",
+          "en": "Black"
+        },
+        "hex": "#262622",
+        "cover": "OVER/D9C29435-C0E0-426C-AC14-30B773733A52.png",
+        "images": [
+          "OVER/D9C29435-C0E0-426C-AC14-30B773733A52.png",
+          "OVER/3044ED7B-5309-4AB8-82FE-74B7D21509EB.png",
+          "OVER/181A93FF-4E9D-4592-8807-FD656F106AE0.png",
+          "OVER/82EE7D1C-979D-48E6-B6CC-0B2A7731EDAA.png",
+          "OVER/F88F153A-1299-4506-B155-2D2181F3B30D.jpeg"
+        ]
+      },
+      {
+        "id": "charcoal",
+        "name": {
+          "bs": "Tamnosiva",
+          "en": "Charcoal"
+        },
+        "hex": "#55534f",
+        "cover": "OVER/97CE0A88-E4F8-4E3D-A5CC-C64AF9856D08.png",
+        "images": [
+          "OVER/97CE0A88-E4F8-4E3D-A5CC-C64AF9856D08.png",
+          "OVER/0CC19848-CA52-4459-A942-1232BEE21D82.png",
+          "OVER/1409239B-FDDD-44F1-8144-BC424F701626.png",
+          "OVER/2FB15750-8354-416C-BFE3-B59502694E85.jpeg"
+        ]
+      },
+      {
+        "id": "burgundy",
+        "name": {
+          "bs": "Bordo",
+          "en": "Burgundy"
+        },
+        "hex": "#74404b",
+        "cover": "OVER/6B877368-584E-4CFA-B61C-1478AEF7B3D9.png",
+        "images": [
+          "OVER/6B877368-584E-4CFA-B61C-1478AEF7B3D9.png",
+          "OVER/55772374-C021-4588-8950-50D5D930E14E.png",
+          "OVER/2437536E-5D75-49A7-A655-DD3E9D90FDDA.png",
+          "OVER/9E89EDCD-89C6-49A8-8D69-2FBBEF8250ED.png",
+          "OVER/CF53C32B-3700-41B1-AF74-447F86E7E2CC.png"
+        ]
+      },
+      {
+        "id": "bronze",
+        "name": {
+          "bs": "Bronzana",
+          "en": "Bronze"
+        },
+        "hex": "#79614c",
+        "cover": "OVER/89121B73-7AE9-4F1C-839E-14ECAF01A48C.png",
+        "images": [
+          "OVER/89121B73-7AE9-4F1C-839E-14ECAF01A48C.png",
+          "OVER/BEAD8837-7E93-4437-9F27-5CA09CDD853D.png",
+          "OVER/AA96A15E-BEBF-4625-8C6D-3D65829A3E14.png"
+        ]
+      }
+    ],
+    "sizes": [
+      "36",
+      "38",
+      "40",
+      "42",
+      "44"
+    ],
+    "unavailable": [],
+    "isNew": true
+  },
+  {
+    "id": "jakna-hasi",
+    "name": "JAKNA HASI",
+    "type": "jackets",
+    "label": {
+      "bs": "Prošivena jakna s kapuljačom",
+      "en": "Hooded quilted jacket"
+    },
+    "price": 229,
+    "description": {
+      "bs": "JAKNA HASI ima prošivenu površinu, kapuljaču i pojas u struku. Dostupna je u crnoj i bordo varijanti, s džepovima i dužinom ispod bokova.",
+      "en": "JAKNA HASI features quilting, a hood and a waist belt. Available in black and burgundy, with pockets and a cut that falls below the hips."
+    },
+    "colors": [
+      {
+        "id": "black",
+        "name": {
+          "bs": "Crna",
+          "en": "Black"
+        },
+        "hex": "#262622",
+        "cover": "JAKNA HASI/73318677-E148-4355-8AD8-7BFC76748738.png",
+        "images": [
+          "JAKNA HASI/73318677-E148-4355-8AD8-7BFC76748738.png",
+          "JAKNA HASI/B8C228F8-B7B6-4E5D-ACAC-3CD7DA08B6FD.png",
+          "JAKNA HASI/978B0B9D-FBB0-4695-89DC-8406A84FA42D.jpeg",
+          "JAKNA HASI/73C055EF-E8C4-400F-8389-C9B91348A0AA.jpeg"
+        ]
+      },
+      {
+        "id": "burgundy",
+        "name": {
+          "bs": "Bordo",
+          "en": "Burgundy"
+        },
+        "hex": "#602d40",
+        "cover": "JAKNA HASI/48C92E6B-5ACC-4E71-81D7-4B9CEB5DA5EE.jpeg",
+        "images": [
+          "JAKNA HASI/48C92E6B-5ACC-4E71-81D7-4B9CEB5DA5EE.jpeg",
+          "JAKNA HASI/15534D31-A715-49B3-A7ED-426317AD7C52.jpeg",
+          "JAKNA HASI/788E335A-E350-4C6A-BC65-A8BF486E21DB.jpeg"
+        ]
+      }
+    ],
+    "sizes": [
+      "36",
+      "38",
+      "40",
+      "42",
+      "44"
+    ],
+    "unavailable": [],
+    "isNew": true
+  },
+  {
+    "id": "pepito",
+    "name": "PEPITO",
+    "type": "blazers",
+    "label": {
+      "bs": "Sako s pepito uzorkom",
+      "en": "Houndstooth blazer"
+    },
+    "price": 199,
+    "description": {
+      "bs": "PEPITO je sako u smeđim tonovima s prepoznatljivim pepito uzorkom. Dvoredno kopčanje, reveri i džepovi s preklopom zaokružuju njegovu siluetu.",
+      "en": "PEPITO is a brown-toned blazer with a distinctive houndstooth pattern. Double-breasted buttons, lapels and flap pockets complete its silhouette."
+    },
+    "colors": [
+      {
+        "id": "brown",
+        "name": {
+          "bs": "Smeđa",
+          "en": "Brown"
+        },
+        "hex": "#79614c",
+        "cover": "PEPITO/Checked Brown Double-Breasted Blazer.png",
+        "images": [
+          "PEPITO/Checked Brown Double-Breasted Blazer.png",
+          "PEPITO/Tailored Houndstooth Blazer Detail.png",
+          "PEPITO/Textured Houndstooth Blazer Lapel.png",
+          "PEPITO/Checked Blazer Collar with SLOVENKA Label.png"
+        ]
+      }
+    ],
+    "sizes": [
+      "36",
+      "38",
+      "40",
+      "42",
+      "44"
+    ],
+    "unavailable": [],
+    "isNew": true
+  },
 ];
 // Sample body circumferences in cm, shared by the preview catalogue.
 // Replace with approved sizing data before live sales; these are not garment dimensions.
@@ -184,35 +403,69 @@ const BODY_MEASUREMENTS = {
 };
 const CATEGORIES = [
   {
-    id: "trousers",
-    bs: "Hlače",
-    en: "Trousers",
-    image: "ARIA/Sređeno/ARIA 2.png",
-    count: "03",
+    "id": "jackets",
+    "bs": "Jakne",
+    "en": "Jackets",
+    "image": "JAKNA HASI/73318677-E148-4355-8AD8-7BFC76748738.png"
   },
   {
-    id: "blazers",
-    bs: "Sakoi",
-    en: "Blazers",
-    image: "COCO/Sređene/COCO 1.png",
-    count: "01",
+    "id": "blazers",
+    "bs": "Sakoi",
+    "en": "Blazers",
+    "image": "AMI/F8AAD997-156E-4132-9CD6-2D0E6BFE20C2.jpeg"
   },
   {
-    id: "suits",
-    bs: "Odijela",
-    en: "Suits",
-    image: "SIGNATURE/Sređene/SIGNATURE 1.png",
-    count: "01",
+    "id": "coats",
+    "bs": "Kaputi",
+    "en": "Coats",
+    "image": "OVER/D9C29435-C0E0-426C-AC14-30B773733A52.png"
   },
   {
-    id: "all",
-    bs: "Poslovni stil",
-    en: "The tailoring edit",
-    image: "HASI/Primjena/HASI 1.png",
-    count: "05",
+    "id": "trousers",
+    "bs": "Hlače",
+    "en": "Trousers",
+    "image": "ARIA/Sređeno/ARIA 2.png"
   },
+  {
+    "id": "suits",
+    "bs": "Odijela",
+    "en": "Suits",
+    "image": "SIGNATURE/Sređene/SIGNATURE 1.png"
+  }
 ];
 const IMAGES = {
+  "AMI/410D7695-0C78-4C04-8C95-AD624CA45060.png": {"src": "assets/images/AMI-1.webp", "fallback": "assets/images/AMI-1.jpg", "srcSet": "assets/images/AMI-1-480.webp 480w, assets/images/AMI-1-960.webp 960w, assets/images/AMI-1.webp 1086w", "width": 1086, "height": 1448},
+  "AMI/DE34DBA1-C4DF-4799-BC2A-3BB2276B11EF.png": {"src": "assets/images/AMI-2.webp", "fallback": "assets/images/AMI-2.jpg", "srcSet": "assets/images/AMI-2-480.webp 480w, assets/images/AMI-2-960.webp 960w, assets/images/AMI-2.webp 1086w", "width": 1086, "height": 1448},
+  "AMI/F8AAD997-156E-4132-9CD6-2D0E6BFE20C2.jpeg": {"src": "assets/images/AMI-3.webp", "fallback": "assets/images/AMI-3.jpg", "srcSet": "assets/images/AMI-3-480.webp 480w, assets/images/AMI-3.webp 868w", "width": 868, "height": 1158},
+  "OVER/0CC19848-CA52-4459-A942-1232BEE21D82.png": {"src": "assets/images/OVER-1.webp", "fallback": "assets/images/OVER-1.jpg", "srcSet": "assets/images/OVER-1-480.webp 480w, assets/images/OVER-1-960.webp 960w, assets/images/OVER-1.webp 1086w", "width": 1086, "height": 1448},
+  "OVER/1409239B-FDDD-44F1-8144-BC424F701626.png": {"src": "assets/images/OVER-2.webp", "fallback": "assets/images/OVER-2.jpg", "srcSet": "assets/images/OVER-2-480.webp 480w, assets/images/OVER-2-960.webp 960w, assets/images/OVER-2.webp 1448w", "width": 1448, "height": 1086},
+  "OVER/181A93FF-4E9D-4592-8807-FD656F106AE0.png": {"src": "assets/images/OVER-3.webp", "fallback": "assets/images/OVER-3.jpg", "srcSet": "assets/images/OVER-3-480.webp 480w, assets/images/OVER-3-960.webp 960w, assets/images/OVER-3.webp 1086w", "width": 1086, "height": 1448},
+  "OVER/2437536E-5D75-49A7-A655-DD3E9D90FDDA.png": {"src": "assets/images/OVER-4.webp", "fallback": "assets/images/OVER-4.jpg", "srcSet": "assets/images/OVER-4-480.webp 480w, assets/images/OVER-4-960.webp 960w, assets/images/OVER-4.webp 1086w", "width": 1086, "height": 1448},
+  "OVER/2FB15750-8354-416C-BFE3-B59502694E85.jpeg": {"src": "assets/images/OVER-5.webp", "fallback": "assets/images/OVER-5.jpg", "srcSet": "assets/images/OVER-5-480.webp 480w, assets/images/OVER-5.webp 862w", "width": 862, "height": 1293},
+  "OVER/3044ED7B-5309-4AB8-82FE-74B7D21509EB.png": {"src": "assets/images/OVER-6.webp", "fallback": "assets/images/OVER-6.jpg", "srcSet": "assets/images/OVER-6-480.webp 480w, assets/images/OVER-6-960.webp 960w, assets/images/OVER-6.webp 1086w", "width": 1086, "height": 1448},
+  "OVER/55772374-C021-4588-8950-50D5D930E14E.png": {"src": "assets/images/OVER-7.webp", "fallback": "assets/images/OVER-7.jpg", "srcSet": "assets/images/OVER-7-480.webp 480w, assets/images/OVER-7-960.webp 960w, assets/images/OVER-7.webp 1024w", "width": 1024, "height": 1536},
+  "OVER/6B877368-584E-4CFA-B61C-1478AEF7B3D9.png": {"src": "assets/images/OVER-8.webp", "fallback": "assets/images/OVER-8.jpg", "srcSet": "assets/images/OVER-8-480.webp 480w, assets/images/OVER-8-960.webp 960w, assets/images/OVER-8.webp 1024w", "width": 1024, "height": 1536},
+  "OVER/82EE7D1C-979D-48E6-B6CC-0B2A7731EDAA.png": {"src": "assets/images/OVER-9.webp", "fallback": "assets/images/OVER-9.jpg", "srcSet": "assets/images/OVER-9-480.webp 480w, assets/images/OVER-9-960.webp 960w, assets/images/OVER-9.webp 1086w", "width": 1086, "height": 1448},
+  "OVER/89121B73-7AE9-4F1C-839E-14ECAF01A48C.png": {"src": "assets/images/OVER-10.webp", "fallback": "assets/images/OVER-10.jpg", "srcSet": "assets/images/OVER-10-480.webp 480w, assets/images/OVER-10-960.webp 960w, assets/images/OVER-10.webp 1024w", "width": 1024, "height": 1536},
+  "OVER/97CE0A88-E4F8-4E3D-A5CC-C64AF9856D08.png": {"src": "assets/images/OVER-11.webp", "fallback": "assets/images/OVER-11.jpg", "srcSet": "assets/images/OVER-11-480.webp 480w, assets/images/OVER-11-960.webp 960w, assets/images/OVER-11.webp 1024w", "width": 1024, "height": 1536},
+  "OVER/9E89EDCD-89C6-49A8-8D69-2FBBEF8250ED.png": {"src": "assets/images/OVER-12.webp", "fallback": "assets/images/OVER-12.jpg", "srcSet": "assets/images/OVER-12-480.webp 480w, assets/images/OVER-12-960.webp 960w, assets/images/OVER-12.webp 1086w", "width": 1086, "height": 1448},
+  "OVER/AA96A15E-BEBF-4625-8C6D-3D65829A3E14.png": {"src": "assets/images/OVER-13.webp", "fallback": "assets/images/OVER-13.jpg", "srcSet": "assets/images/OVER-13-480.webp 480w, assets/images/OVER-13-960.webp 960w, assets/images/OVER-13.webp 1024w", "width": 1024, "height": 1536},
+  "OVER/BEAD8837-7E93-4437-9F27-5CA09CDD853D.png": {"src": "assets/images/OVER-14.webp", "fallback": "assets/images/OVER-14.jpg", "srcSet": "assets/images/OVER-14-480.webp 480w, assets/images/OVER-14-960.webp 960w, assets/images/OVER-14.webp 1086w", "width": 1086, "height": 1448},
+  "OVER/CF53C32B-3700-41B1-AF74-447F86E7E2CC.png": {"src": "assets/images/OVER-15.webp", "fallback": "assets/images/OVER-15.jpg", "srcSet": "assets/images/OVER-15-480.webp 480w, assets/images/OVER-15-960.webp 960w, assets/images/OVER-15.webp 1086w", "width": 1086, "height": 1448},
+  "OVER/D9C29435-C0E0-426C-AC14-30B773733A52.png": {"src": "assets/images/OVER-16.webp", "fallback": "assets/images/OVER-16.jpg", "srcSet": "assets/images/OVER-16-480.webp 480w, assets/images/OVER-16-960.webp 960w, assets/images/OVER-16.webp 1086w", "width": 1086, "height": 1448},
+  "OVER/F88F153A-1299-4506-B155-2D2181F3B30D.jpeg": {"src": "assets/images/OVER-17.webp", "fallback": "assets/images/OVER-17.jpg", "srcSet": "assets/images/OVER-17-480.webp 480w, assets/images/OVER-17-960.webp 960w, assets/images/OVER-17.webp 1031w", "width": 1031, "height": 773},
+  "JAKNA HASI/15534D31-A715-49B3-A7ED-426317AD7C52.jpeg": {"src": "assets/images/JAKNA-HASI-1.webp", "fallback": "assets/images/JAKNA-HASI-1.jpg", "srcSet": "assets/images/JAKNA-HASI-1-480.webp 480w, assets/images/JAKNA-HASI-1.webp 903w", "width": 903, "height": 1355},
+  "JAKNA HASI/48C92E6B-5ACC-4E71-81D7-4B9CEB5DA5EE.jpeg": {"src": "assets/images/JAKNA-HASI-2.webp", "fallback": "assets/images/JAKNA-HASI-2.jpg", "srcSet": "assets/images/JAKNA-HASI-2-480.webp 480w, assets/images/JAKNA-HASI-2-960.webp 960w, assets/images/JAKNA-HASI-2.webp 991w", "width": 991, "height": 1487},
+  "JAKNA HASI/73318677-E148-4355-8AD8-7BFC76748738.png": {"src": "assets/images/JAKNA-HASI-3.webp", "fallback": "assets/images/JAKNA-HASI-3.jpg", "srcSet": "assets/images/JAKNA-HASI-3-480.webp 480w, assets/images/JAKNA-HASI-3-960.webp 960w, assets/images/JAKNA-HASI-3.webp 1024w", "width": 1024, "height": 1536},
+  "JAKNA HASI/73C055EF-E8C4-400F-8389-C9B91348A0AA.jpeg": {"src": "assets/images/JAKNA-HASI-4.webp", "fallback": "assets/images/JAKNA-HASI-4.jpg", "srcSet": "assets/images/JAKNA-HASI-4-480.webp 480w, assets/images/JAKNA-HASI-4-960.webp 960w, assets/images/JAKNA-HASI-4.webp 1024w", "width": 1024, "height": 1536},
+  "JAKNA HASI/788E335A-E350-4C6A-BC65-A8BF486E21DB.jpeg": {"src": "assets/images/JAKNA-HASI-5.webp", "fallback": "assets/images/JAKNA-HASI-5.jpg", "srcSet": "assets/images/JAKNA-HASI-5-480.webp 480w, assets/images/JAKNA-HASI-5-960.webp 960w, assets/images/JAKNA-HASI-5.webp 1312w", "width": 1312, "height": 1199},
+  "JAKNA HASI/978B0B9D-FBB0-4695-89DC-8406A84FA42D.jpeg": {"src": "assets/images/JAKNA-HASI-6.webp", "fallback": "assets/images/JAKNA-HASI-6.jpg", "srcSet": "assets/images/JAKNA-HASI-6-480.webp 480w, assets/images/JAKNA-HASI-6.webp 913w", "width": 913, "height": 1369},
+  "JAKNA HASI/B8C228F8-B7B6-4E5D-ACAC-3CD7DA08B6FD.png": {"src": "assets/images/JAKNA-HASI-7.webp", "fallback": "assets/images/JAKNA-HASI-7.jpg", "srcSet": "assets/images/JAKNA-HASI-7-480.webp 480w, assets/images/JAKNA-HASI-7-960.webp 960w, assets/images/JAKNA-HASI-7.webp 1024w", "width": 1024, "height": 1536},
+  "PEPITO/Checked Blazer Collar with SLOVENKA Label.png": {"src": "assets/images/PEPITO-1.webp", "fallback": "assets/images/PEPITO-1.jpg", "srcSet": "assets/images/PEPITO-1-480.webp 480w, assets/images/PEPITO-1-960.webp 960w, assets/images/PEPITO-1.webp 1254w", "width": 1254, "height": 1254},
+  "PEPITO/Checked Brown Double-Breasted Blazer.png": {"src": "assets/images/PEPITO-2.webp", "fallback": "assets/images/PEPITO-2.jpg", "srcSet": "assets/images/PEPITO-2-480.webp 480w, assets/images/PEPITO-2-960.webp 960w, assets/images/PEPITO-2.webp 1254w", "width": 1254, "height": 1254},
+  "PEPITO/Tailored Houndstooth Blazer Detail.png": {"src": "assets/images/PEPITO-3.webp", "fallback": "assets/images/PEPITO-3.jpg", "srcSet": "assets/images/PEPITO-3-480.webp 480w, assets/images/PEPITO-3-960.webp 960w, assets/images/PEPITO-3.webp 1254w", "width": 1254, "height": 1254},
+  "PEPITO/Textured Houndstooth Blazer Lapel.png": {"src": "assets/images/PEPITO-4.webp", "fallback": "assets/images/PEPITO-4.jpg", "srcSet": "assets/images/PEPITO-4-480.webp 480w, assets/images/PEPITO-4-960.webp 960w, assets/images/PEPITO-4.webp 1254w", "width": 1254, "height": 1254},
+
   "ALBA/Sređene/ALBA 1.png": {
     src: "assets/images/ALBA-Sredene-ALBA-1.webp",
     fallback: "assets/images/ALBA-Sredene-ALBA-1.jpg",
@@ -648,6 +901,7 @@ function productCard(p, colorId = p.colors[0].id) {
   return `<article class="product-card" data-product="${p.id}"><a class="product-image" href="${href}">${image(c.cover, `${p.name} — ${p.label[lang]} — ${c.name[lang]}`)}${second ? image(galleryPath(p, second), "", "hover-image") : ""}<span class="product-tag">${p.name}</span></a><div class="product-card-top"><a href="${href}"><h3>${p.name}</h3></a><span>${money(p.price)}</span></div><a class="product-description" href="${href}">${p.label[lang]}</a><div class="swatches">${colorButtons(p, c.id)}<span>${t("Primjer cijene", "Sample price")}</span></div></article>`;
 }
 function galleryPath(p, n) {
+  if (typeof n === "string") return n;
   return `${p.name}/${p.id === "aria" ? "Sređeno" : "Sređene"}/${p.name} ${n}.png`;
 }
 // Catalogue controls preserve filter and sort state in the URL.
@@ -660,8 +914,9 @@ function matchingProducts(params = route().params) {
   const list = PRODUCTS.filter(
     (p) =>
       (category === "all" || p.type === category) &&
+      (params.get("edit") !== "new" || p.isNew) &&
       (!q ||
-        normalise(`${p.name} ${p.label.bs} ${p.label.en}`).includes(
+        normalise(`${p.name} ${p.label.bs} ${p.label.en} ${CATEGORIES.find((c) => c.id === p.type)?.bs || ""} ${CATEGORIES.find((c) => c.id === p.type)?.en || ""}`).includes(
           normalise(q),
         )) &&
       (!color || p.colors.some((c) => c.id === color)) &&
@@ -690,7 +945,9 @@ function renderShop() {
   $("#main h1").textContent = q
     ? `${t("Rezultati za", "Results for")} “${q}”`
     : category === "all"
-      ? t("Odjeća za vaš ritam.", "Clothes for your rhythm.")
+      ? (params.get("edit") === "new"
+        ? t("Nova kolekcija", "New collection")
+        : t("Odjeća za vaš ritam.", "Clothes for your rhythm."))
       : CATEGORIES.find((c) => c.id === category)?.[lang] ||
         t("Sva odjeća", "Shop all");
   $$(".category-tabs a").forEach((a) => {
@@ -702,7 +959,7 @@ function renderShop() {
     a.classList.toggle("active", id === category);
   });
   $(".listing-toolbar>span").textContent =
-    `${list.length} ${t("modela", "pieces")}`;
+    `${list.length} ${t(list.length === 1 ? "model" : "modela", list.length === 1 ? "piece" : "pieces")}`;
   $$("[data-filter]").forEach(
     (s) =>
       (s.value =
@@ -933,7 +1190,7 @@ function renderBag() {
 function updateSearch(query) {
   const list = query
     ? PRODUCTS.filter((p) =>
-        normalise(`${p.name} ${p.label.bs} ${p.label.en}`).includes(
+        normalise(`${p.name} ${p.label.bs} ${p.label.en} ${CATEGORIES.find((c) => c.id === p.type)?.bs || ""} ${CATEGORIES.find((c) => c.id === p.type)?.en || ""}`).includes(
           normalise(query),
         ),
       )
