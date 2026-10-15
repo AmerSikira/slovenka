@@ -12,7 +12,7 @@ assert not any(name.startswith('assets/img/') for name in files), 'Original auth
 assert not any(name.endswith(('.jpg', '.jpeg')) for name in files), 'Redundant JPEG fallbacks were packaged'
 data = json.loads(files['data/site.json'])
 assert len(data['pages']) == 23, 'A bilingual page was lost'
-assert all(name in files for name in ['inc/size-tables.php','inc/forms.php','inc/language.php','inc/swatches.php','product-swatches.js','languages/woocommerce-bs_BA.mo','inc/woocommerce.php','page.php','comments.php','native.css','theme.js','products.css']), 'Admin feature modules were omitted'
+assert all(name in files for name in ['inc/size-tables.php','inc/forms.php','inc/language.php','inc/swatches.php','inc/swatch-admin.php','swatch-admin.js','product-swatches.js','languages/woocommerce-bs_BA.mo','inc/woocommerce.php','page.php','comments.php','native.css','theme.js','products.css']), 'Admin feature modules were omitted'
 assert not {'products', 'categories', 'size_tables'} & data.keys(), 'Catalogue seeds leaked into the theme'
 assert not any(page['route'].startswith('/product/') for page in data['pages'].values()), 'Static product detail pages remain'
 assert not {'woocommerce.php','inc/catalogue.php','script.js','production.js'} & files.keys(), 'Custom catalogue adapter remains'

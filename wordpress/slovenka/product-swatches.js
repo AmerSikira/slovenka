@@ -28,7 +28,7 @@
         button.textContent = option.textContent;
         button.setAttribute('aria-pressed', 'false');
         button.title = option.textContent;
-        const color = colors[option.value.toLowerCase()];
+        const color = colors[option.value];
         if (select.dataset.slovenkaSwatches === 'color' && /^#[0-9a-f]{3,6}$/i.test(color || '')) {
           button.classList.add('product-swatch-color');
           button.style.setProperty('--swatch-color', color);
