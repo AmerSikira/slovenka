@@ -1,4 +1,4 @@
-# MK Slovenka theme 1.3.2
+# MK Slovenka theme 1.3.3
 
 The theme handles presentation and offers 23 Bosnian/English starter editorial pages through an explicit setup action. Products live entirely in WooCommerce; photos live in the Media Library. The theme does not contain a product registry, static product detail pages, starter prices, variations or stock, and never imports or updates products during activation or admin requests.
 
