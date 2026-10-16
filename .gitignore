@@ -14,3 +14,6 @@ wordpress/slovenka/contact-map.js
 # Reproducible independent catalogue import (scripts/build-product-import.py).
 wordpress/slovenka-catalogue-import/assets/
 wordpress/slovenka-catalogue-import/data/
+
+# JavaScript translation catalogues built from the upstream PO and storefront terms.
+wordpress/slovenka/languages/woocommerce-js/

@@ -5,6 +5,7 @@ function slovenka_page() {
     if (!is_singular('page')) { return null; }
     if (function_exists('is_cart') && (is_cart() || is_checkout() || is_account_page())) { return null; }
     $file = get_post_meta(get_queried_object_id(), '_slovenka_source', true);
+    if (preg_match('/^(?:shop|cart|checkout|order)(?:-en)?\.html$/', (string)$file)) { return null; }
     return slovenka_data()['pages'][$file] ?? null;
 }
 function slovenka_language() {
@@ -67,8 +68,8 @@ add_filter('wp_nav_menu_objects', function ($items, $args) {
             $current = $item->$field;
             $saved = $original[$field] ?? null;
             if ($field === 'url') {
-                $current = untrailingslashit(remove_query_arg('lang', html_entity_decode($current)));
-                $saved = untrailingslashit(remove_query_arg('lang', html_entity_decode($saved ?? '')));
+                $current = untrailingslashit(slovenka_language_url(html_entity_decode($current), 'bs'));
+                $saved = untrailingslashit(slovenka_language_url(html_entity_decode($saved ?? ''), 'bs'));
             }
             if ((string)$current !== (string)$saved) { continue 2; }
         }
@@ -87,7 +88,7 @@ add_filter('wp_nav_menu_objects', function ($items, $args) {
     $shop = null;
     $shop_id = function_exists('wc_get_page_id') ? wc_get_page_id('shop') : 0;
     $shop_url = function_exists('wc_get_page_permalink') ? wc_get_page_permalink('shop') : '';
-    $normalize = static function ($url) { return untrailingslashit(remove_query_arg('lang', html_entity_decode($url))); };
+    $normalize = static function ($url) { return untrailingslashit(slovenka_language_url(html_entity_decode($url), 'bs')); };
     foreach ($items as $item) {
         if ($item->menu_item_parent) { continue; }
         if (($item->object === 'page' && $shop_id > 0 && (int)$item->object_id === $shop_id)

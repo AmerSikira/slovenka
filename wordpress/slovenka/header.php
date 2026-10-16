@@ -20,7 +20,7 @@
 </nav>
 <div class="utilities">
 <?php $page = slovenka_page(); $other = slovenka_language() === 'en' ? 'bs' : 'en';
-$url = add_query_arg('lang', $other);
+$url = slovenka_language_url(slovenka_current_url(), $other);
 if ($page) {
     $file = get_post_meta(get_queried_object_id(), '_slovenka_source', true);
     $alternate = $other === 'bs' ? str_replace('-en.html','.html',$file) : str_replace('.html','-en.html',$file);
