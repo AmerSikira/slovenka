@@ -44,6 +44,37 @@
   document.querySelector('[data-close-search]')?.addEventListener('click', () => search?.close());
   search?.addEventListener('click', event => { if (event.target === search) search.close(); });
   search?.addEventListener('close', () => openSearch?.focus());
+  const cart = document.getElementById('site-cart');
+  const cartTrigger = document.querySelector('.bag-trigger');
+  if (cart && cartTrigger && typeof cart.showModal === 'function') {
+    let previousOverflow = '';
+    cartTrigger.setAttribute('aria-controls', cart.id);
+    cartTrigger.setAttribute('aria-haspopup', 'dialog');
+    cartTrigger.setAttribute('aria-expanded', 'false');
+    cartTrigger.addEventListener('click', event => {
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      if (cart.open) return;
+      previousOverflow = document.body.style.overflow;
+      cart.showModal();
+      document.body.style.overflow = 'hidden';
+      cartTrigger.setAttribute('aria-expanded', 'true');
+      // Refresh cached pages and carts changed in another tab using WooCommerce's session.
+      window.jQuery?.(document.body).trigger('wc_fragment_refresh');
+    });
+    cart.querySelectorAll('[data-close-cart]').forEach(button => {
+      button.addEventListener('click', () => cart.close());
+    });
+    cart.addEventListener('click', event => { if (event.target === cart) cart.close(); });
+    cart.addEventListener('close', () => {
+      document.body.style.overflow = previousOverflow;
+      cartTrigger.setAttribute('aria-expanded', 'false');
+      cartTrigger.focus();
+    });
+    window.jQuery?.(document.body).on('removed_from_cart', () => {
+      if (cart.open && !cart.contains(document.activeElement)) cart.querySelector('[data-close-cart]')?.focus();
+    });
+  }
   document.addEventListener('keydown', event => {
     if (event.key !== 'Escape') return;
     const expandedShop = shopMenus.find(item => item.classList.contains('is-expanded'));

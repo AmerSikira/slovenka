@@ -1,5 +1,29 @@
 <?php
 if (!defined('ABSPATH')) { exit; }
+
+/** Share WooCommerce's native mini-cart and session updates with the header drawer. */
+function slovenka_cart_count() {
+    $count = function_exists('WC') && WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
+    return '<span class="header-cart-count">(' . esc_html($count) . ')</span>';
+}
+add_filter('woocommerce_add_to_cart_fragments', function ($fragments) {
+    $fragments['.header-cart-count'] = slovenka_cart_count();
+    return $fragments;
+});
+// Cached mini-cart markup contains translated labels and language-specific links.
+add_filter('woocommerce_get_script_data', function ($data, $handle) {
+    if ($handle === 'wc-cart-fragments' && is_array($data)) {
+        foreach (['cart_hash_key', 'fragment_name'] as $key) {
+            if (isset($data[$key])) { $data[$key] .= '_' . slovenka_language(); }
+        }
+    }
+    return $data;
+}, 20, 2);
+add_action('woocommerce_after_mini_cart', function () {
+    if (WC()->cart && WC()->cart->is_empty()) {
+        echo '<a class="button" href="' . esc_url(wc_get_page_permalink('shop')) . '">' . esc_html(slovenka_text('Otkrijte kolekciju', 'Explore the collection')) . '</a>';
+    }
+});
 /** Legacy editorial product pages now lead to the product owned by WooCommerce. */
 function slovenka_legacy_product($file) {
     $key = preg_replace('/-en$/', '', substr(pathinfo($file, PATHINFO_FILENAME), 8));

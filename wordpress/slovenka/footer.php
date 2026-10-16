@@ -16,5 +16,12 @@
 </div><?php } ?>
 <div class="footer-bottom"><span>© <?php echo esc_html(wp_date('Y')); ?> <?php bloginfo('name'); ?></span><?php the_privacy_policy_link(); ?></div>
 </div></footer>
+<?php if (function_exists('woocommerce_mini_cart') && WC()->cart) { ?>
+<dialog id="site-cart" class="native-cart" aria-labelledby="site-cart-title">
+<div class="modal-head"><h2 id="site-cart-title"><?php echo esc_html(slovenka_text('Vaša korpa','Your cart')); ?></h2><button type="button" class="icon-button" data-close-cart aria-label="<?php echo esc_attr(slovenka_text('Zatvori korpu','Close cart')); ?>">×</button></div>
+<div class="native-cart-content widget_shopping_cart"><div class="widget_shopping_cart_content"><?php woocommerce_mini_cart(); ?></div></div>
+<button type="button" class="underlined native-cart-continue" data-close-cart><?php echo esc_html(slovenka_text('Nastavi razgledati','Continue browsing')); ?></button>
+</dialog>
+<?php } ?>
 <?php wp_footer(); ?>
 </body></html>
