@@ -24,12 +24,14 @@ assert switch, 'Product language switch missing'
 english = read(switch['href'])
 assert language(english) == 'en', 'English product switch failed'
 assert 'Add to bag' in english.get_text(), 'English controls missing'
-assert parse_qs(urlsplit(english.select_one('.bag-trigger')['href']).query).get('lang') == ['en'], 'Cart loses selected language'
+assert '/en/' in urlsplit(english.select_one('.bag-trigger')['href']).path, 'Cart loses selected language'
+assert 'lang' not in parse_qs(urlsplit(english.select_one('.bag-trigger')['href']).query), 'Cart has a legacy language parameter'
 cart = read(english.select_one('.bag-trigger')['href'])
 assert language(cart) == 'en', 'Cart resets English selection'
 assert 'Your cart is currently empty' in cart.get_text() or 'Proceed to checkout' in cart.get_text(), 'English cart translation missing'
 bs_cart_link = cart.select_one('a.language[hreflang="bs"]')
 assert bs_cart_link, 'Cart language switch missing'
 assert language(read(bs_cart_link['href'])) == 'bs', 'Bosnian cart switch failed'
-assert english.select_one('form.search-form input[name="lang"][value="en"]'), 'Search loses language'
+assert '/en/' in urlsplit(english.select_one('form.search-form')['action']).path, 'Search loses language'
+assert not english.select_one('form.search-form input[name="lang"]'), 'Search should use clean language URLs'
 print('PASS: Bosnian homepage → product, translated Woo controls, English switch → cart, Bosnian cart switch, search language')

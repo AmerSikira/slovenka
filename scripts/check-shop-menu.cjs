@@ -18,7 +18,8 @@ assert(['localhost','127.0.0.1'].includes(new URL(url).hostname));
     assert(await submenu.locator('a').count());
     assert.equal(await submenu.isVisible(), false);
     const target = await link.getAttribute('href');
-    assert.equal(new URL(target).searchParams.get('lang'), new URL(url).searchParams.get('lang') || 'bs');
+    assert.equal(new URL(target).searchParams.has('lang'), false);
+    assert.equal(new URL(target).pathname.includes('/en/'), page.url().includes('/en/'));
     await link.hover();
     assert(await submenu.isVisible());
     assert.equal(await toggle.getAttribute('aria-expanded'), 'true');
@@ -34,7 +35,8 @@ assert(['localhost','127.0.0.1'].includes(new URL(url).hostname));
     await page.keyboard.press('Tab');
     assert(await submenu.locator('a').first().evaluate(element => element === document.activeElement));
     for (const href of await submenu.locator('a').evaluateAll(links => links.map(link => link.href))) {
-      assert.equal(new URL(href).searchParams.get('lang'), new URL(url).searchParams.get('lang') || 'bs');
+      assert.equal(new URL(href).searchParams.has('lang'), false);
+      assert.equal(new URL(href).pathname.includes('/en/'), page.url().includes('/en/'));
     }
     await page.setViewportSize({width:390,height:844});
     await page.reload();

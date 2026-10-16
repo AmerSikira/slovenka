@@ -1,5 +1,5 @@
 === MK Slovenka ===
-Version: 1.2.7
+Version: 1.3.0
 License: GPLv2 or later
 
 Classic WordPress theme with native WooCommerce archive queries, product loops,
@@ -26,7 +26,8 @@ optional plugin or standard WooCommerce CSV, never part of theme activation.
 
 STOREFRONT LANGUAGES
 The homepage language is the default for native store routes. The flag switcher
-uses explicit lang=bs/en links through the catalogue, search, cart and checkout.
+uses clean /en/ paths for English catalogue, search, cart and checkout.
+Bosnian links are unprefixed. Legacy lang=bs/en URLs redirect to clean equivalents.
 Bosnian WooCommerce translations are bundled; installed language packs take
 precedence. Administrator language and merchant product content are unchanged.
 See languages/README.md for translation attribution, source and license.
@@ -54,3 +55,11 @@ Product pages retain the approved ARIA layout, size buttons, full-width bag acti
 and three green benefit pills. Tabela mjera beside the size label opens assigned
 manufacturer measurements in a dialog. Without JavaScript the table stays below
 the product. Real stock/variations and native checkout remain authoritative.
+
+SEO AND TRANSLATIONS
+PHP and JavaScript WooCommerce translations include supplementary Bosnian
+storefront terms and plural forms. Custom merchant copy remains editable.
+The theme supplies canonical, description, social and language metadata, plus
+JSON-LD and noindex rules for private/filtered destinations. Product prices and
+availability come from WooCommerce. Common SEO plugins take over metadata
+without duplicate theme output. See wordpress/README.md for full behavior.

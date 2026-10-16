@@ -3,6 +3,8 @@ if (!defined('ABSPATH')) { exit; }
 require_once __DIR__ . '/inc/import.php';
 require_once __DIR__ . '/inc/render.php';
 require_once __DIR__ . '/inc/language.php';
+require_once __DIR__ . '/inc/translations.php';
+require_once __DIR__ . '/inc/seo.php';
 require_once __DIR__ . '/inc/woocommerce.php';
 require_once __DIR__ . '/inc/swatches.php';
 require_once __DIR__ . '/inc/swatch-admin.php';

@@ -2,10 +2,11 @@
 """Package only the runtime files/assets used by the production WordPress theme."""
 from pathlib import Path
 from bs4 import BeautifulSoup
-import json, re, shutil, subprocess, tempfile, zipfile
+import json, re, shutil, subprocess, sys, tempfile, zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 THEME = ROOT / 'wordpress/slovenka'
+subprocess.run([sys.executable, str(ROOT / 'scripts/build-translations.py')], check=True)
 script = (ROOT / 'script.js').read_text()
 prefix = script.split('// Small helpers.')[0]
 data = json.loads(subprocess.check_output([
@@ -112,7 +113,9 @@ for name in ['commerce.css', 'commerce.js', 'script.js', 'production.js']:
 (THEME / 'data/site.json').write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')))
 
 # Explicit package manifest also excludes accidental backups, editor files and stale outputs.
-package_files = set(runtime_files) | {'readme.txt', 'data/site.json', 'style.css', 'notices.css', 'products.css', 'native.css', 'native-commerce.css', 'theme.js', 'functions.php', 'header.php', 'footer.php', 'index.php', 'page.php', 'searchform.php', 'comments.php', '404.php', 'sidebar.php', 'inc/import.php', 'inc/render.php', 'inc/woocommerce.php', 'inc/size-tables.php', 'inc/forms.php', 'inc/language.php', 'inc/swatches.php', 'inc/swatch-admin.php', 'inc/product-design.php', 'product-design.js', 'swatch-admin.js', 'product-swatches.js', 'languages/woocommerce-bs_BA.mo', 'languages/woocommerce-bs_BA.po', 'languages/README.md'} | assets
+package_files = set(runtime_files) | {'readme.txt', 'data/site.json', 'style.css', 'notices.css', 'products.css', 'native.css', 'native-commerce.css', 'theme.js', 'functions.php', 'header.php', 'footer.php', 'index.php', 'page.php', 'searchform.php', 'comments.php', '404.php', 'sidebar.php', 'inc/import.php', 'inc/render.php', 'inc/woocommerce.php', 'inc/size-tables.php', 'inc/forms.php', 'inc/language.php', 'inc/translations.php', 'inc/seo.php', 'inc/swatches.php', 'inc/swatch-admin.php', 'inc/product-design.php', 'product-design.js', 'swatch-admin.js', 'product-swatches.js', 'languages/woocommerce-bs_BA.mo', 'languages/woocommerce-bs_BA.po', 'languages/README.md'} | assets
+package_files.update(str(path.relative_to(THEME)) for path in (THEME / 'languages/woocommerce-js').glob('*.json'))
+package_files.add('languages/storefront-bs.json')
 output = ROOT / 'dist/slovenka.zip'
 output.parent.mkdir(exist_ok=True)
 with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
