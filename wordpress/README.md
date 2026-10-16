@@ -1,4 +1,4 @@
-# MK Slovenka theme 1.3.0
+# MK Slovenka theme 1.3.1
 
 The theme handles presentation and offers 23 Bosnian/English starter editorial pages through an explicit setup action. Products live entirely in WooCommerce; photos live in the Media Library. The theme does not contain a product registry, static product detail pages, starter prices, variations or stock, and never imports or updates products during activation or admin requests.
 
@@ -27,6 +27,8 @@ Only the missing primary navigation menu is created on theme activation. Editori
 WordPress processes page content through `the_content`, including blocks, shortcodes, password protection and plugin content filters. Titles, language attributes, menus, assets, post pagination and comments use standard WordPress APIs. Cart/checkout pages may use standard WooCommerce shortcodes or Cart/Checkout blocks. Both share the theme’s contained page layout, typography, green actions and warm order-summary panels, including imported pages carrying legacy source metadata. The merchant controls redirect-after-add, payment, shipping, taxes, policies, currency and page assignments. Legacy English cart/checkout aliases redirect only when they are not themselves the configured page; endpoint/query data is retained. Editorial photography/fonts/map assets remain bundled; product photos use Media.
 
 ## SEO and indexing
+
+The header cart opens a right-side drawer with WooCommerce's native mini-cart, item removal, subtotal, cart and checkout links. It fills the screen on narrow phones, closes with Escape, the backdrop or the close controls, and returns focus to the header. WooCommerce fragments keep its contents and header count current; cached fragments are separated by storefront language. With JavaScript unavailable, the header link opens the full cart page.
 
 The theme supplies page descriptions, a single canonical URL, Open Graph and Twitter cards, and reciprocal `bs` / `en` / `x-default` alternate links for published editorial translations. Metadata uses current product copy, page content/excerpts, taxonomy descriptions and media. Homepage titles describe the clothing and manufacturing business; shop titles follow the storefront language. Native semantic templates retain a single main heading, including empty search results and the posts index.
 
