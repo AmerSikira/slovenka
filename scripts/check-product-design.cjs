@@ -26,11 +26,14 @@ const reference = pathToFileURL(path.resolve(__dirname, '../product-aria-en.html
     await page.goto(base + '/?product=aria&lang=en', {waitUntil:'networkidle'});
     assert.deepEqual(await metrics(true), approved, 'Purchase controls drifted from the approved design');
     assert.equal(await page.locator('.summary .product-benefit').count(), 3);
-    assert.deepEqual(await page.locator('.product-accordions > details > summary').allTextContents().then(t=>t.slice(0,3).map(x=>x.trim())), ['Fit & details','Composition & care','Delivery & returns']);
+    assert.deepEqual(await page.locator('.product-accordions > details > summary').allTextContents().then(t=>t.slice(0,3).map(x=>x.trim())), ['Composition & care','Delivery & returns','Additional information']);
     assert.equal(await page.locator('.woocommerce-product-rating, #reviews, #review_form, .product-detail-reviews').count(), 0, 'Reviews and ratings must not be rendered');
     assert.equal(await page.locator('#tab-description > h2, #tab-additional_information > h2').count(), 0, 'Native headings must not repeat accordion titles');
-    const fit = page.locator('.product-detail-description');
-    assert(await fit.evaluate(el=>el.open), 'Fit & details should start open');
+    assert.equal(await page.locator('.product-detail-description').count(), 0);
+    const fit = page.locator('.product-detail-care');
+    assert.equal(await fit.evaluate(el=>el.open), false);
+    await fit.locator('summary').click();
+    assert(await fit.evaluate(el=>el.open));
     await fit.locator('summary').click();
     assert.equal(await fit.evaluate(el=>el.open), false);
     await fit.locator('summary').focus();

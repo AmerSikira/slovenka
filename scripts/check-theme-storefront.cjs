@@ -38,8 +38,15 @@ assert(['localhost','127.0.0.1'].includes(new URL(fixture.shop).hostname));
     assert(await page.locator('.woocommerce-message, .wc-block-components-notice-banner').count());
     await page.locator('a.bag-trigger').click();
     assert((await page.locator('main').innerText()).includes('COCO'));
+    assert(await page.locator('main.container.native-commerce-page > article > h1.entry-title').isVisible(), 'Imported cart must have a contained layout and heading');
+    assert.equal(await page.locator('td.product-price').first().evaluate(el => getComputedStyle(el).display), 'table-cell', 'Product price CSS breaks native cart cells');
     await page.goto(fixture.checkout);
     assert(await page.locator('form.checkout').count());
+    assert(await page.evaluate(() => window.wc_checkout_params.wc_ajax_url.includes('%%endpoint%%')), 'Checkout AJAX placeholder must remain replaceable');
+    await page.waitForFunction(() => !document.querySelector('.blockUI'));
+    const reviewHeading = await page.locator('#order_review_heading').boundingBox();
+    const review = await page.locator('#order_review').boundingBox();
+    assert(Math.abs(reviewHeading.y + reviewHeading.height - review.y) < 2, 'Order summary must sit directly below its heading');
     await page.goto(fixture.account);
     assert(await page.locator('form.woocommerce-form-login').count());
     await page.goto(fixture.blockCart);
@@ -64,6 +71,11 @@ assert(['localhost','127.0.0.1'].includes(new URL(fixture.shop).hostname));
       }
       await page.goto(fixture.shop);
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Shop overflows at '+width);
+      for (const route of ['cart','checkout','blockCart','blockCheckout']) {
+        await page.goto(fixture[route], {waitUntil:'networkidle'});
+        assert(await page.locator('main.container.native-commerce-page').count(), route+' missing theme container');
+        assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), route+' overflows at '+width);
+      }
     }
     const plain = await browser.newContext({javaScriptEnabled:false});
     const fallback = await plain.newPage();

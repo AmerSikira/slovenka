@@ -36,6 +36,7 @@ add_action('wp_enqueue_scripts', function () {
     if (class_exists('WooCommerce')) {
         wp_enqueue_style('slovenka-products', get_theme_file_uri('products.css'), ['slovenka-native'], $version);
         wp_enqueue_style('slovenka-notices', get_theme_file_uri('notices.css'), ['slovenka-native'], $version);
+        wp_enqueue_style('slovenka-commerce', get_theme_file_uri('native-commerce.css'), ['slovenka-native'], $version);
     }
     // Editorial enhancements are registered with WordPress and have explicit dependencies.
     if (is_page()) {

@@ -97,16 +97,17 @@ function slovenka_product_measurements() {
 function slovenka_product_accordions() {
     global $product;
     $tabs = apply_filters('woocommerce_product_tabs', []);
-    unset($tabs['slovenka_measurements'], $tabs['reviews']);
+    unset($tabs['slovenka_measurements'], $tabs['reviews'], $tabs['description']);
     echo '<div class="product-accordions">';
     $render = static function ($key, $tab) {
-        $title = $key === 'description' ? slovenka_text('Kroj i detalji','Fit & details') : $tab['title'];
-        echo '<details class="product-detail-' . esc_attr($key) . '"' . ($key === 'description' ? ' open' : '') . '><summary>' . wp_kses_post(apply_filters('woocommerce_product_' . $key . '_tab_title', $title, $key)) . slovenka_product_icon('plus') . '</summary><div class="product-detail-content" id="tab-' . esc_attr($key) . '">';
+        echo '<details class="product-detail-' . esc_attr($key) . '"><summary>' . wp_kses_post(apply_filters('woocommerce_product_' . $key . '_tab_title', $tab['title'], $key)) . slovenka_product_icon('plus') . '</summary><div class="product-detail-content" id="tab-' . esc_attr($key) . '">';
         if (isset($tab['callback']) && is_callable($tab['callback'])) { call_user_func($tab['callback'], $key, $tab); }
         echo '</div></details>';
     };
-    if (isset($tabs['description'])) { $render('description', $tabs['description']); unset($tabs['description']); }
-    echo '<details><summary>' . esc_html(slovenka_text('Sastav i održavanje','Composition & care')) . slovenka_product_icon('plus') . '</summary><p>' . esc_html(slovenka_text('Za informacije o sastavu i održavanju ovog modela, kontaktirajte nas.', 'Contact us for composition and care information for this piece.')) . '</p></details>';
+    $care = $product->get_meta('_slovenka_composition_care');
+    echo '<details class="product-detail-care"><summary>' . esc_html(slovenka_text('Sastav i održavanje','Composition & care')) . slovenka_product_icon('plus') . '</summary><div class="product-detail-content">';
+    echo $care !== '' ? wp_kses_post(wpautop($care)) : '<p>' . esc_html(slovenka_text('Za informacije o sastavu i održavanju ovog modela, kontaktirajte nas.', 'Contact us for composition and care information for this piece.')) . '</p>';
+    echo '</div></details>';
     echo '<details><summary>' . esc_html(slovenka_text('Dostava i povrat','Delivery & returns')) . slovenka_product_icon('plus') . '</summary><p>';
     foreach (['support-delivery'=>['Dostava','Delivery'], 'support-returns'=>['Povrat','Returns']] as $file=>$labels) {
         $url = slovenka_page_url($file . (slovenka_language() === 'en' ? '-en' : '') . '.html');
@@ -117,6 +118,23 @@ function slovenka_product_accordions() {
     echo '</div>';
     do_action('woocommerce_product_after_tabs');
 }
+// WooCommerce checks edit permissions and its product nonce before this save hook.
+add_action('woocommerce_product_options_general_product_data', function () {
+    echo '<div class="options_group">';
+    woocommerce_wp_textarea_input([
+        'id'=>'_slovenka_composition_care',
+        'label'=>'Sastav i održavanje',
+        'description'=>__('Composition and care instructions shown on the product page. Basic HTML and line breaks are supported.', 'slovenka'),
+        'desc_tip'=>true,
+        'rows'=>6,
+    ]);
+    echo '</div>';
+});
+add_action('woocommerce_admin_process_product_object', function ($product) {
+    if (isset($_POST['_slovenka_composition_care']) && is_string($_POST['_slovenka_composition_care'])) {
+        $product->update_meta_data('_slovenka_composition_care', wp_kses_post(wp_unslash($_POST['_slovenka_composition_care'])));
+    }
+});
 add_action('after_setup_theme', function () {
     remove_action('woocommerce_single_product_summary','woocommerce_template_single_title',5);
     remove_action('woocommerce_single_product_summary','woocommerce_template_single_rating',10);
