@@ -38,9 +38,14 @@ function slovenka_language_url($url, $lang = null) {
     if (str_starts_with($url, '#') || preg_match('~^(mailto:|tel:|javascript:)~i', $url)) { return $url; }
     return add_query_arg('lang', $lang ?? slovenka_language(), $url);
 }
-foreach (['woocommerce_get_shop_page_permalink', 'woocommerce_get_cart_url', 'woocommerce_get_checkout_url', 'woocommerce_get_myaccount_page_permalink', 'woocommerce_get_checkout_order_received_url', 'woocommerce_ajax_get_endpoint', 'get_pagenum_link'] as $hook) {
+foreach (['woocommerce_get_shop_page_permalink', 'woocommerce_get_cart_url', 'woocommerce_get_checkout_url', 'woocommerce_get_myaccount_page_permalink', 'woocommerce_get_checkout_order_received_url', 'get_pagenum_link'] as $hook) {
     add_filter($hook, 'slovenka_language_url');
 }
+add_filter('woocommerce_ajax_get_endpoint', function ($url) {
+    // WooCommerce replaces this literal token in checkout.js. add_query_arg()
+    // encodes its percent signs, preventing order review and checkout requests.
+    return str_replace('%25%25endpoint%25%25', '%%endpoint%%', slovenka_language_url($url));
+});
 // WooCommerce redirects plain-permalink shop page links to this archive URL.
 add_filter('post_type_archive_link', function ($url, $type) {
     return $type === 'product' ? slovenka_language_url($url) : $url;
